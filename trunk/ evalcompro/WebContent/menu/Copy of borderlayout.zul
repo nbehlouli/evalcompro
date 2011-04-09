@@ -1,0 +1,33 @@
+<zk>
+	<window id="main" width="100%" height="100%" apply="ztest.borderlayout.BorderLayoutComposer">
+		<borderlayout>
+			<north size="70px">
+				<div>
+					<html><![CDATA[
+						<h2 style="color:#0C7A9A;margin-left:10px">Outil d evaluation des compétences</h2>
+					]]></html>
+				</div>
+			</north>
+			<west size="200px" splittable="true" flex="true" collapsible="true" title="Menu"> 
+				<listbox id="menuListbox" style="border:none"/>	
+				<tree id="explorerTree" zclass="z-dottree" >
+					<treecols sizable="true">
+						<treecol label=""/>
+					</treecols>
+				</tree>
+			</west>
+			<center flex="true">
+				<div id="contentDiv" >
+					
+				</div>
+			</center>
+			<south size="20px">
+				<hbox pack="center" width="100%">
+					<html><![CDATA[
+						<span style="color:#0C7A9A">Evalcom</span>
+					]]></html>
+				</hbox>
+			</south>
+		</borderlayout>
+	</window>
+</zk>

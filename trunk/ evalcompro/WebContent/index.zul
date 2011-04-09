@@ -1,0 +1,14 @@
+<?page id="mainPage" title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="new page title" border="normal" id="mainWindow">
+<borderlayout height="500px">
+<center id="main_center" border="normal">
+  <!-- iframe  src="/login/login.zul"/-->
+  <include mode="auto" src="/login/login.zul" />
+   </center>
+<west size="15%" splittable="true" id ="main_west" collapsible="true">
+    
+</west>
+</borderlayout>
+</window>
+</zk>
