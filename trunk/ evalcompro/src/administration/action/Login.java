@@ -70,7 +70,16 @@ public class Login extends GenericForwardComposer{
 			boolean result=init.checkLoginPwd(user,pwd);
 			if (result==true) 
 			{
-				msg.setValue("authentifié");
+				//msg.setValue("authentifié");
+				   Map data = new HashMap();
+					
+					data.put("name", user);
+					data.put("age", pwd);
+ 					Executions.createComponents("../menu/borderlayout.zul", div, data);
+					//permet de fermer la fenetre login
+					
+					main=(Window)this.self;
+					main.detach();
 			} 
 			else
 			{ 
@@ -97,17 +106,7 @@ public class Login extends GenericForwardComposer{
 //		main.setVisible(false);
 //		Executions.createComponents("/index.zul",null, data);
 
-Map data = new HashMap();
-		
-		data.put("name", user);
-		data.put("age", pwd);
-
-		Executions.createComponents("../menu/borderlayout.zul", div, data);
-		
-		//permet de fermer la fenetre login
-		
-		main=(Window)this.self;
-		main.detach();
+       
 	}
 	public void doLogout(){
 		session.removeAttribute("user");
