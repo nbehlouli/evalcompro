@@ -75,7 +75,10 @@ public class Login extends GenericForwardComposer{
 					
 					data.put("name", user);
 					data.put("age", pwd);
- 					Executions.createComponents("../menu/borderlayout.zul", div, data);
+					
+					//chargement des informations associés au profil de 'utilisateur
+					init.checkProfile(init.getUser_compte());
+ 					Executions.createComponents("../pages/menu.zul", div, data);
 					//permet de fermer la fenetre login
 					
 					main=(Window)this.self;

@@ -3,8 +3,10 @@ package administration.model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import administration.bean.CompteBean;
 
@@ -12,7 +14,10 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 
+import common.ApplicationFacade;
 import common.CreateDatabaseCon;
+import common.bean.ArborescenceMenu;
+import common.bean.EcranBean;
 
 public class LoginModel {
 	
@@ -34,7 +39,7 @@ public class LoginModel {
 			String select_login="SELECT id_compte,id_profile,login,pwd,database_id,val_date_deb,val_date_fin FROM compte where upper(login)=#login and upper(pwd)=#password";
 			select_login = select_login.replaceAll("#login", "'"+login.toUpperCase()+"'");
 			select_login = select_login.replaceAll("#password", "'"+password.toUpperCase()+"'");
-			//System.out.println(select_login);
+			System.out.println(select_login);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_login);
 			
 			
@@ -85,21 +90,34 @@ public static void checkProfile(List compte_user) throws SQLException  {
 	select_profile = select_profile.replaceAll("#profile",profile.toString() );
 	System.out.println(select_profile);
 	ResultSet rs = (ResultSet) stmt.executeQuery(select_profile);
+
+	List <String>listLibelleMenu=new ArrayList<String>();
+
+	List <EcranBean>listeEcranBean=new ArrayList <EcranBean>();
+
+	
 	while(rs.next()){
-		                                                                        
+		System.out.println("dans la boucle");		                                                       
 		//add result set to desired structure
-		/*StructureBean db = new StructureBean(rs.getInt("id_ecran"), rs.getString("code_ecran"),
-				          rs.getString("libelle_ecran"),rs.getString("code_menu"),
-				          rs.getString("libelle_menu"));
+Integer val=new Integer(rs.getString ("id_ecran"));
+		EcranBean ecranbean=new EcranBean(val, rs.getString("code_ecran"),rs.getString("libelle_ecran"), rs.getString("code_menu"), rs.getString("libelle_menu"));
+		
+		listeEcranBean.add(ecranbean);
+		if(!listLibelleMenu.contains(rs.getString("libelle_menu")))
+		{
+			listLibelleMenu.add(rs.getString("libelle_menu"));
+		}
+		/*
 				          
 	   list_secreens.add(db)
 				          
         */
-		System.out.println(rs.getInt("code_ecran"));
+		
 				
 	}
+	ArborescenceMenu arborescenceMenu=new ArborescenceMenu(listeEcranBean,listLibelleMenu);
 
-	//return list_secreens;
+	ApplicationFacade.getInstance().setArborescenceMenubean(arborescenceMenu);
 	
 }
 	
