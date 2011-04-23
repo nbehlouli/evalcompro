@@ -20,7 +20,7 @@
    		 			</tabpanels>
    		 		</tabbox>
 			</west>
-			<center flex="true">
+			<center autoscroll="true" flex="true">
 				<div id="contentDiv" >
 					
 				</div>
