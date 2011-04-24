@@ -13,17 +13,45 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 
+import administration.bean.StructureEntrepriseBean;
+import administration.model.StructureEntrepriseModel;
+
+
 public class StructureEntreprise extends GenericForwardComposer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Listbox structureEntrepriselb;
-	Textbox codeStructure;
+	
+	Textbox codeStructure;	
+	Textbox codeDivision;
+	Textbox nomDivision;
+	Textbox codeDirection;
+	Textbox nomDirection;
+	Textbox codeUnite;
+	Textbox nomUnite;
+	Textbox codeDepartement;
+	Textbox nomdepatrement;
+	Textbox codeService;
+	Textbox NomService;
+	Textbox codeSection;
+	Textbox nomSection;
 	//Listbox titlelb;
 
 	AnnotateDataBinder binder;
 
-	List<Person> model = new ArrayList<Person>();
-	List<String> titleModel = new ArrayList<String>();
-	Person selected;
+	//List<Person> model = new ArrayList<Person>();
+	
+	//Person selected;
+	
+	List<StructureEntrepriseBean> model = new ArrayList<StructureEntrepriseBean>();
+	
+	//List<String> titleModel = new ArrayList<String>();
+	
+	StructureEntrepriseBean selected;
+	
 
 	public StructureEntreprise() {
 	}
@@ -32,25 +60,28 @@ public class StructureEntreprise extends GenericForwardComposer {
 		super.doAfterCompose(comp);
 		
 		// création de la structure de l'entreprise bean
+		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		model=structureEntrepriseModel.checkStructureEntreprise();
+		
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
-		model.add(new Person("Brian", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("John", "Tester", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Sala", "Manager", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Brian", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("John", "Tester", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Sala", "Manager", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
+//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
 
-		titleModel.add("");
-		titleModel.add("Engineer");
-		titleModel.add("Tester");
-		titleModel.add("Manager");
-		titleModel.add("Architect");
+//		titleModel.add("");
+//		titleModel.add("Engineer");
+//		titleModel.add("Tester");
+//		titleModel.add("Manager");
+//		titleModel.add("Architect");
 		System.out.println("11111111111111");
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
@@ -60,23 +91,43 @@ public class StructureEntreprise extends GenericForwardComposer {
 		return model;
 	}
 
-	public List getTitleModel() {
-		return titleModel;
-	}
+//	public List getTitleModel() {
+//		return titleModel;
+//	}
 
-	public Person getSelected() {
+	public StructureEntrepriseBean getSelected() {
 		return selected;
 	}
 
-	public void setSelected(Person selected) {
+	public void setSelected(StructureEntrepriseBean selected) {
 		this.selected = selected;
 	}
 
 	public void onClick$add() {
-		Person person = new Person(getSelectedName(), "aa", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer");
-		model.add(person);
-		selected = person;
+		StructureEntrepriseBean addedData = new StructureEntrepriseBean();
+		
+		
+		addedData.setCodestructure(getSelectedcodeStructure());
+		addedData.setCodeDivision(getSelectedcodeDivision());
+		addedData.setLibelleDivision(getSelectednomDivision());
+		addedData.setCodeDirection(getSelectedcodeDirection());
+		addedData.setLibelleDirection(getSelectednomDirection());
+		addedData.setCodeUnite(getSelectedcodeUnite());
+		addedData.setLibelleUnite(getSelectednomUnite());
+		addedData.setCodeDepartement(getSelectedcodeDepartement());
+		addedData.setLibelleDepartement(getSelectednomDepartement());
+		addedData.setCodeService(getSelectedcodeService());
+		addedData.setLibelleService(getSelectednomService());
+		addedData.setCodesection(getSelectedcodeSection());
+		addedData.setLibelleSection(getSelectednomSection());
+		model.add(addedData);
+		
+		selected = addedData;
 		binder.loadAll();
+		/**
+		 * TODO mise à jour de la base de donnée
+		 */
+		
 	}
 
 	public void onClick$update() {
@@ -84,7 +135,23 @@ public class StructureEntreprise extends GenericForwardComposer {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
-		selected.setName(getSelectedName());
+		System.out.println(getSelectedcodeStructure());
+		selected.setCodestructure(getSelectedcodeStructure());
+		selected.setCodeDivision(getSelectedcodeDivision());
+		selected.setLibelleDivision(getSelectednomDivision());
+		selected.setCodeDirection(getSelectedcodeDirection());
+		selected.setLibelleDirection(getSelectednomDirection());
+		selected.setCodeUnite(getSelectedcodeUnite());
+		selected.setLibelleUnite(getSelectednomUnite());
+		selected.setCodeDepartement(getSelectedcodeDepartement());
+		selected.setLibelleDepartement(getSelectednomDepartement());
+		selected.setCodeService(getSelectedcodeService());
+		selected.setLibelleService(getSelectednomService());
+		selected.setCodesection(getSelectedcodeSection());
+		selected.setLibelleSection(getSelectednomSection());
+		/**
+		 * TODO ajouter la mise à jour de la base de donnée
+		 */
 		
 		binder.loadAll();
 	}
@@ -97,13 +164,34 @@ public class StructureEntreprise extends GenericForwardComposer {
 		model.remove(selected);
 		selected = null;
 
+		/**
+		 * TODO ajouter la mise à jour de la base de donnée
+		 */
+		
+		
 		binder.loadAll();
 	}
 
+	public void onClick$effacer() {
+		codeStructure.setText("");
+		codeDivision.setText("");
+		nomDivision.setText("");
+		codeDirection.setText("");
+		nomDirection.setText("");
+		codeUnite.setText("");
+		nomUnite.setText("");
+		codeDepartement.setText("");
+		nomdepatrement.setText("");
+		codeService.setText("");
+		NomService.setText("");
+		codeSection.setText("");
+		nomSection.setText("");
+	}
 
 
 	public void onSelect$structureEntrepriselb() {
-		closeErrorBox(new Component[] { codeStructure });
+		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
+				codeUnite,nomUnite, codeDepartement, nomdepatrement, codeService,NomService, codeSection, nomSection });
 	}
 	
 	
@@ -115,74 +203,109 @@ public class StructureEntreprise extends GenericForwardComposer {
 
 
 
-	private String getSelectedName() throws WrongValueException {
+	private String getSelectedcodeStructure() throws WrongValueException {
 		String name = codeStructure.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeStructure, "Aucune valeur ne doit être vide!");
+			throw new WrongValueException(codeStructure, "le Code Structure ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectedcodeDivision() throws WrongValueException {
+		String name = codeDivision.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeDivision, "le Code Division ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectednomDivision() throws WrongValueException {
+		String name = nomDivision.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nomDivision, "le nom Division ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectedcodeDirection() throws WrongValueException {
+		String name = codeDirection.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeDirection, "le codeDirection ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectednomDirection() throws WrongValueException {
+		String name = nomDirection.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nomDirection, "le nom Direction ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectedcodeUnite() throws WrongValueException {
+		String name = codeUnite.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeUnite, "le codeUnite ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectednomUnite() throws WrongValueException {
+		String name = nomUnite.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nomUnite, "le nom Unite ne doit pas être vide!");
 		}
 		return name;
 	}
 
-	public class Person {
-		public String name;
-		public String title;
-		public String title1;
-		public String title2;
-		public String title3;
-		public String title4;
-		public String title5;
-		public String title6;
-		public String title7;
-		public String title8;
-		public String title9;
-		public String title10;
-		public String title11;
-		public String title12;
-		
-		public Person(String name, String title, String title1, String title2, String title3, String title4, String title5, String title6, String title7, String title8, String title9, String title10, String title11, String title12) {
-			this.name = name;
-			this.title = title;
-			this.title1 = title1;
-			this.title2 = title2;
-			this.title3 = title3;
-			this.title4 = title4;
-			this.title5 = title5;
-			this.title6 = title6;
-			this.title7 = title7;
-			this.title8 = title8;
-			this.title9 = title9;
-			this.title10 = title10;
-			this.title11 = title11;
-			this.title12 = title12;
+	private String getSelectedcodeDepartement() throws WrongValueException {
+		String name = codeDepartement.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeDepartement, "le codeDepartement ne doit pas être vide!");
 		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-			this.title1 = "Tester";
-			this.title2 = "Tester";
-			this.title3 = "Tester";
-			this.title4 = "Tester";
-			this.title5 = "Tester";
-			this.title6 = "Tester";
-			this.title7 = "Tester";
-			this.title8 = "Tester";
-			this.title9 = "Tester";
-			this.title10 = "Tester";
-			this.title11 = "Tester";
-			this.title12 = "Tester";
-		}
+		return name;
 	}
+	
+	private String getSelectednomDepartement() throws WrongValueException {
+		String name = nomdepatrement.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nomdepatrement, "le nom Departement ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectedcodeService() throws WrongValueException {
+		String name = codeService.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeService, "le codeService ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectednomService() throws WrongValueException {
+		String name = NomService.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(NomService, "le nom Service ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectedcodeSection() throws WrongValueException {
+		String name = codeSection.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(codeSection, "le codeSection ne doit pas être vide!");
+		}
+		return name;
+	}
+	
+	private String getSelectednomSection() throws WrongValueException {
+		String name = nomSection.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nomSection, "le nom Section ne doit pas être vide!");
+		}
+		return name;
+	}
+
 
 }
