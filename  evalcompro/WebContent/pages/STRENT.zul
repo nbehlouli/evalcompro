@@ -17,22 +17,20 @@
 			<listheader label="Code section" width="100px" align="center" />
 			<listheader label="Nom section" width="130px" align="center" />
 		</listhead>
-		<listitem self="@{each=person}">
-		<listcell label="@{person.name}" />
-			<listcell label="@{person.name}" />
-			<listcell label="@{person.title}" />
-			<listcell label="@{person.title1}" />
-			<listcell label="@{person.title2}" />
-			<listcell label="@{person.title3}" />
-			<listcell label="@{person.title4}" />
-			<listcell label="@{person.title5}" />
-			<listcell label="@{person.title6}" />
-			<listcell label="@{person.title7}" />
-			<listcell label="@{person.title8}" />
-			<listcell label="@{person.title9}" />
-			<listcell label="@{person.title10}" />
-			<listcell label="@{person.title11}" />
-			<listcell label="@{person.title12}" />
+		<listitem self="@{each=structureEntrepriseBean}">
+			<listcell label="@{structureEntrepriseBean.codestructure}" />
+			<listcell label="@{structureEntrepriseBean.codeDivision}" />
+			<listcell label="@{structureEntrepriseBean.libelleDivision}" />
+			<listcell label="@{structureEntrepriseBean.codeDirection}" />
+			<listcell label="@{structureEntrepriseBean.libelleDirection}" />
+			<listcell label="@{structureEntrepriseBean.codeUnite}" />
+			<listcell label="@{structureEntrepriseBean.libelleUnite}" />
+			<listcell label="@{structureEntrepriseBean.codeDepartement}" />
+			<listcell label="@{structureEntrepriseBean.libelleDepartement}" />
+			<listcell label="@{structureEntrepriseBean.codeService}" />
+			<listcell label="@{structureEntrepriseBean.libelleService}" />
+			<listcell label="@{structureEntrepriseBean.codesection}" />
+			<listcell label="@{structureEntrepriseBean.libelleSection}" />
 		</listitem>
 	</listbox>
 	<grid span="true" sizedByContent="true" width="100%" height="130px">
@@ -57,19 +55,19 @@
         <rows>
             <row>
                 <!-- Selected contributor's title value is same as title model's data-->
-                <textbox id="codeStructure" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeDivision" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="nomDivision" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeDirection" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="nomDirection" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeUnite" value="@{mainCtrl.selected.name,save-when=none}"/>
-                <textbox id="nomUnite" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeDepartement" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="nomdepatrement" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeService" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="NomService" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="codeSection" value="@{mainCtrl.selected.name,save-when=none}" />
-                <textbox id="nomSection" value="@{mainCtrl.selected.name,save-when=none}" />
+                <textbox id="codeStructure" value="@{winCtrl.selected.codestructure,save-when=none}" />
+                <textbox id="codeDivision" value="@{winCtrl.selected.codeDivision,save-when=none}" />
+                <textbox id="nomDivision" value="@{winCtrl.selected.libelleDivision,save-when=none}" />
+                <textbox id="codeDirection" value="@{winCtrl.selected.codeDirection,save-when=none}" />
+                <textbox id="nomDirection" value="@{winCtrl.selected.libelleDirection,save-when=none}" />
+                <textbox id="codeUnite" value="@{winCtrl.selected.codeUnite,save-when=none}"/>
+                <textbox id="nomUnite" value="@{winCtrl.selected.libelleUnite,save-when=none}" />
+                <textbox id="codeDepartement" value="@{winCtrl.selected.codeDepartement,save-when=none}" />
+                <textbox id="nomdepatrement" value="@{winCtrl.selected.libelleDepartement,save-when=none}" />
+                <textbox id="codeService" value="@{winCtrl.selected.codeService,save-when=none}" />
+                <textbox id="NomService" value="@{winCtrl.selected.libelleService,save-when=none}" />
+                <textbox id="codeSection" value="@{winCtrl.selected.codesection,save-when=none}" />
+                <textbox id="nomSection" value="@{winCtrl.selected.libelleSection,save-when=none}" />
 
             </row>
         </rows>
@@ -81,7 +79,7 @@
 			<button id="add" label="Ajouter " image="C:/evalcom/zCRUD/WebContent/images/valider.png" tooltip="Ajouter une ligne"/>
 			<button id="update" label="Modifier" />
 			<button id="delete" label="Supprimer" />
-			<button label="Effacer" onClick="Clients.closeErrorBox(new Component[]{codeStructure,codeDivision})"/>
+			<button id="effacer" label="Effacer" onClick="Clients.closeErrorBox(new Component[]{codeStructure,codeDivision})"/>
 		</div>
 		<div>
 
