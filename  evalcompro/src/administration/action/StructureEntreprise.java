@@ -64,25 +64,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 		model=structureEntrepriseModel.checkStructureEntreprise();
 		
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
-//		model.add(new Person("Brian", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("John", "Tester", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Sala", "Manager", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
-//		model.add(new Person("Peter", "Architect", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer", "Engineer"));
 
-//		titleModel.add("");
-//		titleModel.add("Engineer");
-//		titleModel.add("Tester");
-//		titleModel.add("Manager");
-//		titleModel.add("Architect");
-		System.out.println("11111111111111");
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
 	}
@@ -91,9 +73,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 		return model;
 	}
 
-//	public List getTitleModel() {
-//		return titleModel;
-//	}
+
 
 	public StructureEntrepriseBean getSelected() {
 		return selected;
