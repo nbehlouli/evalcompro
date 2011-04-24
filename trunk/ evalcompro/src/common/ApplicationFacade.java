@@ -1,5 +1,9 @@
 package common;
 
+import java.util.ArrayList;
+
+import administration.bean.CompteEntrepriseDatabaseBean;
+import administration.bean.StructureEntrepriseBean;
 import common.bean.ArborescenceMenu;
 
 public class ApplicationFacade {
@@ -16,10 +20,18 @@ public class ApplicationFacade {
     private ApplicationFacade() {
 
     }
-
     
+    
+
+    //variable contenant les informations pour se connecter à la base evalcom associée à une entreprise spécifique
+    
+    /**
+     * TODO enlever l'initialisation de la variable compteEntrepriseDatabasebean
+     */
+   private  CompteEntrepriseDatabaseBean compteEntrepriseDatabasebean =new CompteEntrepriseDatabaseBean("","","");
     // variable contenant la structure du menu principale
     private ArborescenceMenu arborescenceMenubean;
+    
 	public static ApplicationFacade getInstance() {
         if (instance == null) {
         	ApplicationFacadeSynchornizee();
@@ -27,7 +39,16 @@ public class ApplicationFacade {
         return instance;
     }
 
-    public synchronized static void ApplicationFacadeSynchornizee() {
+    public CompteEntrepriseDatabaseBean getCompteEntrepriseDatabasebean() {
+		return compteEntrepriseDatabasebean;
+	}
+
+	public void setCompteEntrepriseDatabasebean(
+			CompteEntrepriseDatabaseBean compteEntrepriseDatabasebean) {
+		this.compteEntrepriseDatabasebean = compteEntrepriseDatabasebean;
+	}
+
+	public synchronized static void ApplicationFacadeSynchornizee() {
         if (instance == null) {
             instance = new ApplicationFacade();
         }
