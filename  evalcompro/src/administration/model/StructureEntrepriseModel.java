@@ -25,9 +25,9 @@ public class StructureEntrepriseModel {
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String select_login="SELECT * FROM structure_entreprise";
+			String select_structure="SELECT * FROM structure_entreprise";
 			
-			ResultSet rs = (ResultSet) stmt.executeQuery(select_login);
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
 			while(rs.next()){
@@ -64,6 +64,31 @@ public class StructureEntrepriseModel {
 	
 		
 		
+	}
+	
+	public boolean addStructureEntrepriseBean(StructureEntrepriseBean addedData)
+	{
+		
+		listStructureEntreprise = new ArrayList<StructureEntrepriseBean>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+//			String select_structure="INSERT INTO structure_entreprise (code_structure,code_division,libelle_division,code_direction, libelle_direction,code_unite,libelle_unite,code_departement,libelle_departement,code_service,libelle_service,code_section,libelle_section) VALUES "+""
+//			addedData.getCodestructure()        ()";
+//			
+//			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+		}
+		
+		return true;
 	}
 
 }
