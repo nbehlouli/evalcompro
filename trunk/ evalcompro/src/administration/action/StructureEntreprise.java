@@ -54,6 +54,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 	public StructureEntreprise() {
 	}
 
+	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		
@@ -67,7 +68,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 		binder.loadAll();
 	}
 
-	public List getModel() {
+	public List<StructureEntrepriseBean> getModel() {
 		return model;
 	}
 
