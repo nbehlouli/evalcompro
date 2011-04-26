@@ -82,6 +82,8 @@ public class StructureEntreprise extends GenericForwardComposer {
 	}
 
 	public void onClick$add() {
+		
+		
 		StructureEntrepriseBean addedData = new StructureEntrepriseBean();
 		
 		
@@ -98,14 +100,25 @@ public class StructureEntreprise extends GenericForwardComposer {
 		addedData.setLibelleService(getSelectednomService());
 		addedData.setCodesection(getSelectedcodeSection());
 		addedData.setLibelleSection(getSelectednomSection());
-		model.add(addedData);
 		
-		selected = addedData;
-		binder.loadAll();
-		
+		//controle d'intégrité 
 		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
-		structureEntrepriseModel.addStructureEntrepriseBean(addedData);
-		
+		Boolean donneeValide=structureEntrepriseModel.controleIntegrite(addedData);
+		if (donneeValide)
+		{
+			//insertion de la donnée ajoutée dans la base de donnée
+			boolean donneeAjoute=structureEntrepriseModel.addStructureEntrepriseBean(addedData);
+			// raffrechissemet de l'affichage
+			if (donneeAjoute )
+			{
+				model.add(addedData);
+			
+				selected = addedData;
+			
+				binder.loadAll();
+			}
+		}
+				
 	}
 
 	public void onClick$update() {
