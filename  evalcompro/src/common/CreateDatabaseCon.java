@@ -55,6 +55,7 @@ public class CreateDatabaseCon
         }
         catch(Exception e)
         {
+        	e.printStackTrace();
             if(connection != null)
             {
                 try
