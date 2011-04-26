@@ -38,17 +38,15 @@ public class StructureEntreprise extends GenericForwardComposer {
 	Textbox NomService;
 	Textbox codeSection;
 	Textbox nomSection;
-	//Listbox titlelb;
+	
 
 	AnnotateDataBinder binder;
 
-	//List<Person> model = new ArrayList<Person>();
 	
-	//Person selected;
 	
 	List<StructureEntrepriseBean> model = new ArrayList<StructureEntrepriseBean>();
 	
-	//List<String> titleModel = new ArrayList<String>();
+	
 	
 	StructureEntrepriseBean selected;
 	
@@ -104,9 +102,9 @@ public class StructureEntreprise extends GenericForwardComposer {
 		
 		selected = addedData;
 		binder.loadAll();
-		/**
-		 * TODO mise à jour de la base de donnée
-		 */
+		
+		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		structureEntrepriseModel.addStructureEntrepriseBean(addedData);
 		
 	}
 
@@ -168,7 +166,13 @@ public class StructureEntreprise extends GenericForwardComposer {
 		nomSection.setText("");
 	}
 
+	public void onClick$upload() {
+	
+	}
 
+	public void onClick$download() {
+		
+	}
 	public void onSelect$structureEntrepriselb() {
 		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
 				codeUnite,nomUnite, codeDepartement, nomdepatrement, codeService,NomService, codeSection, nomSection });
