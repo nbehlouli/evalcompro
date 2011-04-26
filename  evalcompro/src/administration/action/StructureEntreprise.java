@@ -191,10 +191,16 @@ public class StructureEntreprise extends GenericForwardComposer {
 
 	public void onClick$upload() {
 	
+		//chargement du fichier excel contenant les données
+		//partie affichage
+		
+		//partie base de données
 	}
 
 	public void onClick$download() {
+		// partie affichage
 		
+		//partie base de données
 	}
 	public void onSelect$structureEntrepriselb() {
 		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
