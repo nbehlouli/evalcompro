@@ -1,9 +1,9 @@
 package common;
 
-import java.util.ArrayList;
+
 
 import administration.bean.CompteEntrepriseDatabaseBean;
-import administration.bean.StructureEntrepriseBean;
+
 import common.bean.ArborescenceMenu;
 
 public class ApplicationFacade {
