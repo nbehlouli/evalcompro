@@ -2,11 +2,11 @@ package administration.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+
 
 import org.zkoss.zul.Messagebox;
 
-import administration.bean.CompteBean;
+
 import administration.bean.StructureEntrepriseBean;
 
 import com.mysql.jdbc.Connection;
