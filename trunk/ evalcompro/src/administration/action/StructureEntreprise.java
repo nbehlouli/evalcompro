@@ -126,6 +126,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		String codeStructureselectione=selected.getCodestructure();
 		System.out.println(getSelectedcodeStructure());
 		selected.setCodestructure(getSelectedcodeStructure());
 		selected.setCodeDivision(getSelectedcodeDivision());
@@ -140,11 +141,20 @@ public class StructureEntreprise extends GenericForwardComposer {
 		selected.setLibelleService(getSelectednomService());
 		selected.setCodesection(getSelectedcodeSection());
 		selected.setLibelleSection(getSelectednomSection());
-		/**
-		 * TODO ajouter la mise à jour de la base de donnée
-		 */
 		
-		binder.loadAll();
+		//controle d'intégrité 
+		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		Boolean donneeValide=structureEntrepriseModel.controleIntegrite(selected);
+		if (donneeValide)
+		{
+			//insertion de la donnée ajoutée dans la base de donnée
+			boolean donneeAjoute=structureEntrepriseModel.majStructureEntrepriseBean(selected,codeStructureselectione);
+			// raffrechissemet de l'affichage
+			if (donneeAjoute )
+			{
+				binder.loadAll();
+			}
+		}
 	}
 
 	public void onClick$delete() {
@@ -152,13 +162,13 @@ public class StructureEntreprise extends GenericForwardComposer {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		//suppression de la donnée supprimée de la base de donnée
+		structureEntrepriseModel.supprimerStructureEntrepriseBean(selected.getCodestructure());
 		model.remove(selected);
 		selected = null;
 
-		/**
-		 * TODO ajouter la mise à jour de la base de donnée
-		 */
-		
+
 		
 		binder.loadAll();
 	}
