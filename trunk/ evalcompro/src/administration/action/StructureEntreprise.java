@@ -1,5 +1,6 @@
 package administration.action;
 
+import java.awt.FileDialog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +192,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 	}
 
 	public void onClick$upload() {
-	
+	//excel vers BDD
 		//chargement du fichier excel contenant les données
 		//partie affichage
 		
@@ -199,6 +200,8 @@ public class StructureEntreprise extends GenericForwardComposer {
 	}
 
 	public void onClick$download() {
+		//BDD vers excel
+	
 		// partie affichage
 		
 		//partie base de données
