@@ -154,7 +154,6 @@ public boolean checkLoginValidity(Date date_deb,Date date_fin){
         
 	Calendar cal = Calendar.getInstance();
     Calendar currentcal = Calendar.getInstance();
-    cal.set(2000, Calendar.JUNE, 29);
     currentcal.set(currentcal.get(Calendar.YEAR),
     currentcal.get(Calendar.MONTH), currentcal.get(Calendar.DAY_OF_MONTH));
     if(currentcal.before(cal_fin) && currentcal.after(cal_deb) ){
