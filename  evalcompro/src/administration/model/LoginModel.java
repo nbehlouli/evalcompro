@@ -37,8 +37,8 @@ public class LoginModel {
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
+		int type_result=1;
 		
-		int type_result=0;
 		try {
 			stmt = (Statement) conn.createStatement();
 			String select_login="SELECT id_compte,id_profile,login,pwd,database_id,val_date_deb,val_date_fin FROM compte where upper(login)=#login and upper(pwd)=#password";
