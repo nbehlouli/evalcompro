@@ -1,7 +1,9 @@
 package administration.model;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,36 +25,51 @@ public class LoginModel {
 	
 	private List  user_compte;
 	private List  list_secreens;
+	private static int profile_id;
+	private static int database_id;
 	
 	public void LoginModel(){
 		
 	}
 	
-	public boolean checkLoginPwd(String login,String password) throws SQLException{
+	public int checkLoginPwd(String login,String password) throws SQLException{
 		user_compte = new ArrayList();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
-		boolean type_result=false;
+		
+		int type_result=0;
 		try {
 			stmt = (Statement) conn.createStatement();
 			String select_login="SELECT id_compte,id_profile,login,pwd,database_id,val_date_deb,val_date_fin FROM compte where upper(login)=#login and upper(pwd)=#password";
 			select_login = select_login.replaceAll("#login", "'"+login.toUpperCase()+"'");
 			select_login = select_login.replaceAll("#password", "'"+password.toUpperCase()+"'");
-			System.out.println(select_login);
+			//System.out.println(select_login);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_login);
 			
 			
 			while(rs.next()){
-				if (rs.getRow()==1) {
-					  CompteBean db = new CompteBean(rs.getInt("id_compte"),rs.getInt("id_profile"),
-							                         rs.getString("login"),rs.getString("pwd"),rs.getInt("database_id"),
-							                         rs.getDate("val_date_deb"),rs.getDate("val_date_fin"));
-				   user_compte.add(db);
-				   
-					type_result=true;
-				}else {
-					type_result=false;
+				if (rs.getRow()==1  ) {
+					
+					if (checkLoginValidity(rs.getDate("val_date_deb"),rs.getDate("val_date_fin"))==true){
+					
+						CompteBean db = new CompteBean(rs.getInt("id_compte"),rs.getInt("id_profile"),
+		                         rs.getString("login"),rs.getString("pwd"),rs.getInt("database_id"),
+		                         rs.getDate("val_date_deb"),rs.getDate("val_date_fin"));
+ 
+								user_compte.add(db);
+								type_result=0;
+								database_id=rs.getInt("database_id");
+					}
+					
+					else{
+						type_result=2;
+					}
+			  
+				}
+				
+				else {
+					type_result=1;
 				}
 			}
 		} catch (SQLException e) {
@@ -79,7 +96,7 @@ public static void checkProfile(List compte_user) throws SQLException  {
  		cpb  = (CompteBean) it.next();
 		profile=cpb.getId_profile();
  	}
-		
+ 	profile_id=profile;	
 	stmt = (Statement) conn.createStatement();
 	String select_profile=" select id_ecran,code_ecran,libelle_ecran,code_menu,libelle_menu"+ 
 	                      " from liste_ecran where code_ecran in ("+
@@ -88,7 +105,7 @@ public static void checkProfile(List compte_user) throws SQLException  {
 	
 
 	select_profile = select_profile.replaceAll("#profile",profile.toString() );
-	System.out.println(select_profile);
+	//System.out.println(select_profile);
 	ResultSet rs = (ResultSet) stmt.executeQuery(select_profile);
 
 	List <String>listLibelleMenu=new ArrayList<String>();
@@ -97,9 +114,9 @@ public static void checkProfile(List compte_user) throws SQLException  {
 
 	
 	while(rs.next()){
-		System.out.println("dans la boucle");		                                                       
+		//System.out.println("dans la boucle");		                                                       
 		//add result set to desired structure
-Integer val=new Integer(rs.getString ("id_ecran"));
+        Integer val=new Integer(rs.getString ("id_ecran"));
 		EcranBean ecranbean=new EcranBean(val, rs.getString("code_ecran"),rs.getString("libelle_ecran"), rs.getString("code_menu"), rs.getString("libelle_menu"));
 		
 		listeEcranBean.add(ecranbean);
@@ -118,6 +135,37 @@ Integer val=new Integer(rs.getString ("id_ecran"));
 	ArborescenceMenu arborescenceMenu=new ArborescenceMenu(listeEcranBean,listLibelleMenu);
 
 	ApplicationFacade.getInstance().setArborescenceMenubean(arborescenceMenu);
+	
+}
+
+public boolean checkLoginValidity(Date date_deb,Date date_fin){
+	
+	
+		
+	//  begin validity date
+     Calendar cal_deb=Calendar.getInstance();
+     cal_deb.setTime(date_deb);
+    
+     
+ //  begin validity date
+     Calendar cal_fin=Calendar.getInstance();
+     cal_fin.setTime(date_fin);
+    
+        
+	Calendar cal = Calendar.getInstance();
+    Calendar currentcal = Calendar.getInstance();
+    cal.set(2000, Calendar.JUNE, 29);
+    currentcal.set(currentcal.get(Calendar.YEAR),
+    currentcal.get(Calendar.MONTH), currentcal.get(Calendar.DAY_OF_MONTH));
+    if(currentcal.before(cal_fin) && currentcal.after(cal_deb) ){
+    	
+    	return true;
+    }
+      
+    
+    else  return false;
+	
+	
 	
 }
 	
@@ -142,5 +190,22 @@ Integer val=new Integer(rs.getString ("id_ecran"));
 			this.user_compte = user_compte;
 		}
 
+		public int getProfile_id() {
+			return profile_id;
+		}
+
+		public void setProfile_id(int profile_id) {
+			this.profile_id = profile_id;
+		}
+
+		public static int getDatabase_id() {
+			return database_id;
+		}
+
+		public static void setDatabase_id(int database_id) {
+			LoginModel.database_id = database_id;
+		}
+
+		
 
 }
