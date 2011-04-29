@@ -12,7 +12,7 @@
 					<row>
 						 Mot de passe   :
 						<textbox id="pwdtb" width="200px"
-							type="password" />(try 1234)
+							type="password" />
 					</row>
 				</rows>
 				
