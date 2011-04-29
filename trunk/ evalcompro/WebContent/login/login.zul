@@ -15,10 +15,23 @@
 							type="password" />(try 1234)
 					</row>
 				</rows>
-			</grid>			
-			<hbox pack="center" width="100%">
-				<button id="login" label="Login" />
-			</hbox>
+				
+			</grid>	
+			<grid >
+			<rows>	
+				<row>		
+					<hbox pack="center" width="100%">
+						<button id="login" label="Connecter" />
+					</hbox>
+				</row>
+				<row>
+				
+					<a href="/login/REINIPW.zul" sclass="edition-field" label=" Mot de passe oublié?" style="font-size:7pt;"/>
+				   
+			    </row>
+		</rows>
+			</grid>
+			
 			<div>
 				<label id="msg" style="color:red"/>
 			</div>
