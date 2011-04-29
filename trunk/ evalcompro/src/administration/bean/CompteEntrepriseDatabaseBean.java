@@ -19,7 +19,7 @@ public class CompteEntrepriseDatabaseBean {
 	   {
 		   this.jdbcurl="jdbc:mysql://localhost:3306/evalcom";
 		   this.jdbcusername="root";
-		   this.jdbcpassword="root";
+		   this.jdbcpassword="admin";
 	   }
 	   
 	public String getJdbcurl() {
