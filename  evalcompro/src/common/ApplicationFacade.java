@@ -1,9 +1,9 @@
 package common;
 
-
+import java.util.ArrayList;
 
 import administration.bean.CompteEntrepriseDatabaseBean;
-
+import administration.bean.StructureEntrepriseBean;
 import common.bean.ArborescenceMenu;
 
 public class ApplicationFacade {
@@ -31,7 +31,17 @@ public class ApplicationFacade {
    private  CompteEntrepriseDatabaseBean compteEntrepriseDatabasebean =new CompteEntrepriseDatabaseBean("","","");
     // variable contenant la structure du menu principale
     private ArborescenceMenu arborescenceMenubean;
+    //variable contenant la database id rattachée à l'utilisateur
+    private int client_database_id;
     
+	public int getClient_database_id() {
+		return client_database_id;
+	}
+
+	public void setClient_database_id(int client_database_id) {
+		this.client_database_id = client_database_id;
+	}
+
 	public static ApplicationFacade getInstance() {
         if (instance == null) {
         	ApplicationFacadeSynchornizee();
