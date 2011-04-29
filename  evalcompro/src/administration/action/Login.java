@@ -2,6 +2,7 @@ package administration.action;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.zkoss.Version;
@@ -20,6 +21,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
 
+import common.ApplicationFacade;
+
+import administration.bean.SelCliDbBean;
 import administration.model.LoginModel;
 
 
@@ -33,6 +37,7 @@ public class Login extends GenericForwardComposer{
 	Textbox usertb;
 	Textbox pwdtb;
 	LoginModel init =new LoginModel();
+	SelCliAction initselcli=new SelCliAction();
 	Div div;
 	
 /*	public void doAfterCompose(Component comp) throws Exception {
@@ -57,7 +62,7 @@ public class Login extends GenericForwardComposer{
 		String pwd = pwdtb.getValue();
 		
 		
-		Messagebox.show("Hello, " + event.getName());
+		//Messagebox.show("Hello, " + event.getName());
 		if(Strings.isBlank(user) || Strings.isEmpty(pwd)){
 			msg.setValue("*Need user name and password!");
 			return;
@@ -67,8 +72,8 @@ public class Login extends GenericForwardComposer{
 		try 
 		{
 			
-			boolean result=init.checkLoginPwd(user,pwd);
-			if (result==true) 
+			int result=init.checkLoginPwd(user,pwd);
+			if (result==0) 
 			{
 				//msg.setValue("authentifié");
 				   Map data = new HashMap();
@@ -78,17 +83,42 @@ public class Login extends GenericForwardComposer{
 					
 					//chargement des informations associés au profil de 'utilisateur
 					init.checkProfile(init.getUser_compte());
- 					Executions.createComponents("../pages/menu.zul", div, data);
-					//permet de fermer la fenetre login
+					/* recuperation de la database id par utilisateur
+					 * Pour le super utilisateur le database id est recuperer
+					 * aprer la selection de la base via l'ecran SELCLI
+					 */
+					ApplicationFacade.getInstance().setClient_database_id(init.getDatabase_id());
+					//System.out.println("AVANT"+ApplicationFacade.getInstance().getClient_database_id());
+					if (init.getProfile_id()==1){
+						Executions.createComponents("../pages/SELCLI.zul", div, data);	
+						main=(Window)this.self;
+						main.detach();
+						
+					}
+					else{
+						Executions.createComponents("../pages/menu.zul", div, data);
+						//permet de fermer la fenetre login
+						main=(Window)this.self;
+						main.detach();
+						
+					}
+										
 					
-					main=(Window)this.self;
-					main.detach();
+					
 			} 
-			else
+			else if (result==1) 
 			{ 
 				msg.setValue("utilisateur out mot de passe erroné");
 			}
+			else if (result==2) 
+			{ 
+				msg.setValue(" login expiré.Merci de contacter l'administrateur");
+			}
 		} 
+		
+		
+		
+		
 		catch (SQLException e) 
 		{
 			// TODO Auto-generated catch block
