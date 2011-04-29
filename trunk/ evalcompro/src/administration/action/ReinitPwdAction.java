@@ -35,14 +35,18 @@ public class ReinitPwdAction extends GenericForwardComposer{
 			return;
 		}
 		
-		else{
-			 if (init.checkLoginEmailValidity(userstr))
+		else if (init.checkLoginEmailValidity(userstr)){
+				 String newpwd=init.generateNewPwd();
+				 init.updateInDBNewPwd(userstr, newpwd);
+				 init.sendReinitPwdConfirmation(emailstr, newpwd);
+				 msg.setValue("Le nouveau mot de passe a été envoyé à l'adresse mail  "+emailstr);
+			 }
 				 
 			 //TODO send an email to the user 
-			 msg.setValue("Le nouveau mot de passe a été envoyé à l'adresse mail  "+emailstr);
+			
 			return;
 		}
 		
-	}
+	
 
 }
