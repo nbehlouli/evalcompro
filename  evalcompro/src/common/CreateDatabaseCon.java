@@ -1,6 +1,13 @@
 package common;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.ResultSet;
+import com.mysql.jdbc.Statement;
+
+import administration.bean.ClientDBParams;
 import administration.bean.CompteEntrepriseDatabaseBean;
 
 public class CreateDatabaseCon
@@ -20,7 +27,7 @@ public class CreateDatabaseCon
             InitContext intctx = new InitContext();
             intctx.loadProperties();
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(intctx.getJdbcurl(), intctx.getJdbcusername(), intctx.getJdbcpassword());
+            connection = (Connection) DriverManager.getConnection(intctx.getJdbcurl(), intctx.getJdbcusername(), intctx.getJdbcpassword());
             connection.setAutoCommit(true);
         }
         catch(Exception e)
@@ -44,13 +51,16 @@ public class CreateDatabaseCon
     {
         try
         {
-            InitContext intctx = new InitContext();
+            
+        	/*InitContext intctx = new InitContext();
             CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean=ApplicationFacade.getInstance().getCompteEntrepriseDatabasebean();
             intctx.setJdbcpassword(compteEntrepriseDataBaseBean.getJdbcpassword());
             intctx.setJdbcusername(compteEntrepriseDataBaseBean.getJdbcusername());
-            intctx.setJdbcurl(compteEntrepriseDataBaseBean.getJdbcurl());
+            intctx.setJdbcurl(compteEntrepriseDataBaseBean.getJdbcurl());*/
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(intctx.getJdbcurl(), intctx.getJdbcusername(), intctx.getJdbcpassword());
+            CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean=ApplicationFacade.getInstance().getCompteEntrepriseDatabasebean();
+            compteEntrepriseDataBaseBean.setDBParams();
+            connection = (Connection) DriverManager.getConnection(compteEntrepriseDataBaseBean.getJdbcurl(), compteEntrepriseDataBaseBean.getJdbcusername(), compteEntrepriseDataBaseBean.getJdbcpassword());
             connection.setAutoCommit(true);
         }
         catch(Exception e)
@@ -85,4 +95,37 @@ public class CreateDatabaseCon
             e.printStackTrace();
         }
     }
+    
+  /* public static void main(String[] args){
+    	
+    	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt=null;
+		
+		int type_result=0;
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_db="select code_formation,libelle_formation,libelle_diplome from formation";
+			//System.out.println(select_login);
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_db);
+			
+			
+			while(rs.next()){
+			System.out.println(rs.getString("libelle_formation"));
+			}
+			
+			stmt.close();
+			conn.close();
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//stmt.close();
+			//conn.close();
+		}
+		
+			
+	
+    }*/
+    
+    
 }
