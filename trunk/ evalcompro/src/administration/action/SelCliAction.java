@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.lang.Strings;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.MouseEvent;
@@ -38,6 +39,7 @@ public class SelCliAction extends GenericForwardComposer{
 	List db_items;
 	Window main;
 	Div div;
+	Label msg;
 	
 	public SelCliAction(){
 		
@@ -114,6 +116,11 @@ public class SelCliAction extends GenericForwardComposer{
 	}
 	
 	public void onClick$valider(MouseEvent event) throws Exception	{
+		
+		if(Strings.isBlank(sec_activite.getValue()) || Strings.isEmpty(client.getValue())){
+			msg.setValue("*Merci de choisir le secteur d'activité et le client");
+			return;
+		}
 		Map data = new HashMap();
 		data.put("secteur", sec_activite.getValue());
 		data.put("client", client.getValue());
