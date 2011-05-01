@@ -28,6 +28,8 @@
 			</hbox>
 			
 		</div>
-		
+			<div>
+				<label id="msg" style="color:red"/>
+			</div>
 	</window>
 </zk>
