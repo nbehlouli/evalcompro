@@ -4,17 +4,18 @@
 			<north size="70px">
 				<div>
 					<html><![CDATA[
-						<h2 style="color:#0C7A9A;margin-left:10px">Outil d evaluation des compétences</h2>
+                       
+						<h2 style="color:#0C7A9A;margin-left:10px">Evalcom Pro</h2>
 					]]></html>
 				</div>
 			</north>
 			<west size="200px" splittable="true" flex="true" collapsible="true" title="Menu"> 
 				<tabbox id="tb" width="500px" height="360px" mold="accordion">
-					<tabs id="tbtabs">
+					<tabs id="tbtabs" >
 						
     				</tabs>
-					<tabpanels id="tbpanels">
-        				<tabpanel>
+					<tabpanels id="tbpanels" height="100%">
+        				<tabpanel  >
            					 	
        					 </tabpanel>
    		 			</tabpanels>
@@ -28,7 +29,7 @@
 			<south size="20px">
 				<hbox pack="center" width="100%">
 					<html><![CDATA[
-						<span style="color:#0C7A9A">Evalcom</span>
+						<span style="color:#0C7A9A;font-size:7pt;">©2011 RS Management IT. All Rights Reserved. Powered by Soft Solutions </span>
 					]]></html>
 				</hbox>
 			</south>
