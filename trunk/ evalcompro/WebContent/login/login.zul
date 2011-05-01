@@ -1,5 +1,5 @@
 <zk>
-	<window border="normal" width="400px" apply="administration.action.Login" mode="modal">
+	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" style="background:#dfe8f6 url('image/logo_rsmanagement.PNG')no-repeat center center;">
 
 
 		<div id="loginDiv" visible="${empty user}">
