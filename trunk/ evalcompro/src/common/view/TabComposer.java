@@ -44,7 +44,7 @@ public class TabComposer extends GenericForwardComposer{
 		try
 		{
 			
-	
+			tb.setTabscroll(true);
 			//creation de tab0 et sa fermeture pour qu'i n'y ait pas de décalage lors de l'ajout des listboxs
 			Tab newTab0 = new Tab(); 
 			newTab0.isClosable();	
@@ -60,6 +60,7 @@ public class TabComposer extends GenericForwardComposer{
 			Set<String> set = listeMenu.keySet( );
 			@SuppressWarnings("rawtypes")
 			Iterator it=set.iterator();
+			
 			while(it.hasNext())
 			{
 				String cles=(String) it.next();
@@ -68,12 +69,15 @@ public class TabComposer extends GenericForwardComposer{
 				
 				//creation du tab
 				Tab newTab = new Tab();
+
 				newTab.setLabel(cles);
-			
+				
 				Tabpanel newPanel = new Tabpanel();
+				newPanel.setStyle("overflow:auto");
+				
 				Label newLabel = new Label();
 				newLabel.setValue("");
-			
+				
 				newPanel.appendChild(newLabel);
 				
 				//creation du menu
