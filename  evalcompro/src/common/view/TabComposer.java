@@ -1,5 +1,7 @@
 package common.view;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -58,8 +60,12 @@ public class TabComposer extends GenericForwardComposer{
 			HashMap<String, List<EcranBean>> listeMenu=arborescenceMenuBean.getArborescenceMenu();
 			
 			Set<String> set = listeMenu.keySet( );
+			
+			
+			List<String> list = new ArrayList<String>(set);
+			Collections.sort(list);
 			@SuppressWarnings("rawtypes")
-			Iterator it=set.iterator();
+			Iterator it=list.iterator();
 			
 			while(it.hasNext())
 			{
