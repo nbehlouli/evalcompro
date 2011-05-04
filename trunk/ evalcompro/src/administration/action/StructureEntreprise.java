@@ -1,18 +1,39 @@
 package administration.action;
 
 import java.awt.FileDialog;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.zkoss.lang.Strings;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.sys.ExecutionsCtrl;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
+
+import com.sun.jna.StructureReadContext;
 
 import administration.bean.StructureEntrepriseBean;
 import administration.model.StructureEntrepriseModel;
@@ -39,11 +60,13 @@ public class StructureEntreprise extends GenericForwardComposer {
 	Textbox NomService;
 	Textbox codeSection;
 	Textbox nomSection;
-	
-
+	Button upload;
+	Fileupload fichierupload;
 	AnnotateDataBinder binder;
+	Window win;
+	Textbox intro;
 
-	
+	Div divupdown;
 	
 	List<StructureEntrepriseBean> model = new ArrayList<StructureEntrepriseBean>();
 	
@@ -191,17 +214,186 @@ public class StructureEntreprise extends GenericForwardComposer {
 		nomSection.setText("");
 	}
 
-	public void onClick$upload() {
-	//excel vers BDD
-		//chargement du fichier excel contenant les données
-		//partie affichage
+	public void affichermessage()
+	{
+		try {
+			Messagebox.show("La taille du champ Code division ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void onUpload$divupdown(UploadEvent event) throws InterruptedException
+	{
 		
-		//partie base de données
+		Media med=event.getMedia();
+		
+		if ((med != null)&&(med.getName()!=null)) 
+		{
+			String filename = med.getName();
+			
+			if ( filename.indexOf(".xls") == -1 ) 
+			{
+			  alert(filename + " n'est pas un fichier excel");
+			} 
+			else 
+			{
+			  // process the file...
+				
+
+				StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+				if ( filename.endsWith(".xls") ) 
+				{
+					//lecture et upload de fichiers OLE2 Office Documents 
+					List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadXLSFile(med.getStreamData());
+					List<StructureEntrepriseBean> donneeRejetes;
+					try 
+					{
+						 HashMap <String,List<StructureEntrepriseBean>> listeDonnees=structureEntrepriseModel.ChargementDonneedansBdd(liste);
+						 donneeRejetes =listeDonnees.get("supprimer");
+						 liste=null;
+						 liste=listeDonnees.get("inserer");;
+						
+					
+						//raffrechissement de l'affichage
+						Iterator<StructureEntrepriseBean> index=liste.iterator();
+						while(index.hasNext())
+						{
+							StructureEntrepriseBean donnee=index.next();
+							model.add(donnee);
+							
+						}
+				
+						binder.loadAll();
+						if(donneeRejetes.size()!=0)
+						{
+							String listeRejet=new String("-->");
+							//Afficharge de la liste des données rejetées
+							Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
+							while(index1.hasNext())
+							{
+								StructureEntrepriseBean donnee=index1.next();
+								String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
+								+";"+donnee.getLibelleDivision()
+								 +";"+donnee.getCodeDirection()
+								+";"+donnee.getLibelleDirection()
+								+";"+donnee.getCodeUnite()
+								+";"+donnee.getLibelleUnite()
+								+";"+donnee.getCodeDepartement()
+								+ ";"+donnee.getLibelleDepartement()
+								+";"+donnee.getCodeService()
+								+";"+donnee.getLibelleService()
+								+ ";"+donnee.getCodesection()
+								+ ";"+donnee.getLibelleSection();
+								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+								System.out.println("-->"+listeRejet);
+							}
+							AfficherFenetreRejet(listeRejet);
+
+						}
+					} 
+					catch (Exception e) 
+					{
+							// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+					if(filename.endsWith(".xlsx"))
+					{
+						// lecture de fichiers Office 2007+ XML
+						List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadXLSXFile(med.getStreamData());
+						List<StructureEntrepriseBean> donneeRejetes;
+						try 
+						{
+							 HashMap <String,List<StructureEntrepriseBean>> listeDonnees=structureEntrepriseModel.ChargementDonneedansBdd(liste);
+							 donneeRejetes =listeDonnees.get("supprimer");
+							 liste=null;
+							 liste=listeDonnees.get("inserer");;
+							
+						
+							//raffrechissement de l'affichage
+							Iterator<StructureEntrepriseBean> index=liste.iterator();
+							while(index.hasNext())
+							{
+								StructureEntrepriseBean donnee=index.next();
+								model.add(donnee);
+								
+							}
+					
+							binder.loadAll();
+							if(donneeRejetes.size()!=0)
+							{
+								String listeRejet=new String("-->");
+								//Afficharge de la liste des données rejetées
+								Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
+								while(index1.hasNext())
+								{
+									StructureEntrepriseBean donnee=index1.next();
+									String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
+									+";"+donnee.getLibelleDivision()
+									 +";"+donnee.getCodeDirection()
+									+";"+donnee.getLibelleDirection()
+									+";"+donnee.getCodeUnite()
+									+";"+donnee.getLibelleUnite()
+									+";"+donnee.getCodeDepartement()
+									+ ";"+donnee.getLibelleDepartement()
+									+";"+donnee.getCodeService()
+									+";"+donnee.getLibelleService()
+									+ ";"+donnee.getCodesection()
+									+ ";"+donnee.getLibelleSection();
+									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+									System.out.println("-->"+listeRejet);
+								}
+								AfficherFenetreRejet(listeRejet);
+
+							}
+						} 
+						catch (Exception e) 
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				
+				} 				
+			}  
+
+		}	
+
+
+	
+	public void onClick$upload() {
+		Executions.getCurrent().getDesktop().setAttribute(
+	            "org.zkoss.zul.Fileupload.target", divupdown);
+		try 
+		{
+			Fileupload fichierupload=new Fileupload();
+			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
+			
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public void onClick$download() {
-		//BDD vers excel
-	
+		//chargement du contenu de la table structure_entreprise et creation du fichier excel
+		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		System.out.println("avant recup donnee");
+		byte[] fichier=structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
+		
+		//InputStream file=new InputStream(fichier);
+		System.out.println("apres recup donnee");
+		//enregistrement du fichier
+		Filedownload fichierdownload=new Filedownload();
+
+		System.out.println("avant save");
+		fichierdownload.save(fichier, "xls", "Structure_entreprise.xls");
+		System.out.println("save");
 		// partie affichage
 		
 		//partie base de données
@@ -323,6 +515,46 @@ public class StructureEntreprise extends GenericForwardComposer {
 		}
 		return name;
 	}
+	
+	public void EnregistrerDonneesRejetes(ArrayList <String> listeRejet)
+	{
+		java.io.InputStream is = desktop.getWebApp().getResourceAsStream("/test/download.html");
+        if (is != null)
+            Filedownload.save(is, "text/html", "download.html");
+        else
+            alert("/test/download.html not found");
+	}
 
+    /**
+     * cette méthode permet d'afficher les données rejetées et qui n'ont pas été intégres dans la table
+     */
+    public void AfficherFenetreRejet(String listeRejet)
+    {
+    	Map<String, String> listDonne=new HashMap <String, String>();
+		listDonne.put("rejet", listeRejet);
+		
+		System.out.println("rrrrr==="+listeRejet);
+		Map<String, String > ll=new HashMap<String, String>();
+		String ss="rrrrrrr"+System.getProperty("line.separator")+"gggggggg"; 
+		ll.put("rejet", ss);
+    	final Window win = (Window) Executions.createComponents("../pages/REJDATA.zul", self, listDonne);
+        // We send a message to the Controller of the popup that it works in popup-mode.
+        win.setAttribute("popup", true);
+        
+        //decoratePopup(win);
+        try 
+        {
+            win.doModal();
+           
+        } 
+        catch (InterruptedException ex) 
+        {
+           ex.printStackTrace();
+        } 
+        catch (SuspendNotAllowedException ex) 
+        {
+            ex.printStackTrace();
+        }
+    }
 
 }
