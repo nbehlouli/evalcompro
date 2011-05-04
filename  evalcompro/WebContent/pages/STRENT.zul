@@ -81,10 +81,12 @@
 			<button id="delete" label="Supprimer" />
 			<button id="effacer" label="Effacer" onClick="Clients.closeErrorBox(new Component[]{codeStructure,codeDivision})"/>
 		</div>
-		<div>
+		<div id="divupdown">
 
-			<button id="upload" label="upload" image="../imges/valider.gif" tooltip="Ajouter une ligne"/>
+			<button id="upload" label="upload"  image="../imges/valider.gif" tooltip="Ajouter une ligne" />
+				
 			<button id="download" label="download" />
+ 
 		</div>
 
 		
