@@ -1,8 +1,10 @@
 package administration.action;
 
 import org.zkoss.lang.Strings;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -16,6 +18,7 @@ public class ReinitPwdAction extends GenericForwardComposer{
 	Textbox user;
 	Textbox email;
 	Label msg;
+	Div div;
 	
 	public void onClick$login(MouseEvent event) throws Exception{
 		
@@ -47,6 +50,8 @@ public class ReinitPwdAction extends GenericForwardComposer{
 			return;
 		}
 		
-	
+	public void onClick$cancel(MouseEvent event) throws Exception{
+		Executions.createComponents("../login/login.zul", div, null);	
+	}
 
 }
