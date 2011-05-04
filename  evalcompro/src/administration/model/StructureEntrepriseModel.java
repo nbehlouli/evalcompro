@@ -1,9 +1,27 @@
 package administration.model;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.zkoss.zul.Messagebox;
 
 
@@ -72,7 +90,58 @@ public class StructureEntrepriseModel {
 		
 		
 	}
-	
+	/**
+	 * cette méthode permet de supprimer le contenu de la table structure_entreprise
+	 * @param addedData
+	 * @return
+	 */
+	public boolean viderTableStructureEntreprise()  throws Exception
+	{
+		
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="DELETE * FROM structure_entreprise)";
+
+			
+			 stmt.execute(select_structure);
+		} 
+		catch (SQLException e) 
+		{
+			try 
+			{
+				Messagebox.show("Erreur lors de la suppression du contenu de la table structure_entreprise", "Erreur",Messagebox.OK, Messagebox.ERROR);
+			} 
+			catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			return false;
+		}
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
 	/**
 	 * cette méthode permet d'inserer la donnée addedData dans la table structure_entreprise de la base de donnée
 	 * @param addedData
@@ -332,5 +401,468 @@ public class StructureEntrepriseModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * cette méthode permet de vérifier l'integrite des données et retourne les données rejetés
+	 * @return
+	 */
+	public HashMap <String,List<StructureEntrepriseBean>> ChargementDonneedansBdd(List <StructureEntrepriseBean> liste)throws Exception
+	{
+		//Verification de l'integrité des données à inserer
+		List <StructureEntrepriseBean> listeAInserer=new ArrayList <StructureEntrepriseBean>();
+		List <StructureEntrepriseBean> listeDonneesRejetes=new ArrayList <StructureEntrepriseBean>();
+
+		for(int i=0; i<liste.size();i++)
+		{
+			StructureEntrepriseBean donnee=liste.get(i);
+			boolean donneerejete=false;
+			for(int j=i+1;j<liste.size();j++)
+			{
+				StructureEntrepriseBean donnee2=liste.get(j);
+				if(donnee.getCodestructure().equals(donnee2.getCodestructure()))
+				{
+					listeDonneesRejetes.add(donnee);
+					donneerejete=true;
+					System.out.println("donnee rejete "+donnee.getCodestructure());
+				}
+			}
+			if((i==liste.size()-1)||(i==0)||(donneerejete==false))
+				listeAInserer.add(donnee);
+			System.out.println("donne a inserer "+donnee.getCodestructure());
+		}
+		
+		//Verification de l'integrité des données à inserer
+		
+		List <StructureEntrepriseBean> listeAInsererFinal=new ArrayList <StructureEntrepriseBean>();
+		ArrayList<StructureEntrepriseBean>strctureEntreprisebdd =checkStructureEntreprise();
+		Iterator <StructureEntrepriseBean>iterator=listeAInserer.iterator();
+		
+		while(iterator.hasNext())
+		{
+			System.out.println("1");
+			StructureEntrepriseBean bean=(StructureEntrepriseBean)iterator.next();
+			
+			Iterator<StructureEntrepriseBean> index=strctureEntreprisebdd.iterator();
+			boolean donneerejete=false;
+			while(index.hasNext())
+			{
+				System.out.println("2");
+				StructureEntrepriseBean bean2=(StructureEntrepriseBean)index.next();
+				if(bean.getCodestructure().equals(bean2.getCodestructure()))
+				{
+					System.out.println("3");
+					listeDonneesRejetes.add(bean);
+					donneerejete=true;
+					continue;
+				}
+			}
+			if(!donneerejete)
+			{
+				System.out.println("ajout donnee"+bean.getCodestructure() );
+				listeAInsererFinal.add(bean);
+			}
+			System.out.println("4");
+		}
+		
+		//Insertion des données dans la table Structure_entreprise
+		Iterator<StructureEntrepriseBean> index =listeAInsererFinal.iterator();
+		while(index.hasNext())
+		{
+			StructureEntrepriseBean donneeBean=(StructureEntrepriseBean)index.next();
+			
+			addStructureEntrepriseBean(donneeBean);			
+		}
+		
+			
+			HashMap <String,List<StructureEntrepriseBean>> donneeMap=new HashMap<String,List<StructureEntrepriseBean>>();
+			donneeMap.put("inserer", listeAInsererFinal);
+			donneeMap.put("supprimer", listeDonneesRejetes);
+		System.out.println("taille liste= "+ liste.size());
+		return donneeMap;
+	}
+	
+	/**
+	 * Cette méthode permet de faire un chargement d'un fichier xls 
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public List <StructureEntrepriseBean> uploadXLSFile(InputStream inputStream)
+	{
+		listStructureEntreprise=new ArrayList <StructureEntrepriseBean>();
+		
+		 // Creer l'objet representant le fichier Excel
+        try 
+        {
+			HSSFWorkbook fichierExcel = new HSSFWorkbook(inputStream);
+			// creer l'objet representant les lignes Excel
+	        HSSFRow ligne;
+
+	        // creer l'objet representant les cellules Excel
+	        HSSFCell cellule;
+
+	        //lecture de la première feuille excel
+	        HSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
+	        
+	        // lecture du contenu de la feuille excel
+	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+	        
+	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+	        {
+	        	System.out.println("de nouveau dans la boucle");
+	        	ligne = feuilleExcel.getRow(numLigne);
+	            int nombreColonne = ligne.getLastCellNum()
+	                    - ligne.getFirstCellNum();
+	            StructureEntrepriseBean structurentreprise=new StructureEntrepriseBean();
+	            // parcours des colonnes de la ligne en cours
+	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+	            {
+	            	System.out.println("de nouveau dan scolonne");
+	            	cellule = ligne.getCell(numColonne);
+	            	
+	            	String valeur= cellule.getStringCellValue();
+	            	System.out.println(" numligne = "+numLigne+" numColonne= "+numColonne +" valeur ="+valeur);
+	            	
+	            	if(numColonne==0)
+	            	{
+	            		structurentreprise.setCodestructure(valeur);
+	            	}
+	            	else
+	            		if(numColonne==1)
+		            	{
+	            			structurentreprise.setCodeDivision(valeur);
+		            	}
+		            	else
+		            		if(numColonne==2)
+			            	{
+		            			structurentreprise.setLibelleDivision(valeur);
+			            	}
+			            	else
+			            		if(numColonne==3)
+				            	{
+			            			structurentreprise.setCodeDirection(valeur);
+				            	}
+				            	else
+				            		if(numColonne==4)
+					            	{
+				            			structurentreprise.setLibelleDirection(valeur);
+					            	}
+					            	else
+					            		if(numColonne==5)
+						            	{
+					            			structurentreprise.setCodeUnite(valeur);
+						            	}
+						            	else
+						            		if(numColonne==6)
+							            	{
+						            			structurentreprise.setLibelleUnite(valeur);
+							            	}
+							            	else
+							            		if(numColonne==7)
+								            	{
+							            			structurentreprise.setCodeDepartement(valeur);
+								            	}
+								            	else
+								            		if(numColonne==8)
+									            	{
+								            			structurentreprise.setLibelleDepartement(valeur);
+									            	}
+									            	else
+									            		if(numColonne==9)
+										            	{
+									            			structurentreprise.setCodeService(valeur);
+										            	}
+										            	else
+										            		if(numColonne==10)
+											            	{
+										            			structurentreprise.setLibelleService(valeur);
+											            	}
+										            		else
+										            			if(numColonne==11)
+										            			{
+										            				structurentreprise.setCodesection(valeur);
+										            			}
+										            			else
+										            				if(numColonne==12)
+										            				{
+										            					structurentreprise.setLibelleSection(valeur);
+										            				}
+
+	            }//fin for colonne
+	            listStructureEntreprise.add(structurentreprise);
+	        }//fin for ligne
+
+		} 
+        catch (IOException e) 
+        {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+        
+		return listStructureEntreprise;
+	}
+	
+	/**
+	 * Cette méthode permet de faire un upload d'un fichier xlsx (fichier vers BDD)
+	 * @return
+	 */
+	public List <StructureEntrepriseBean> uploadXLSXFile(InputStream inputStream)
+	{
+		listStructureEntreprise=new ArrayList <StructureEntrepriseBean>();
+		
+		 // Creer l'objet representant le fichier Excel
+        try 
+        {
+			XSSFWorkbook fichierExcel = new XSSFWorkbook(inputStream);
+			// creer l'objet representant les lignes Excel
+	        XSSFRow ligne;
+
+	        // creer l'objet representant les cellules Excel
+	        XSSFCell cellule;
+
+	        //lecture de la première feuille excel
+	        XSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
+	        
+	        // lecture du contenu de la feuille excel
+	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+	        
+	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+	        {
+	        	System.out.println("de nouveau dans la boucle");
+	        	ligne = feuilleExcel.getRow(numLigne);
+	            int nombreColonne = ligne.getLastCellNum()
+	                    - ligne.getFirstCellNum();
+	            StructureEntrepriseBean structurentreprise=new StructureEntrepriseBean();
+	            // parcours des colonnes de la ligne en cours
+	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+	            {
+	            	try
+	            	{
+	            	System.out.println("de nouveau dan scolonne");
+	            	cellule = ligne.getCell(numColonne);
+	            	
+	            	String valeur= cellule.getStringCellValue();
+	            	System.out.println(" numligne = "+numLigne+" numColonne= "+numColonne +" valeur ="+valeur);
+	            	
+	            	if(numColonne==0)
+	            	{
+	            		structurentreprise.setCodestructure(valeur);
+	            	}
+	            	else
+	            		if(numColonne==1)
+		            	{
+	            			structurentreprise.setCodeDivision(valeur);
+		            	}
+		            	else
+		            		if(numColonne==2)
+			            	{
+		            			structurentreprise.setLibelleDivision(valeur);
+			            	}
+			            	else
+			            		if(numColonne==3)
+				            	{
+			            			structurentreprise.setCodeDirection(valeur);
+				            	}
+				            	else
+				            		if(numColonne==4)
+					            	{
+				            			structurentreprise.setLibelleDirection(valeur);
+					            	}
+					            	else
+					            		if(numColonne==5)
+						            	{
+					            			structurentreprise.setCodeUnite(valeur);
+						            	}
+						            	else
+						            		if(numColonne==6)
+							            	{
+						            			structurentreprise.setLibelleUnite(valeur);
+							            	}
+							            	else
+							            		if(numColonne==7)
+								            	{
+							            			structurentreprise.setCodeDepartement(valeur);
+								            	}
+								            	else
+								            		if(numColonne==8)
+									            	{
+								            			structurentreprise.setLibelleDepartement(valeur);
+									            	}
+									            	else
+									            		if(numColonne==9)
+										            	{
+									            			structurentreprise.setCodeService(valeur);
+										            	}
+										            	else
+										            		if(numColonne==10)
+											            	{
+										            			structurentreprise.setLibelleService(valeur);
+											            	}
+										            		else
+										            			if(numColonne==11)
+										            			{
+										            				structurentreprise.setCodesection(valeur);
+										            			}
+										            			else
+										            				if(numColonne==12)
+										            				{
+										            					structurentreprise.setLibelleSection(valeur);
+										            				}
+	            	}catch(Exception e)
+	            	{
+	            		
+	            	}
+
+	            }//fin for colonne
+	            listStructureEntreprise.add(structurentreprise);
+	        }//fin for ligne
+
+		} 
+        catch (IOException e) 
+        {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+        
+		return listStructureEntreprise;
+	}
+	
+	
+	/**
+	 * Cette méthode permet de charger le contenu de la table Structure_entreprise et de créer un fichier excel avec ces données
+	 */
+	public byte[] downloadStructureEntrepriseDataToXls()
+	{
+		
+		//recupération du contenu de la table Structure_entreprise
+		try 
+		{
+			ArrayList<StructureEntrepriseBean> listeStructureEntrepriseBean=checkStructureEntreprise();
+			
+			//creation du fichier xls
+			
+			Iterator <StructureEntrepriseBean>index=listeStructureEntrepriseBean.iterator();
+			//creation d'un document excel 
+			HSSFWorkbook workBook = new HSSFWorkbook();
+			
+			//creation d'une feuille excel
+			 HSSFSheet sheet = workBook.createSheet("struture_entreprise");
+			 
+			 //creation de l'entête du document excel
+			 HSSFRow row = sheet.createRow(0);
+			 HSSFCell cell = row.createCell((short)0);
+			 
+			 //HSSFCellStyle cellStyle = null;
+//			 cellStyle = workBook.createCellStyle();
+//			 cellStyle.setFillForegroundColor(HSSFColor.RED.index);
+//			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+			 cell.setCellValue("Code structure");
+			 //			 cell.setCellStyle(cellStyle);
+			 HSSFCell cell1 = row.createCell((short)1);
+			 cell1.setCellValue("Code division");
+			 //			 cell1.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell2 = row.createCell((short)2);
+			 cell2.setCellValue("Nom division");
+			 //			 cell2.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell3 = row.createCell((short)3);
+			 cell3.setCellValue("Code direction");
+			 //			 cell3.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell4 = row.createCell((short)4);
+			 cell4.setCellValue("Nom direction");
+			 //			 cell4.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell5 = row.createCell((short)5);
+			 cell5.setCellValue("Code unité");
+			 //			 cell5.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell6 = row.createCell((short)6);
+			 cell6.setCellValue("Nom unité");
+			 //			 cell6.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell7 = row.createCell((short)7);
+			 cell7.setCellValue("Code département");
+			 //			 cell7.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell8 = row.createCell((short)8);
+			 cell8.setCellValue("Nom département");
+			 //			 cell8.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell9 = row.createCell((short)9);
+			 cell9.setCellValue("Code service");
+			 //			 cell9.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell10 = row.createCell((short)10);
+			 cell10.setCellValue("Nom service");
+			 //			 cell10.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell11 = row.createCell((short)11);
+			 cell11.setCellValue("Code section");
+			 //			 cell11.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell12 = row.createCell((short)12);
+			 cell12.setCellValue("Nom section");
+			 //			 cell12.setCellStyle(cellStyle);
+			 
+			 int i=1;
+			while (index.hasNext())
+			{
+				
+				StructureEntrepriseBean donnee=(StructureEntrepriseBean)index.next();
+				
+				 HSSFRow row1 = sheet.createRow(i);
+				 HSSFCell cel = row1.createCell((short)0);
+				 cel.setCellValue(donnee.getCodestructure());
+				 
+				 cel = row1.createCell((short)1);
+				 cel.setCellValue(donnee.getCodeDivision());
+				 cel = row1.createCell((short)2);
+				 cel.setCellValue(donnee.getLibelleDivision());
+				 cel = row1.createCell((short)3);
+				 cel.setCellValue(donnee.getCodeDirection());
+				 cel = row1.createCell((short)4);
+				 cel.setCellValue(donnee.getLibelleDirection());
+				 cel = row1.createCell((short)5);
+				 cel.setCellValue(donnee.getCodeUnite());
+				 cel = row1.createCell((short)6);
+				 cel.setCellValue(donnee.getLibelleUnite());
+				 cel = row1.createCell((short)7);
+				 cel.setCellValue(donnee.getCodeDepartement());
+				 cel = row1.createCell((short)8);
+				 cel.setCellValue(donnee.getLibelleDepartement());
+				 cel = row1.createCell((short)9);
+				 cel.setCellValue(donnee.getCodeService());
+				 cel = row1.createCell((short)10);
+				 cel.setCellValue(donnee.getLibelleService());
+				 cel = row1.createCell((short)11);
+				 cel.setCellValue(donnee.getCodesection());
+				 cel = row1.createCell((short)12);
+				 cel.setCellValue(donnee.getLibelleSection());
+				 i++;
+			}
+
+				
+				//FileOutputStream fichier=new FileOutputStream("tmp.xls");
+
+					
+					//workBook.write(fichier);
+					
+					byte[] flux=workBook.getBytes();
+					
+					return flux;
+
+
+		}
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return null;
 	}
 }
