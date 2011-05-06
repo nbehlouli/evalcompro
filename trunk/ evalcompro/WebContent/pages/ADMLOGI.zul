@@ -36,8 +36,9 @@
             
             <column label="Nom"  align="center" width="100px"/>
             <column label="Prénom"  align="center" width="100px"/>
+             <column label="Login"  align="center" width="100px"/>
             <column label="Mot de passe" align="center" width="100px"/>
-            <column label="Profile" align="center" width="100px"/>
+            <column label="Profile" align="center" width="160px"/>
             <column label="Base de données" align="center" width="100px"/>
             <column label="Date debut validité" align="center" width="100px"/>
             <column label="Date fin validité" align="center" width="100px"/>
@@ -52,11 +53,11 @@
                 <textbox id="prenom" value="@{winCtrl.selected.prenom,save-when=none}" />
                 <textbox id="login" value="@{winCtrl.selected.login,save-when=none}" />
                 <textbox id="motdepasse" value="@{winCtrl.selected.motdepasse,save-when=none}" />
-                <textbox id="profile" value="@{winCtrl.selected.profile,save-when=none}" />
-                <textbox id="basedonnee" value="@{winCtrl.selected.basedonnee,save-when=none}"/>
+                <listbox id="profile" mold="select" selectedItem="@{listlogin.profile,save-when=self.onChange}" />
+	            <listbox id="basedonnee" mold="select" selectedItem="@{listlogin.basedonnee,save-when=self.onChange}"/>
                 <textbox id="date_deb_val" value="@{winCtrl.selected.date_deb_val,save-when=none}" />
                 <textbox id="date_fin_val" value="@{winCtrl.selected.date_fin_val,save-when=none}" />
-                <textbox id="datemodifpwd" value="@{winCtrl.selected.datemodifpwd,save-when=none}" />
+                <textbox id="datemodifpwd" value="@{winCtrl.selected.datemodifpwd,save-when=none}" Readonly="true"  />
                 
             </row>
         </rows>
@@ -65,10 +66,11 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add" label="Ajouter " image="C:/evalcom/zCRUD/WebContent/images/valider.png" tooltip="Ajouter une ligne"/>
+			<button id="add" label="Ajouter " image="" tooltip="Ajouter une ligne"/>
+			<button id="okAdd" label="Valider" image="" tooltip="Valider"/>
 			<button id="update" label="Modifier" />
 			<button id="delete" label="Supprimer" />
-			<!-- button id="effacer" label="Effacer" onClick="Clients.closeErrorBox(new Component[]{codeStructure,codeDivision})"/-->
+			<button id="effacer" label="Retour" />
 		</div>
 		<div>
 
