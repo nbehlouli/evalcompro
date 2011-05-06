@@ -1,8 +1,15 @@
 package administration.action;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.lang.Strings;
 import org.zkoss.zk.au.out.AuClearWrongValue;
@@ -11,9 +18,12 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 
+import administration.bean.AdministrationLoginBean;
 import administration.bean.StructureEntrepriseBean;
 import administration.model.AdministrationLoginModel;
 import administration.model.StructureEntrepriseModel;
@@ -25,42 +35,26 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	Listbox admincomptelb;
-	
-	Textbox codeStructure;	
-	Textbox codeDivision;
-	Textbox nomDivision;
-	Textbox codeDirection;
-	Textbox nomDirection;
-	Textbox codeUnite;
-	Textbox nomUnite;
-	Textbox codeDepartement;
-	Textbox nomdepatrement;
-	Textbox codeService;
-	Textbox NomService;
-	Textbox codeSection;
-	Textbox nomSection;
-	
 	Textbox  nom;
 	Textbox  prenom;
 	Textbox  login;
 	Textbox  motdepasse;
-	Textbox  profile;
-	Textbox  basedonnee;
+	Listbox  profile;
+	Listbox  basedonnee;
 	Textbox date_deb_val;
 	Textbox date_fin_val;
 	Textbox datemodifpwd;
-	
-
 	AnnotateDataBinder binder;
-
-	
-	
-	List<StructureEntrepriseBean> model = new ArrayList<StructureEntrepriseBean>();
-	
-	
-	
-	StructureEntrepriseBean selected;
-	
+	List<AdministrationLoginBean> model = new ArrayList<AdministrationLoginBean>();
+	AdministrationLoginBean selected;
+	List list_profile=null;
+	Button add;
+	Button okAdd;
+	Button update;
+	Button delete;
+	Button upload;
+	Button download;
+	Button effacer;
 
 	public AdministrationLoginAction() {
 	}
@@ -68,7 +62,27 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
+		okAdd.setVisible(false);
+		effacer.setVisible(false);
+		AdministrationLoginModel init= new AdministrationLoginModel();
 		
+		
+		Set set = (init.gerProfileList()).entrySet(); 
+		Set sec= (init.getDatabaseList()).entrySet();
+		
+		Iterator i = set.iterator();
+		Iterator i1 = sec.iterator();
+		
+		// Display elements
+		while(i.hasNext()) {
+		Map.Entry me = (Map.Entry)i.next();
+		profile.appendItem((String) me.getKey(),(String) me.getKey());
+		}
+		// Display elements
+		while(i1.hasNext()) {
+		Map.Entry me = (Map.Entry)i1.next();
+		basedonnee.appendItem((String) me.getKey(),(String) me.getKey());
+		}
 		// création de la structure de l'entreprise bean
 		AdministrationLoginModel admin_compte =new AdministrationLoginModel();
 		model=admin_compte.checkLoginBean();
@@ -79,47 +93,56 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		binder.loadAll();
 	}
 
-	public List<StructureEntrepriseBean> getModel() {
+	public List<AdministrationLoginBean> getModel() {
 		return model;
 	}
 
 
 
-	public StructureEntrepriseBean getSelected() {
+	public AdministrationLoginBean getSelected() {
 		return selected;
 	}
 
-	public void setSelected(StructureEntrepriseBean selected) {
+	public void setSelected(AdministrationLoginBean selected) {
 		this.selected = selected;
 	}
 
-	public void onClick$add() {
+	public void onClick$add() throws WrongValueException, ParseException {
 		
-		
-		StructureEntrepriseBean addedData = new StructureEntrepriseBean();
-		
-		
-		addedData.setCodestructure(getSelectedcodeStructure());
-		addedData.setCodeDivision(getSelectedcodeDivision());
-		addedData.setLibelleDivision(getSelectednomDivision());
-		addedData.setCodeDirection(getSelectedcodeDirection());
-		addedData.setLibelleDirection(getSelectednomDirection());
-		addedData.setCodeUnite(getSelectedcodeUnite());
-		addedData.setLibelleUnite(getSelectednomUnite());
-		addedData.setCodeDepartement(getSelectedcodeDepartement());
-		addedData.setLibelleDepartement(getSelectednomDepartement());
-		addedData.setCodeService(getSelectedcodeService());
-		addedData.setLibelleService(getSelectednomService());
-		addedData.setCodesection(getSelectedcodeSection());
-		addedData.setLibelleSection(getSelectednomSection());
-		
+		clearFields();
+		date_deb_val.setText("2011/12/01");
+		date_fin_val.setText("2011/12/01");
+		okAdd.setVisible(true);
+		effacer.setVisible(true);
+		add.setVisible(false);
+		update.setVisible(false);
+		delete.setVisible(false);
+		upload.setVisible(false);
+		download.setVisible(false);
+	}
+	
+	public void onClick$okAdd()throws WrongValueException, ParseException {
+	 	
+		AdministrationLoginBean addedData = new AdministrationLoginBean();
+	
+		addedData.setNom(getSelectedNom());
+		addedData.setPrenom(getSelectedPrenom());
+		addedData.setLogin(getSelectedLogin());
+		addedData.setMotdepasse(getSelectedcodemotdepasse());
+		addedData.setProfile(getSelectedprofile());
+		addedData.setBasedonnee(getSelectedbasedonnee());
+		addedData.setDate_deb_val( getSelecteddate_deb_val());
+		addedData.setDate_fin_val( getSelecteddate_fin_val());
+	
 		//controle d'intégrité 
-		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
-		Boolean donneeValide=structureEntrepriseModel.controleIntegrite(addedData);
+		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
+		Boolean donneeValide=admini_login_model.controleIntegrite(addedData);
+		//Boolean donneeValide=true;
+		
 		if (donneeValide)
 		{
 			//insertion de la donnée ajoutée dans la base de donnée
-			boolean donneeAjoute=structureEntrepriseModel.addStructureEntrepriseBean(addedData);
+			boolean donneeAjoute=admini_login_model.addAdministrationLoginBean(addedData);
 			// raffrechissemet de l'affichage
 			if (donneeAjoute )
 			{
@@ -130,10 +153,17 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 				binder.loadAll();
 			}
 		}
+		okAdd.setVisible(false);
+		effacer.setVisible(false);
+		add.setVisible(true);
+		update.setVisible(true);
+		delete.setVisible(true);
+		upload.setVisible(true);
+		download.setVisible(true);
 				
 	}
 
-	public void onClick$update() {
+	/*public void onClick$update() {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
@@ -167,9 +197,9 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 				binder.loadAll();
 			}
 		}
-	}
+	}*/
 
-	public void onClick$delete() {
+	/*public void onClick$delete() {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
@@ -184,21 +214,18 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		
 		binder.loadAll();
 	}
-
-	public void onClick$effacer() {
-		codeStructure.setText("");
-		codeDivision.setText("");
-		nomDivision.setText("");
-		codeDirection.setText("");
-		nomDirection.setText("");
-		codeUnite.setText("");
-		nomUnite.setText("");
-		codeDepartement.setText("");
-		nomdepatrement.setText("");
-		codeService.setText("");
-		NomService.setText("");
-		codeSection.setText("");
-		nomSection.setText("");
+*/
+	public void onClick$effacer()  {
+		
+	
+		clearFields();
+		okAdd.setVisible(false);
+		add.setVisible(true);
+		update.setVisible(true);
+		delete.setVisible(true);
+		upload.setVisible(true);
+		download.setVisible(true);
+		
 	}
 
 	public void onClick$upload() {
@@ -216,9 +243,10 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		
 		//partie base de données
 	}
-	public void onSelect$structureEntrepriselb() {
-		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
-				codeUnite,nomUnite, codeDepartement, nomdepatrement, codeService,NomService, codeSection, nomSection });
+	
+	public void onSelect$admincomptelb() {
+		closeErrorBox(new Component[] { nom, prenom,login,motdepasse,  profile, 
+				basedonnee,date_deb_val, date_fin_val, datemodifpwd });
 	}
 	
 	
@@ -230,109 +258,87 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 
 
 
-	private String getSelectedcodeStructure() throws WrongValueException {
-		String name = codeStructure.getValue();
+
+	
+
+	private String getSelectedNom() throws WrongValueException {
+		String name = nom.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeStructure, "le Code Structure ne doit pas être vide!");
+			throw new WrongValueException(nom, "le nom de l'utilisateur ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectedcodeDivision() throws WrongValueException {
-		String name = codeDivision.getValue();
+	private String getSelectedPrenom() throws WrongValueException {
+		String name = prenom.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeDivision, "le Code Division ne doit pas être vide!");
+			throw new WrongValueException(prenom, "le prénom de l'utilisateur ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectednomDivision() throws WrongValueException {
-		String name = nomDivision.getValue();
+	private String getSelectedLogin() throws WrongValueException {
+		String name = login.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(nomDivision, "le nom Division ne doit pas être vide!");
+			throw new WrongValueException(login, "le login ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectedcodeDirection() throws WrongValueException {
-		String name = codeDirection.getValue();
+	private String getSelectedcodemotdepasse() throws WrongValueException {
+		String name = motdepasse.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeDirection, "le codeDirection ne doit pas être vide!");
+			throw new WrongValueException(motdepasse, "le mot de passe ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectednomDirection() throws WrongValueException {
-		String name = nomDirection.getValue();
+	private String getSelectedprofile() throws WrongValueException {
+		String name = profile.getSelectedItem().getLabel();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(nomDirection, "le nom Direction ne doit pas être vide!");
+			throw new WrongValueException(profile, "le profile  ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectedcodeUnite() throws WrongValueException {
-		String name = codeUnite.getValue();
+	private String getSelectedbasedonnee() throws WrongValueException {
+		String name = basedonnee.getSelectedItem().getLabel();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeUnite, "le codeUnite ne doit pas être vide!");
+			throw new WrongValueException(basedonnee, "la basedonnee ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectednomUnite() throws WrongValueException {
-		String name = nomUnite.getValue();
+	private String getSelecteddate_deb_val() throws WrongValueException, ParseException {
+		//DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		String name = date_deb_val.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(nomUnite, "le nom Unite ne doit pas être vide!");
+			throw new WrongValueException(date_deb_val, "la date debut validité ne doit pas être vide!");
 		}
 		return name;
 	}
 
-	private String getSelectedcodeDepartement() throws WrongValueException {
-		String name = codeDepartement.getValue();
+	private String getSelecteddate_fin_val() throws WrongValueException, ParseException {
+		
+		String name = date_fin_val.getValue();
 		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeDepartement, "le codeDepartement ne doit pas être vide!");
+			throw new WrongValueException(date_fin_val, "la date fin validité ne doit pas être vide!");
 		}
 		return name;
 	}
 	
-	private String getSelectednomDepartement() throws WrongValueException {
-		String name = nomdepatrement.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(nomdepatrement, "le nom Departement ne doit pas être vide!");
-		}
-		return name;
-	}
 	
-	private String getSelectedcodeService() throws WrongValueException {
-		String name = codeService.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeService, "le codeService ne doit pas être vide!");
-		}
-		return name;
-	}
-	
-	private String getSelectednomService() throws WrongValueException {
-		String name = NomService.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(NomService, "le nom Service ne doit pas être vide!");
-		}
-		return name;
-	}
-	
-	private String getSelectedcodeSection() throws WrongValueException {
-		String name = codeSection.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(codeSection, "le codeSection ne doit pas être vide!");
-		}
-		return name;
-	}
-	
-	private String getSelectednomSection() throws WrongValueException {
-		String name = nomSection.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(nomSection, "le nom Section ne doit pas être vide!");
-		}
-		return name;
-	}
-
+  public void clearFields(){
+	    nom.setText("");
+		prenom.setText("");
+		login.setText("");
+		motdepasse.setText("");
+		//profile.setItemRenderer("");
+		//basedonnee.setText("");
+		date_deb_val.setText("");
+		date_fin_val.setText("");
+		datemodifpwd.setText("");
+		
+  }
 
 }
