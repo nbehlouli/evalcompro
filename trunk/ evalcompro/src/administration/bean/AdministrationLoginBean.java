@@ -11,9 +11,9 @@ public class AdministrationLoginBean implements Serializable {
 	private String motdepasse;
 	private String profile;
 	private String basedonnee;
-	private Date date_deb_val;
-	private Date date_fin_val;
-	private Date datemodifpwd;
+	private String date_deb_val;
+	private String date_fin_val;
+	private String datemodifpwd;
 	
 	 
 	
@@ -21,7 +21,7 @@ public class AdministrationLoginBean implements Serializable {
 	
 	public AdministrationLoginBean(int employeid, String nom, String prenom,
 			String login, String motdepasse, String profile, String basedonnee,
-			Date date_deb_val, Date date_fin_val, Date datemodifpwd) {
+			String date_deb_val, String date_fin_val, String datemodifpwd) {
 		
 		this.nom = nom;
 		this.prenom = prenom;
@@ -79,22 +79,23 @@ public class AdministrationLoginBean implements Serializable {
 	public void setBasedonnee(String basedonnee) {
 		this.basedonnee = basedonnee;
 	}
-	public Date getDate_deb_val() {
+	public String getDate_deb_val() {
 		return date_deb_val;
 	}
-	public void setDate_deb_val(Date date_deb_val) {
+	public void setDate_deb_val(String date_deb_val) {
 		this.date_deb_val = date_deb_val;
 	}
-	public Date getDate_fin_val() {
+	public String getDate_fin_val() {
+			 
 		return date_fin_val;
 	}
-	public void setDate_fin_val(Date date_fin_val) {
+	public void setDate_fin_val(String date_fin_val) {
 		this.date_fin_val = date_fin_val;
 	}
-	public Date getDatemodifpwd() {
+	public String getDatemodifpwd() {
 		return datemodifpwd;
 	}
-	public void setDatemodifpwd(Date datemodifpwd) {
+	public void setDatemodifpwd(String datemodifpwd) {
 		this.datemodifpwd = datemodifpwd;
 	}
 	
