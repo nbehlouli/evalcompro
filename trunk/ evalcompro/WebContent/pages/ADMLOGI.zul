@@ -1,4 +1,4 @@
-<window  id="win" title="Structure de l'entreprise" apply="administration.action.AdministrationLoginAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto">
+<window  id="win" title="Administration des utilisateurs" apply="administration.action.AdministrationLoginAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto">
 	<listbox id="admincomptelb" rows="13" model="@{winCtrl.model}"
 		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px">
 		<listhead sizable="true">
@@ -12,6 +12,7 @@
 			<listheader label="Date debut validité" width="130px" align="center" />
 			<listheader label="Date fin validité" width="130px" align="center" />
 			<listheader label="Date Modification mot de passe" width="100px" align="center" />
+			<listheader label="id compte" width="100px" align="center" visible="false" />
 	
 	
 		</listhead>
@@ -25,6 +26,7 @@
 			<listcell label="@{listlogin.date_deb_val}" />
 			<listcell label="@{listlogin.date_fin_val}" />
 			<listcell label="@{listlogin.datemodifpwd}" />
+			<listcell label="@{listlogin.id_compte}" visible="false" />
 			
 		</listitem>
 	</listbox>
@@ -43,6 +45,8 @@
             <column label="Date debut validité" align="center" width="100px"/>
             <column label="Date fin validité" align="center" width="100px"/>
             <column label="Date Modification mot de passe" align="center" width="100px"/>
+            <column label="id compte" align="center" width="100px" visible="false"/>
+            
            
         </columns>
         <rows>
@@ -53,11 +57,12 @@
                 <textbox id="prenom" value="@{winCtrl.selected.prenom,save-when=none}" />
                 <textbox id="login" value="@{winCtrl.selected.login,save-when=none}" />
                 <textbox id="motdepasse" value="@{winCtrl.selected.motdepasse,save-when=none}" />
-                <listbox id="profile" mold="select" selectedItem="@{listlogin.profile,save-when=self.onChange}" />
-	            <listbox id="basedonnee" mold="select" selectedItem="@{listlogin.basedonnee,save-when=self.onChange}"/>
+                <listbox id="profile" mold="select" selectedItem="@{winCtrl.selected.profile,save-when=none}" />
+	            <listbox id="basedonnee" mold="select" selectedItem="@{winCtrl.selected.basedonnee,save-when=none}" />
                 <textbox id="date_deb_val" value="@{winCtrl.selected.date_deb_val,save-when=none}" />
                 <textbox id="date_fin_val" value="@{winCtrl.selected.date_fin_val,save-when=none}" />
                 <textbox id="datemodifpwd" value="@{winCtrl.selected.datemodifpwd,save-when=none}" Readonly="true"  />
+                <textbox id="id_compte" value="@{winCtrl.selected.id_compte,save-when=none}" visible="false"  />
                 
             </row>
         </rows>
