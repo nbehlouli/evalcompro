@@ -43,18 +43,20 @@ private ListModel strset =null;
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String sel_compte="select nom,prenom,c.login,c.pwd,libelle_profile,l.nom_base,val_date_deb,val_date_fin,modifiedpwd "+ 
+			String sel_compte="select id_compte,nom,prenom,c.login,c.pwd,libelle_profile,l.nom_base,DATE_FORMAT(val_date_deb,'%Y/%m/%d') as val_date_deb,DATE_FORMAT(val_date_fin,'%Y/%m/%d') as val_date_fin ,modifiedpwd "+ 
                                "from compte c ,liste_db l ,profile p where c.database_id=l.database_id "+
                                "and c.id_profile=p.id_profile";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
 			
-			SimpleDateFormat formatDateJour = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat formatDateJour = new SimpleDateFormat("yyyy/MM/dd");
 			 
 			
 			while(rs.next()){
 				
 					AdministrationLoginBean admin_compte=new AdministrationLoginBean();
+					
+					admin_compte.setId_compte(Integer.toString(rs.getInt("id_compte")));
 					admin_compte.setNom(rs.getString("nom"));
 					admin_compte.setPrenom(rs.getString("prenom"));
 					admin_compte.setLogin(rs.getString("login"));
@@ -105,12 +107,10 @@ private ListModel strset =null;
 			                                                
 			stmt = (Statement) conn.createStatement();
 			String select_structure="INSERT INTO compte ( id_profile, login, pwd, database_id, val_date_deb, val_date_fin, modifiedpwd, nom, prenom) VALUES (#id_profile,#login,#pwd,#database_id,#val_date_deb,#val_date_fin,#modifiedpwd,#nom,#prenom)";
-			int idprofile1=getKeyMap(addedData.getProfile());
-			select_structure = select_structure.replaceAll("#id_profile", Integer.toString(idprofile1));
+			select_structure = select_structure.replaceAll("#id_profile", Integer.toString(getKeyMap(addedData.getProfile())));
 			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
 			select_structure = select_structure.replaceAll("#pwd", "'"+addedData.getMotdepasse()+"'");
 			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
-			//Date datedeb=formatter.parse(addedData.getDate_deb_val());
 			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
 			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
 			select_structure = select_structure.replaceAll("#modifiedpwd", "'"+getCurrentDatetime()+"'");
@@ -218,33 +218,30 @@ private ListModel strset =null;
 	 * @param addedData
 	 * @return
 	 */
-	/*public Boolean majStructureEntrepriseBean(StructureEntrepriseBean addedData, String selectedCodeStructure)
+	public Boolean majAdminLoginBean(AdministrationLoginBean addedData)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String update_structure="UPDATE  structure_entreprise SET code_structure=#code_structure ,code_division=#code_division,libelle_division=#libelle_division,code_direction=#code_direction, libelle_direction=#libelle_direction,code_unite=#code_unite,libelle_unite=#libelle_unite,code_departement=#code_departement,libelle_departement=#libelle_departement,code_service=#code_service,libelle_service=#libelle_service,code_section=#code_section,libelle_section=#libelle_section WHERE code_structure=#valeur_code_structure"; 
-			update_structure = update_structure.replaceAll("#code_structure", "'"+addedData.getCodestructure()+"'");
-			update_structure = update_structure.replaceAll("#code_division", "'"+addedData.getCodeDivision()+"'");
-			update_structure = update_structure.replaceAll("#libelle_division", "'"+addedData.getLibelleDivision()+"'");
-			update_structure = update_structure.replaceAll("#code_direction", "'"+addedData.getCodeDirection()+"'");
-			update_structure = update_structure.replaceAll("#libelle_direction", "'"+addedData.getLibelleDirection()+"'");
-			update_structure = update_structure.replaceAll("#code_unite", "'"+addedData.getCodeUnite()+"'");
-			update_structure = update_structure.replaceAll("#libelle_unite", "'"+addedData.getLibelleUnite()+"'");
-			update_structure = update_structure.replaceAll("#code_departement", "'"+addedData.getCodeDepartement()+"'");
-			update_structure = update_structure.replaceAll("#libelle_departement", "'"+addedData.getLibelleDepartement()+"'");
-			update_structure = update_structure.replaceAll("#code_service", "'"+addedData.getCodeService()+"'");
-			update_structure = update_structure.replaceAll("#libelle_service", "'"+addedData.getLibelleService()+"'");
-			update_structure = update_structure.replaceAll("#code_section", "'"+addedData.getCodesection()+"'");
-			update_structure = update_structure.replaceAll("#libelle_section", "'"+addedData.getLibelleSection()+"'");
-			update_structure = update_structure.replaceAll("#valeur_code_structure", "'"+selectedCodeStructure+"'");
-		System.out.println(update_structure);
+			String select_structure="UPDATE  compte SET id_profile=#id_profile ,login=#login,pwd=#pwd,database_id=#database_id, val_date_deb=#val_date_deb,val_date_fin=#val_date_fin,modifiedpwd=#modifiedpwd,nom=#nom,prenom=#prenom WHERE id_compte=#valeur_id_compte"; 
+			select_structure = select_structure.replaceAll("#id_profile", Integer.toString(getKeyMap(addedData.getProfile())));
+			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
+			select_structure = select_structure.replaceAll("#pwd", "'"+addedData.getMotdepasse()+"'");
+			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
+			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
+			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
+			select_structure = select_structure.replaceAll("#modifiedpwd", "'"+getCurrentDatetime()+"'");
+			select_structure = select_structure.replaceAll("#nom", "'"+addedData.getNom()+"'");
+			select_structure = select_structure.replaceAll("#prenom", "'"+addedData.getPrenom()+"'");
+			select_structure = select_structure.replaceAll("#valeur_id_compte", addedData.getId_compte());
 			
-			 stmt.executeUpdate(update_structure);
+		   //System.out.println(update_structure);
+			
+			 stmt.executeUpdate(select_structure);
 		} 
 		catch (SQLException e) 
 		{
@@ -276,26 +273,26 @@ private ListModel strset =null;
 			e.printStackTrace();
 		}
 		return true;
-	}*/
+	}
 	/**
 	 * cette classe permet de supprimer une donnée de la table structure_entreprise
 	 * @param codeStructure
 	 */
-	/*public void supprimerStructureEntrepriseBean(String codeStructure)
+	public void supprimerLogin(AdministrationLoginBean addedData)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String update_structure="DELETE FROM  structure_entreprise  WHERE code_structure=#code_structure"; 
-			update_structure = update_structure.replaceAll("#code_structure", "'"+codeStructure+"'");
+			String sup_login="DELETE FROM  compte  WHERE id_compte=#valeur_id_compte"; 
+			sup_login = sup_login.replaceAll("#valeur_id_compte", addedData.getId_compte());
 			
-		System.out.println(update_structure);
+		
 			
-			 stmt.executeUpdate(update_structure);
+			 stmt.executeUpdate(sup_login);
 		} 
 		catch (SQLException e) 
 		{
@@ -311,7 +308,7 @@ private ListModel strset =null;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	/**
 	 * cette classe permet de supprimer une donnée de la table structure_entreprise
