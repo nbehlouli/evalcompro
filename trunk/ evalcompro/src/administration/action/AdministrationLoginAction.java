@@ -35,6 +35,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	Listbox admincomptelb;
+	Textbox id_compte;
 	Textbox  nom;
 	Textbox  prenom;
 	Textbox  login;
@@ -55,6 +56,8 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	Button upload;
 	Button download;
 	Button effacer;
+	List<String> profilemodel=new ArrayList<String>();
+	List<String> basedonneemodel=new ArrayList<String>();
 
 	public AdministrationLoginAction() {
 	}
@@ -62,6 +65,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
+		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
 		AdministrationLoginModel init= new AdministrationLoginModel();
@@ -77,17 +81,19 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		while(i.hasNext()) {
 		Map.Entry me = (Map.Entry)i.next();
 		profile.appendItem((String) me.getKey(),(String) me.getKey());
+		//profilemodel.add((String) me.getKey());
 		}
 		// Display elements
 		while(i1.hasNext()) {
 		Map.Entry me = (Map.Entry)i1.next();
 		basedonnee.appendItem((String) me.getKey(),(String) me.getKey());
+		//basedonneemodel.add((String) me.getKey());
 		}
 		// création de la structure de l'entreprise bean
 		AdministrationLoginModel admin_compte =new AdministrationLoginModel();
 		model=admin_compte.checkLoginBean();
 		
-		comp.setVariable(comp.getId() + "Ctrl", this, true);
+		
 
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
@@ -112,6 +118,9 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		clearFields();
 		date_deb_val.setText("2011/12/01");
 		date_fin_val.setText("2011/12/01");
+		profile.setSelectedIndex(0);
+		basedonnee.setSelectedIndex(0);
+		
 		okAdd.setVisible(true);
 		effacer.setVisible(true);
 		add.setVisible(false);
@@ -163,50 +172,46 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 				
 	}
 
-	/*public void onClick$update() {
+	public void onClick$update() throws WrongValueException, ParseException {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
-		String codeStructureselectione=selected.getCodestructure();
-		System.out.println(getSelectedcodeStructure());
-		selected.setCodestructure(getSelectedcodeStructure());
-		selected.setCodeDivision(getSelectedcodeDivision());
-		selected.setLibelleDivision(getSelectednomDivision());
-		selected.setCodeDirection(getSelectedcodeDirection());
-		selected.setLibelleDirection(getSelectednomDirection());
-		selected.setCodeUnite(getSelectedcodeUnite());
-		selected.setLibelleUnite(getSelectednomUnite());
-		selected.setCodeDepartement(getSelectedcodeDepartement());
-		selected.setLibelleDepartement(getSelectednomDepartement());
-		selected.setCodeService(getSelectedcodeService());
-		selected.setLibelleService(getSelectednomService());
-		selected.setCodesection(getSelectedcodeSection());
-		selected.setLibelleSection(getSelectednomSection());
+		//String codeStructureselectione=selected.getCodestructure();
+		//System.out.println(getSelectedcodeStructure());
+		selected.setId_compte(getSelectedIdCompte());
+		selected.setNom(getSelectedNom());
+		selected.setPrenom(getSelectedPrenom());
+		selected.setLogin(getSelectedLogin());
+		selected.setMotdepasse(getSelectedcodemotdepasse());
+		selected.setProfile(getSelectedprofile());
+		selected.setBasedonnee(getSelectedbasedonnee());
+		selected.setDate_deb_val( getSelecteddate_deb_val());
+		selected.setDate_fin_val( getSelecteddate_fin_val());
 		
 		//controle d'intégrité 
-		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
-		Boolean donneeValide=structureEntrepriseModel.controleIntegrite(selected);
+		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
+		Boolean donneeValide=admini_login_model.controleIntegrite(selected);
 		if (donneeValide)
 		{
 			//insertion de la donnée ajoutée dans la base de donnée
-			boolean donneeAjoute=structureEntrepriseModel.majStructureEntrepriseBean(selected,codeStructureselectione);
+			boolean donneeAjoute=admini_login_model.majAdminLoginBean(selected);
 			// raffrechissemet de l'affichage
 			if (donneeAjoute )
 			{
 				binder.loadAll();
 			}
 		}
-	}*/
+	}
 
-	/*public void onClick$delete() {
+	public void onClick$delete() {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
-		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
 		//suppression de la donnée supprimée de la base de donnée
-		structureEntrepriseModel.supprimerStructureEntrepriseBean(selected.getCodestructure());
+		admini_login_model.supprimerLogin(selected);
 		model.remove(selected);
 		selected = null;
 
@@ -214,7 +219,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		
 		binder.loadAll();
 	}
-*/
+
 	public void onClick$effacer()  {
 		
 	
@@ -257,7 +262,13 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	}
 
 
-
+	private String getSelectedIdCompte() throws WrongValueException {
+		String name = id_compte.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nom, "id compte ne doit pas être vide!");
+		}
+		return name;
+	}
 
 	
 
