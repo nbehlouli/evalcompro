@@ -14,15 +14,17 @@ public class AdministrationLoginBean implements Serializable {
 	private String date_deb_val;
 	private String date_fin_val;
 	private String datemodifpwd;
+	private String id_compte;
 	
 	 
 	
 	
 	
-	public AdministrationLoginBean(int employeid, String nom, String prenom,
+	public AdministrationLoginBean(String id_compte, String nom, String prenom,
 			String login, String motdepasse, String profile, String basedonnee,
 			String date_deb_val, String date_fin_val, String datemodifpwd) {
 		
+		this.id_compte=id_compte;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.login = login;
@@ -97,6 +99,14 @@ public class AdministrationLoginBean implements Serializable {
 	}
 	public void setDatemodifpwd(String datemodifpwd) {
 		this.datemodifpwd = datemodifpwd;
+	}
+
+	public String getId_compte() {
+		return id_compte;
+	}
+
+	public void setId_compte(String  id_compte) {
+		this.id_compte =id_compte ;
 	}
 	
 	
