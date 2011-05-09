@@ -116,8 +116,10 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	public void onClick$add() throws WrongValueException, ParseException {
 		
 		clearFields();
-		date_deb_val.setText("2011/12/01");
-		date_fin_val.setText("2011/12/01");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String datecuurent = sdf.format(new Date());
+		date_deb_val.setText(datecuurent);
+		date_fin_val.setText("2050/12/01");
 		profile.setSelectedIndex(0);
 		basedonnee.setSelectedIndex(0);
 		
@@ -130,7 +132,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		download.setVisible(false);
 	}
 	
-	public void onClick$okAdd()throws WrongValueException, ParseException {
+	public void onClick$okAdd()throws WrongValueException, ParseException, InterruptedException {
 	 	
 		AdministrationLoginBean addedData = new AdministrationLoginBean();
 	
@@ -172,7 +174,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 				
 	}
 
-	public void onClick$update() throws WrongValueException, ParseException {
+	public void onClick$update() throws WrongValueException, ParseException, InterruptedException {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
