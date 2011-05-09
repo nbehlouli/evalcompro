@@ -23,6 +23,7 @@ import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
 import common.InitContext;
+import common.PwdCrypt;
 
 public class ReinitPwdModel {
 	
@@ -121,6 +122,7 @@ public void updateInDBNewPwd(String login,String newpwd) throws SQLException{
 	CreateDatabaseCon dbcon=new CreateDatabaseCon();
 	Connection conn=(Connection) dbcon.connectToDB();
 	Statement stmt = null;
+	PwdCrypt pwdcrypt=new PwdCrypt();
 	
     //calculate a new password
 	
@@ -137,7 +139,7 @@ public void updateInDBNewPwd(String login,String newpwd) throws SQLException{
 		stmt = (Statement) conn.createStatement();
 		String user_login="update compte set pwd=#pwd,modifiedpwd=#date where upper(login)=#login";
 		user_login = user_login.replaceAll("#login", "'"+login.toUpperCase()+"'");
-		user_login=user_login.replaceAll("#pwd","'"+ newpwd+"'");
+		user_login=user_login.replaceAll("#pwd","'"+ pwdcrypt.crypter(newpwd)+"'");
 		user_login=user_login.replaceAll("#date","'"+ todaydate+"'");
 		
 		//System.out.println(select_login);
