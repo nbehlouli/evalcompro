@@ -1,6 +1,7 @@
 package administration.model;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import com.mysql.jdbc.Statement;
 
 import common.ApplicationFacade;
 import common.CreateDatabaseCon;
+import common.PwdCrypt;
 import common.bean.ArborescenceMenu;
 import common.bean.EcranBean;
 
@@ -32,7 +34,8 @@ public class LoginModel {
 		
 	}
 	
-	public int checkLoginPwd(String login,String password) throws SQLException{
+	public int checkLoginPwd(String login,String password) throws SQLException, ParseException{
+		PwdCrypt pwdcrypt=new PwdCrypt();
 		user_compte = new ArrayList();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
@@ -41,9 +44,9 @@ public class LoginModel {
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String select_login="SELECT id_compte,id_profile,login,pwd,database_id,val_date_deb,val_date_fin FROM compte where upper(login)=#login and upper(pwd)=#password";
+			String select_login="SELECT id_compte,id_profile,login,pwd,database_id,val_date_deb,val_date_fin FROM compte where upper(login)=#login ";
 			select_login = select_login.replaceAll("#login", "'"+login.toUpperCase()+"'");
-			select_login = select_login.replaceAll("#password", "'"+password.toUpperCase()+"'");
+			//select_login = select_login.replaceAll("#password", "'"+pwdcrypt.crypter(password.toUpperCase())+"'");
 			//System.out.println(select_login);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_login);
 			
@@ -51,21 +54,26 @@ public class LoginModel {
 			while(rs.next()){
 				if (rs.getRow()==1  ) {
 					
-					if (checkLoginValidity(rs.getDate("val_date_deb"),rs.getDate("val_date_fin"))==true){
+					if(pwdcrypt.decrypter(rs.getString("pwd")).trim().equalsIgnoreCase(password.trim())){
 					
-						CompteBean db = new CompteBean(rs.getInt("id_compte"),rs.getInt("id_profile"),
-		                         rs.getString("login"),rs.getString("pwd"),rs.getInt("database_id"),
-		                         rs.getDate("val_date_deb"),rs.getDate("val_date_fin"));
- 
-								user_compte.add(db);
-								type_result=0;
-								database_id=rs.getInt("database_id");
+						if (checkLoginValidity(rs.getDate("val_date_deb"),rs.getDate("val_date_fin"))==true){
+						
+							CompteBean db = new CompteBean(rs.getInt("id_compte"),rs.getInt("id_profile"),
+			                         rs.getString("login"),pwdcrypt.decrypter(rs.getString("pwd")),rs.getInt("database_id"),
+			                         rs.getDate("val_date_deb"),rs.getDate("val_date_fin"));
+	 
+									user_compte.add(db);
+									type_result=0;
+									database_id=rs.getInt("database_id");
+						}
+						
+						else{
+							type_result=2;
+						}
 					}
-					
 					else{
-						type_result=2;
+						type_result=1;
 					}
-			  
 				}
 				
 				else {
@@ -138,25 +146,31 @@ public static void checkProfile(List compte_user) throws SQLException  {
 	
 }
 
-public boolean checkLoginValidity(Date date_deb,Date date_fin){
+public boolean checkLoginValidity(Date date_deb,Date date_fin) throws ParseException{
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	
 		
 	//  begin validity date
+	Date datedeb = new SimpleDateFormat("yyyy-MM-dd").parse(date_deb.toString());
      Calendar cal_deb=Calendar.getInstance();
-     cal_deb.setTime(date_deb);
-    
+     cal_deb.setTime(datedeb);
+  
      
- //  begin validity date
+ //  end validity date
+     Date datefin = new SimpleDateFormat("yyyy-MM-dd").parse(date_fin.toString());
      Calendar cal_fin=Calendar.getInstance();
-     cal_fin.setTime(date_fin);
-    
+     cal_fin.setTime(datefin);
+     
+     String datecuurent = sdf.format(new Date());
+     Date date_current = sdf.parse(datecuurent);
+
         
-	Calendar cal = Calendar.getInstance();
-    Calendar currentcal = Calendar.getInstance();
-    currentcal.set(currentcal.get(Calendar.YEAR),
-    currentcal.get(Calendar.MONTH), currentcal.get(Calendar.DAY_OF_MONTH));
-    if(currentcal.before(cal_fin) && currentcal.after(cal_deb) ){
+     Calendar currentcal=Calendar.getInstance();
+     currentcal.setTime(date_current);
+     
+    if(currentcal.before(cal_fin) && currentcal.after(cal_deb)||currentcal.equals(cal_deb) ){
     	
     	return true;
     }

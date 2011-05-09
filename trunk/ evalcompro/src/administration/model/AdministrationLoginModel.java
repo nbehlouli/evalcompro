@@ -22,6 +22,7 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
+import common.PwdCrypt;
 
 public class AdministrationLoginModel {
 	
@@ -36,6 +37,7 @@ private ListModel strset =null;
 	 */
 	public List checkLoginBean() throws SQLException{
 		
+		PwdCrypt pwdcrypt=new PwdCrypt();
 		listlogin = new ArrayList<AdministrationLoginBean>();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
@@ -60,7 +62,7 @@ private ListModel strset =null;
 					admin_compte.setNom(rs.getString("nom"));
 					admin_compte.setPrenom(rs.getString("prenom"));
 					admin_compte.setLogin(rs.getString("login"));
-					admin_compte.setMotdepasse(rs.getString("pwd"));
+					admin_compte.setMotdepasse(pwdcrypt.decrypter(rs.getString("pwd")));
 					admin_compte.setProfile(rs.getString("libelle_profile"));
 					admin_compte.setBasedonnee(rs.getString("l.nom_base"));
 					admin_compte.setDate_deb_val(formatDateJour.format(rs.getDate("val_date_deb")));
@@ -95,7 +97,7 @@ private ListModel strset =null;
 	public boolean addAdministrationLoginBean(AdministrationLoginBean addedData) throws ParseException
 	{
 		
-		
+		PwdCrypt pwdcrypt=new PwdCrypt();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
@@ -109,7 +111,7 @@ private ListModel strset =null;
 			String select_structure="INSERT INTO compte ( id_profile, login, pwd, database_id, val_date_deb, val_date_fin, modifiedpwd, nom, prenom) VALUES (#id_profile,#login,#pwd,#database_id,#val_date_deb,#val_date_fin,#modifiedpwd,#nom,#prenom)";
 			select_structure = select_structure.replaceAll("#id_profile", Integer.toString(getKeyMap(addedData.getProfile())));
 			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
-			select_structure = select_structure.replaceAll("#pwd", "'"+addedData.getMotdepasse()+"'");
+			select_structure = select_structure.replaceAll("#pwd", "'"+pwdcrypt.crypter(addedData.getMotdepasse())+"'");
 			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
 			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
 			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
@@ -156,11 +158,15 @@ private ListModel strset =null;
 	 * cette classe permet de controler la validité des données insérées (par rapport à leurs taille)
 	 * @param addedData
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	public boolean controleIntegrite(AdministrationLoginBean addedData)
+	public boolean controleIntegrite(AdministrationLoginBean addedData) throws InterruptedException
 	{
 		try 
-		{   DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		{   
+			int pwd = Integer.parseInt(addedData.getMotdepasse());
+			
+			DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			if(addedData.getNom().length()>50)
 			{
 				Messagebox.show("La taille du champ nom ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
@@ -179,9 +185,9 @@ private ListModel strset =null;
 						return false;
 					}
 					else
-						if(addedData.getMotdepasse().length()>9)
+						if(Integer.toString(pwd).length()!=8)
 						{
-							Messagebox.show("La taille du champ mot de passe ne doit pas dépasser 8 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+							Messagebox.show("Le mot de passe doit contenir 8 entiers Exemple 01012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
 							return false;
 						}
 						else
@@ -208,6 +214,11 @@ private ListModel strset =null;
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		catch (NumberFormatException nfe)
+	    {
+			Messagebox.show("Le mot de passe doit être un entier composé de 8 chiffres Exemple 21012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
+			return false;
+	    }
 		
 			
 		return true;
@@ -220,6 +231,7 @@ private ListModel strset =null;
 	 */
 	public Boolean majAdminLoginBean(AdministrationLoginBean addedData)
 	{
+		PwdCrypt pwdcrypt=new PwdCrypt();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
@@ -230,7 +242,7 @@ private ListModel strset =null;
 			String select_structure="UPDATE  compte SET id_profile=#id_profile ,login=#login,pwd=#pwd,database_id=#database_id, val_date_deb=#val_date_deb,val_date_fin=#val_date_fin,modifiedpwd=#modifiedpwd,nom=#nom,prenom=#prenom WHERE id_compte=#valeur_id_compte"; 
 			select_structure = select_structure.replaceAll("#id_profile", Integer.toString(getKeyMap(addedData.getProfile())));
 			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
-			select_structure = select_structure.replaceAll("#pwd", "'"+addedData.getMotdepasse()+"'");
+			select_structure = select_structure.replaceAll("#pwd", "'"+pwdcrypt.crypter(addedData.getMotdepasse())+"'");
 			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
 			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
 			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
