@@ -71,6 +71,13 @@ public class ApplicationFacade {
 	public void setArborescenceMenubean(ArborescenceMenu arborescenceMenubean) {
 		this.arborescenceMenubean = arborescenceMenubean;
 	}
+	
+	public void resetArguments(){
+		
+		this.compteEntrepriseDatabasebean=null;
+		this.arborescenceMenubean=null;
+		this.client_database_id=0;
+	}
 
 	
     
