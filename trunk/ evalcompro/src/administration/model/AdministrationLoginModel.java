@@ -65,8 +65,8 @@ private ListModel strset =null;
 					admin_compte.setMotdepasse(pwdcrypt.decrypter(rs.getString("pwd")));
 					admin_compte.setProfile(rs.getString("libelle_profile"));
 					admin_compte.setBasedonnee(rs.getString("l.nom_base"));
-					admin_compte.setDate_deb_val(formatDateJour.format(rs.getDate("val_date_deb")));
-					admin_compte.setDate_fin_val(formatDateJour.format(rs.getDate("val_date_fin")));
+					admin_compte.setDate_deb_val(rs.getDate("val_date_deb"));
+					admin_compte.setDate_fin_val(rs.getDate("val_date_fin"));
 					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
 					
 					  
@@ -102,7 +102,7 @@ private ListModel strset =null;
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt;
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
+		
 		
 		try 
 		{
@@ -113,8 +113,8 @@ private ListModel strset =null;
 			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
 			select_structure = select_structure.replaceAll("#pwd", "'"+pwdcrypt.crypter(addedData.getMotdepasse())+"'");
 			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
-			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
-			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
+			select_structure = select_structure.replaceAll("#val_date_deb", "'"+ formatter.format(addedData.getDate_deb_val())+"'");
+			select_structure = select_structure.replaceAll("#val_date_fin", "'"+formatter.format(addedData.getDate_fin_val())+"'");
 			select_structure = select_structure.replaceAll("#modifiedpwd", "'"+getCurrentDatetime()+"'");
 			select_structure = select_structure.replaceAll("#nom", "'"+addedData.getNom()+"'");
 			select_structure = select_structure.replaceAll("#prenom", "'"+addedData.getPrenom()+"'");
@@ -164,12 +164,14 @@ private ListModel strset =null;
 	{
 		try 
 		{   
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			int pwd = Integer.parseInt(addedData.getMotdepasse());
 			
 			DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			if(addedData.getNom().length()>50)
 			{
 				Messagebox.show("La taille du champ nom ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				
 				return false;
 			}
 			else
@@ -197,13 +199,13 @@ private ListModel strset =null;
 								return false;
 							}
 							else
-								if(!isValidDateStr(addedData.getDate_deb_val()))
+								if(!isValidDateStr(formatter.format(addedData.getDate_deb_val())))
 								{
 									Messagebox.show("La date debut validité doit être au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
 									return false;
 								}
 								else
-									if(!isValidDateStr(addedData.getDate_fin_val()))
+									if(!isValidDateStr(formatter.format(addedData.getDate_fin_val())))
 									{
 										Messagebox.show("La date fin validité doit être au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
 										return false;
@@ -231,6 +233,7 @@ private ListModel strset =null;
 	 */
 	public Boolean majAdminLoginBean(AdministrationLoginBean addedData)
 	{
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		PwdCrypt pwdcrypt=new PwdCrypt();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
@@ -244,8 +247,8 @@ private ListModel strset =null;
 			select_structure = select_structure.replaceAll("#login", "'"+addedData.getLogin()+"'");
 			select_structure = select_structure.replaceAll("#pwd", "'"+pwdcrypt.crypter(addedData.getMotdepasse())+"'");
 			select_structure = select_structure.replaceAll("#database_id", Integer.toString((Integer)getDatabaseList().get((addedData.getBasedonnee()))));
-			select_structure = select_structure.replaceAll("#val_date_deb", "'"+addedData.getDate_deb_val()+"'");
-			select_structure = select_structure.replaceAll("#val_date_fin", "'"+addedData.getDate_fin_val()+"'");
+			select_structure = select_structure.replaceAll("#val_date_deb", "'"+formatter.format(addedData.getDate_deb_val())+"'");
+			select_structure = select_structure.replaceAll("#val_date_fin", "'"+formatter.format(addedData.getDate_fin_val())+"'");
 			select_structure = select_structure.replaceAll("#modifiedpwd", "'"+getCurrentDatetime()+"'");
 			select_structure = select_structure.replaceAll("#nom", "'"+addedData.getNom()+"'");
 			select_structure = select_structure.replaceAll("#prenom", "'"+addedData.getPrenom()+"'");
