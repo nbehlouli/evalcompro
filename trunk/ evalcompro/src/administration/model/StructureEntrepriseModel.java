@@ -76,6 +76,7 @@ public class StructureEntrepriseModel {
 				}else {
 					return listStructureEntreprise;
 				}
+				conn.close();
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
