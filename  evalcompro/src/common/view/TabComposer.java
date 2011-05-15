@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 import org.zkoss.zul.Div;
@@ -19,6 +21,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Window;
 
 import common.ApplicationFacade;
 import common.bean.ArborescenceMenu;
@@ -32,6 +35,9 @@ public class TabComposer extends GenericForwardComposer{
 	Tabbox tb;
 	Tabs tbtabs;
 	Tabpanels tbpanels;
+	Div div;
+	Window main;
+	
 	public TabComposer(){
 
 
@@ -102,6 +108,14 @@ public class TabComposer extends GenericForwardComposer{
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public void onClick$exit(MouseEvent event) throws Exception{
+		Executions.createComponents("../login/login.zul", div, null);
+		main=(Window)this.self;
+		main.detach();
+		ApplicationFacade.getInstance().resetArguments();
+		
 	}
 	 	
 }
