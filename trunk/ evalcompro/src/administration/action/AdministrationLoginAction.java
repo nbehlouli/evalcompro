@@ -20,7 +20,9 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import administration.bean.AdministrationLoginBean;
@@ -42,8 +44,8 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	Textbox  motdepasse;
 	Listbox  profile;
 	Listbox  basedonnee;
-	Textbox date_deb_val;
-	Textbox date_fin_val;
+	Datebox date_deb_val;
+	Datebox date_fin_val;
 	Textbox datemodifpwd;
 	AnnotateDataBinder binder;
 	List<AdministrationLoginBean> model = new ArrayList<AdministrationLoginBean>();
@@ -90,13 +92,14 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		//basedonneemodel.add((String) me.getKey());
 		}
 		// création de la structure de l'entreprise bean
-		AdministrationLoginModel admin_compte =new AdministrationLoginModel();
-		model=admin_compte.checkLoginBean();
+		//AdministrationLoginModel admin_compte =new AdministrationLoginModel();
+		model=init.checkLoginBean();
 		
 		
 
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
+		
 	}
 
 	public List<AdministrationLoginBean> getModel() {
@@ -116,10 +119,8 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 	public void onClick$add() throws WrongValueException, ParseException {
 		
 		clearFields();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		String datecuurent = sdf.format(new Date());
-		date_deb_val.setText(datecuurent);
-		date_fin_val.setText("2050/12/01");
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String datecuurent = sdf.format(new Date());*/
 		profile.setSelectedIndex(0);
 		basedonnee.setSelectedIndex(0);
 		
@@ -128,8 +129,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		add.setVisible(false);
 		update.setVisible(false);
 		delete.setVisible(false);
-		upload.setVisible(false);
-		download.setVisible(false);
+		
 	}
 	
 	public void onClick$okAdd()throws WrongValueException, ParseException, InterruptedException {
@@ -169,8 +169,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		add.setVisible(true);
 		update.setVisible(true);
 		delete.setVisible(true);
-		upload.setVisible(true);
-		download.setVisible(true);
+		
 				
 	}
 
@@ -197,29 +196,46 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		if (donneeValide)
 		{
 			//insertion de la donnée ajoutée dans la base de donnée
-			boolean donneeAjoute=admini_login_model.majAdminLoginBean(selected);
-			// raffrechissemet de l'affichage
-			if (donneeAjoute )
-			{
-				binder.loadAll();
+			
+			if (Messagebox.OK == Messagebox.show("Voulez appliquer les modifications?", "Question",
+					Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)) {
+				boolean donneeAjoute=admini_login_model.majAdminLoginBean(selected);
+				// raffrechissemet de l'affichage
+				if (donneeAjoute )
+				{
+					binder.loadAll();
+				}
 			}
-		}
+				return;
+			} else {
+				
+				return;
+			}
+
+			
 	}
 
-	public void onClick$delete() {
+	public void onClick$delete() throws InterruptedException {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
 		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
 		//suppression de la donnée supprimée de la base de donnée
-		admini_login_model.supprimerLogin(selected);
-		model.remove(selected);
-		selected = null;
-
+		
+		if (Messagebox.OK == Messagebox.show("Voulez vous supprimer cet utilisateur?", "Question",
+				Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)) {
+			admini_login_model.supprimerLogin(selected);
+			model.remove(selected);
+			selected = null;
+			binder.loadAll();
+			return;
+		} else {
+			
+			return;
+		}
 
 		
-		binder.loadAll();
 	}
 
 	public void onClick$effacer()  {
@@ -230,8 +246,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		add.setVisible(true);
 		update.setVisible(true);
 		delete.setVisible(true);
-		upload.setVisible(true);
-		download.setVisible(true);
+		
 		
 	}
 
@@ -322,22 +337,24 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		return name;
 	}
 	
-	private String getSelecteddate_deb_val() throws WrongValueException, ParseException {
-		//DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		String name = date_deb_val.getValue();
+	private Date getSelecteddate_deb_val() throws WrongValueException, ParseException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		String name = date_deb_val.getText();
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(date_deb_val, "la date debut validité ne doit pas être vide!");
 		}
-		return name;
+	   Date datedeb = df.parse(name); 
+		return datedeb;
 	}
 
-	private String getSelecteddate_fin_val() throws WrongValueException, ParseException {
-		
-		String name = date_fin_val.getValue();
+	private Date getSelecteddate_fin_val() throws WrongValueException, ParseException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		String name = date_fin_val.getText();
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(date_fin_val, "la date fin validité ne doit pas être vide!");
 		}
-		return name;
+		 Date datefin = df.parse(name); 
+		return datefin;
 	}
 	
 	
@@ -348,8 +365,6 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		motdepasse.setText("");
 		//profile.setItemRenderer("");
 		//basedonnee.setText("");
-		date_deb_val.setText("");
-		date_fin_val.setText("");
 		datemodifpwd.setText("");
 		
   }
