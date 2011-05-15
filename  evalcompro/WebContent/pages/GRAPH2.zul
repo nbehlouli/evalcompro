@@ -1,6 +1,10 @@
-<?page title="new page title" contentType="text/html;charset=UTF-8"?>
-<zk>
-<window title="new page title" border="normal">
-New Content Here!
+<window id="winGraph2" border="normal" height="100%" apply="Statistique.action.StatPopAge" contentStyle="overflow:auto">
+	
+	
+	
+	<vbox>
+		<chart id="mychart" title="Répartition de la population à évaluer par tranche d'âge" width="800" if="true" 
+			height="400" type="bar" threeD="true" fgAlpha="128" model="${model}" />
+	</vbox>
+
 </window>
-</zk>
