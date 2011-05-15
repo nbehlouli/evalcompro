@@ -1,6 +1,7 @@
-<window  id="win" title="Administration des utilisateurs" apply="administration.action.AdministrationLoginAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto">
-	<listbox id="admincomptelb" rows="13" model="@{winCtrl.model}"
-		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px">
+<window  id="win" title="Administration des utilisateurs" apply="administration.action.AdministrationLoginAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto"
+ closable="true"  onClose="self.visible = false; event.stopPropagation();">
+	<listbox id="admincomptelb" rows="1" model="@{winCtrl.model}"
+		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px" >
 		<listhead sizable="true">
 		
 			<listheader label="Nom" width="130px" sort="auto" align="center" />
@@ -59,8 +60,10 @@
                 <textbox id="motdepasse" value="@{winCtrl.selected.motdepasse,save-when=none}" />
                 <listbox id="profile" mold="select" selectedItem="@{winCtrl.selected.profile,save-when=none}" />
 	            <listbox id="basedonnee" mold="select" selectedItem="@{winCtrl.selected.basedonnee,save-when=none}" />
-                <textbox id="date_deb_val" value="@{winCtrl.selected.date_deb_val,save-when=none}" />
-                <textbox id="date_fin_val" value="@{winCtrl.selected.date_fin_val,save-when=none}" />
+                <!-- textbox id="date_deb_val" value="@{winCtrl.selected.date_deb_val,save-when=none}" /-->
+                <datebox id="date_deb_val"  cols="8"  value="@{winCtrl.selected.date_deb_val,save-when=none}" format="yyyy/MM/dd"/>
+                <!-- textbox id="date_fin_val" value="@{winCtrl.selected.date_fin_val,save-when=none}" /-->
+                <datebox id="date_fin_val" cols="8" value="@{winCtrl.selected.date_fin_val,save-when=none}" format="yyyy/MM/dd" />
                 <textbox id="datemodifpwd" value="@{winCtrl.selected.datemodifpwd,save-when=none}" Readonly="true"  />
                 <textbox id="id_compte" value="@{winCtrl.selected.id_compte,save-when=none}" visible="false"  />
                 
@@ -71,16 +74,15 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add" label="Ajouter " image="" tooltip="Ajouter une ligne"/>
-			<button id="okAdd" label="Valider" image="" tooltip="Valider"/>
-			<button id="update" label="Modifier" />
-			<button id="delete" label="Supprimer" />
-			<button id="effacer" label="Retour" />
+			<button id="add"  image="/image/DITEnabled.bmp" height="25px" width="30px" tooltiptext="Ajouter un utilisateur"/>
+			<button id="okAdd"  image="/image/OkEnabled.bmp" height="25px" width="30px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier un utilisateur"/>
+			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer un utilisateur "/>
+			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retourner a la selection"/>
 		</div>
 		<div>
 
-			<button id="upload" label="upload" image="../imges/valider.gif" tooltip="Ajouter une ligne"/>
-			<button id="download" label="download" />
+			
 		</div>
 
 		
