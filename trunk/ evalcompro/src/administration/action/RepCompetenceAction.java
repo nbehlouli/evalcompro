@@ -78,7 +78,13 @@ public class RepCompetenceAction extends GenericForwardComposer {
 		RepCompetenceModel rep_comp =new RepCompetenceModel();
 		model=rep_comp.loadRepCompetence();
 		binder = new AnnotateDataBinder(comp);
+		
+		
+		//ces trois instructions permettent de selection le premier element de la listebox
+		selected=model.get(0);
 		binder.loadAll();
+		
+		admincomptelb.setSelectedIndex(0);
 		
 	}
 

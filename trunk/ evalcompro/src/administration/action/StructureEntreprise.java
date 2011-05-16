@@ -83,7 +83,11 @@ public class StructureEntreprise extends GenericForwardComposer {
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 
 		binder = new AnnotateDataBinder(comp);
+		selected=model.get(0);
 		binder.loadAll();
+		
+		structureEntrepriselb.setSelectedIndex(0);
+		
 	}
 
 	public List<StructureEntrepriseBean> getModel() {
