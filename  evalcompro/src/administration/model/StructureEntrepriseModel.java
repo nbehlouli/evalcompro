@@ -71,16 +71,19 @@ public class StructureEntrepriseModel {
 					structureEntreprise.setLibelleSection(rs.getString("libelle_section"));
 					  
 					listStructureEntreprise.add(structureEntreprise);
-				   
+				   System.out.println(rs.getString("code_structure"));
 					
 				}else {
 					return listStructureEntreprise;
 				}
-				conn.close();
+				
 			}
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			((java.sql.Connection) dbcon).close();
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			conn.close();
 		}
 		
 			
