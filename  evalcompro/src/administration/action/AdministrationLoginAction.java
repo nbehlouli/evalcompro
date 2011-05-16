@@ -98,7 +98,10 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		
 
 		binder = new AnnotateDataBinder(comp);
+		selected=model.get(0);
 		binder.loadAll();
+		
+		admincomptelb.setSelectedIndex(0);
 		
 	}
 
