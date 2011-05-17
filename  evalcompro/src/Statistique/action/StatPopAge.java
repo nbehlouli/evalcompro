@@ -32,7 +32,8 @@ public class StatPopAge extends  GenericForwardComposer{
         catmodel.setValue("2002", "entre 18 et 30 ans", new Integer(40));
         catmodel.setValue("2002", "entre 31 et 45 ans", new Integer(60));
         catmodel.setValue("2002", "Superieur à 46 ans", new Integer(70));
+
         mychart.setModel(catmodel);
-		
+
 	}
 }
