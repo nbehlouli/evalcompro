@@ -4,9 +4,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
+import org.zkoss.zul.impl.ChartEngine;
 
 public class StatPopNivInstr extends  GenericForwardComposer{
 
@@ -15,6 +17,8 @@ public class StatPopNivInstr extends  GenericForwardComposer{
 	 */
 	private static final long serialVersionUID = 1L;
 	Chart mychart;
+	byte[] image;
+	
 	public StatPopNivInstr()
 	{
 		
@@ -40,6 +44,20 @@ public class StatPopNivInstr extends  GenericForwardComposer{
         catmodel.setValue("Comptable", "Moyen", new Integer(60));
         catmodel.setValue("Comptable", "Sans niveau", new Integer(70));
         mychart.setModel(catmodel);
+        
+        //ces instructions permettent de récuperer l'objet image pour l'export
+        
+        ChartEngine d=mychart.getEngine();
+		image=d.drawChart(mychart);
 		
 	}
+	
+	 public void onClick$downloadimage() {
+
+
+			//enregistrement du fichier
+			Filedownload fichierdownload=new Filedownload();
+
+			fichierdownload.save(image, "jpg", "Stat_Population_Niveau_Instruction.jpg");
+		}
 }
