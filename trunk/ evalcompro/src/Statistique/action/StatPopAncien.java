@@ -4,9 +4,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
+import org.zkoss.zul.impl.ChartEngine;
 
 public class StatPopAncien extends  GenericForwardComposer{
 
@@ -15,6 +17,8 @@ public class StatPopAncien extends  GenericForwardComposer{
 	 */
 	private static final long serialVersionUID = 1L;
 	Chart mychart;
+	byte[] image;
+	
 	public StatPopAncien()
 	{
 		
@@ -42,6 +46,19 @@ public class StatPopAncien extends  GenericForwardComposer{
         catmodel.setValue("2002", "Q3", new Integer(70));
         catmodel.setValue("2002", "Q4", new Integer(90));
         mychart.setModel(catmodel);
+        //ces instructions permettent de récuperer l'objet image pour l'export
+        
+        ChartEngine d=mychart.getEngine();
+		image=d.drawChart(mychart);
 		
 	}
+	
+	 public void onClick$downloadimage() {
+
+
+			//enregistrement du fichier
+			Filedownload fichierdownload=new Filedownload();
+
+			fichierdownload.save(image, "jpg", "Stat_Population_ancienneté.jpg");
+		}
 }
