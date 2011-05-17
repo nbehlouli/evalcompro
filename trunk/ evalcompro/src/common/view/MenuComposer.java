@@ -112,7 +112,7 @@ public class MenuComposer extends GenericForwardComposer{
 		{
 			
 			MenuNode node = (MenuNode)data;
-			item.setImage("../menu/icon-24x24.png");
+			item.setImage("/image/fleche_droite_2.ico");
 			item.setLabel(node.getLabel());
 			item.setValue(node);
 			
