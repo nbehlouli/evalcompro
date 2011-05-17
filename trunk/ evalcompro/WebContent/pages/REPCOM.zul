@@ -37,22 +37,13 @@
 			
 		</listitem>
 	</listbox>
-	<grid span="true" sizedByContent="true" width="100%" height="200px">
-        <auxhead>
-            <auxheader colspan="13" class="topic">Edition des données</auxheader>
-        </auxhead>
-        <columns sizable="true">
-       
-            
-         
-          
-            
-           
-        </columns>
-        <rows>
-                  <row>
+ <groupbox id="gb" mold="3d" width="100%">
+        <caption label="Edition des données" />
         
-          
+        <vbox spacing ="100">
+                 
+        
+          <hbox spacing ="100">
                 <!-- Selected contributor's title value is same as title model's data-->
                  
                          <label id="code_famille_lbl"  value="Code famille:"  sclass="textboxdetail"/>
@@ -64,33 +55,34 @@
 		                <label id="groupe_lbl"  value="Groupe :"  sclass="textboxdetail"/>
 		                <textbox id="groupe" value="@{winCtrl.selected.groupe,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                
-	                 </row>
-	                  <row>
+	                 </hbox>
+	                  <hbox>
 	                   <label id="codecomp_lbl"  value=" Code compétence:"  sclass="textboxdetail"/>
 			          <textbox id="code_competence" value="@{winCtrl.selected.code_competence,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			           <label id="aff_lbl"  value=" Compétence affichable:"  sclass="textboxdetail"/>
 		                 <textbox id="affichable" value="@{winCtrl.selected.affichable,save-when=none}" Readonly="true" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                 <label id="comp_lbl"  value=" Libellé compétence:"  sclass="textboxdetail"/>
 				       <textbox id="libelle_competence"  width="200px"  value="@{winCtrl.selected.libelle_competence,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-				      </row>
+				      </hbox>
 				      
-				      <row>
+				      <hbox>
 				       <label id="defcomp_lbl"  value=" Définition  compétence:"  sclass="textboxdetail"/>
-			            <hlayout> 
+			            <hbox> 
 			            <textbox id="definition_competence" tabbable="true" width="400px" rows="6"  value="@{winCtrl.selected.definition_competence,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-			             </hlayout>
-			           <label id="app_obs_lbl"  value="Aptitude opservable: "  sclass="textboxdetail"/>
-			          <textbox id="aptitude_observable" width="400px;" rows="5" cols="40" value="@{winCtrl.selected.aptitude_observable,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			             </hbox>
+			           <label id="app_obs_lbl"  value="Aptitude observable: "  sclass="textboxdetail"/>
+			          <textbox id="aptitude_observable" width="400px;" rows="5" cols="40"  value="@{winCtrl.selected.aptitude_observable,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			                        
 			            <textbox id="id_repertoire_competence" value="@{winCtrl.selected.id_repertoire_competence,save-when=none}" visible="false" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-			          </row>
-		              
+			         
+		              </hbox>
+		          
          
            
-        </rows>
-    </grid>
+        </vbox>
+  
 	
-   
+   </groupbox>
 	<hbox pack="center" width="100%" spacing="20">
 	
 		<div>
