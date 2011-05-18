@@ -19,7 +19,7 @@
 			<listheader label="Définition compétence" width="130px" align="left" />
 			<listheader label="Aptitude observable" width="130px" align="left" />
 			<listheader label="Affichable" width="80px" align="center" />
-			<!-- listheader label="id repertoire competence" width="100px" align="center" visible="false" /-->
+			<listheader label="id repertoire competence" width="100px" align="center" visible="false" />
 
 	
 		</listhead>
@@ -37,6 +37,7 @@
 			
 		</listitem>
 	</listbox>
+	
  <groupbox id="gb" mold="3d" width="100%">
         <caption label="Edition des données" />
         
@@ -60,7 +61,7 @@
 	                   <label id="codecomp_lbl"  value=" Code compétence:"  sclass="textboxdetail"/>
 			          <textbox id="code_competence" value="@{winCtrl.selected.code_competence,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			           <label id="aff_lbl"  value=" Compétence affichable:"  sclass="textboxdetail"/>
-		                 <textbox id="affichable" value="@{winCtrl.selected.affichable,save-when=none}" Readonly="true" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+		                 <listbox id="affichable" mold="select" selectedItem="@{winCtrl.selected.affichable,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                 <label id="comp_lbl"  value=" Libellé compétence:"  sclass="textboxdetail"/>
 				       <textbox id="libelle_competence"  width="200px"  value="@{winCtrl.selected.libelle_competence,save-when=none}" style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 				      </hbox>
