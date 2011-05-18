@@ -200,21 +200,19 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		{
 			//insertion de la donnée ajoutée dans la base de donnée
 			
-			if (Messagebox.OK == Messagebox.show("Voulez appliquer les modifications?", "Question",
-					Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)) {
-				boolean donneeAjoute=admini_login_model.majAdminLoginBean(selected);
-				// raffrechissemet de l'affichage
-				if (donneeAjoute )
-				{
-					binder.loadAll();
-				}
-			}
-				return;
-			} else {
-				
+			if (Messagebox.show("Voulez vous appliquer les modifications?", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) {
+				    //System.out.println("pressyes");
+				admini_login_model.majAdminLoginBean(selected);	binder.loadAll();
 				return;
 			}
-
+			
+			else{
+				return;
+			}
+		}	
+			
+			
 			
 	}
 
@@ -226,17 +224,21 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
 		//suppression de la donnée supprimée de la base de donnée
 		
-		if (Messagebox.OK == Messagebox.show("Voulez vous supprimer cet utilisateur?", "Question",
-				Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)) {
-			admini_login_model.supprimerLogin(selected);
+		if (Messagebox.show("Voulez vous supprimer cet utilisateur?", "Prompt", Messagebox.YES|Messagebox.NO,
+			    Messagebox.QUESTION) == Messagebox.YES) {
+			    //System.out.println("pressyes");
 			model.remove(selected);
 			selected = null;
 			binder.loadAll();
 			return;
-		} else {
-			
+		}
+		
+		else{
 			return;
 		}
+		
+		
+		
 
 		
 	}
