@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
@@ -164,8 +165,11 @@ private ListModel strset =null;
 	{
 		try 
 		{   
+			
+			
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-			//int pwd = Integer.parseInt(addedData.getMotdepasse());
+			int pwd = Integer.parseInt(addedData.getMotdepasse());
+			
 			
 			DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			if(addedData.getNom().length()>50)
@@ -187,10 +191,10 @@ private ListModel strset =null;
 						return false;
 					}
 					else
-						
+						 
 						if(addedData.getMotdepasse().length()!=8)
 						{
-							Messagebox.show("Le mot de passe doit contenir 8 entiers Exemple 01012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
+							Messagebox.show("La taille du mot de passe doit contenir 8 entiers Exemple 01012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
 							return false;
 						}
 						else
