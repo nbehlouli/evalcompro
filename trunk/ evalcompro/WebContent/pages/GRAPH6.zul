@@ -1,6 +1,35 @@
-<?page title="new page title" contentType="text/html;charset=UTF-8"?>
-<zk>
-<window title="new page title" border="normal">
-New Content Here!
+<window id="winGraph2" border="normal" height="100%" apply="Statistique.action.StatCotationEmploye" contentStyle="overflow:auto">
+	
+	<groupbox id="gb" mold="3d" width="100%" height="500">
+        <caption label="Sélection d'un employé" />
+        
+        <hbox spacing ="100">
+        	<label value="Nom de l'employé:   "  sclass="textboxdetail"/>
+        	
+			<combobox id="nom_employe" autodrop="true" mold="rounded" buttonVisible="true"/>
+			<vbox spacing ="100">
+			<hbox spacing ="100">
+			<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/>
+        	
+			<combobox id="compagne" autodrop="true" mold="rounded" buttonVisible="true"/>
+			</hbox>
+			</vbox>
+    	
+    	</hbox>
+    </groupbox>
+    
+   
+    
+	<vbox>
+		<chart id="mychart" title="Cotation moyenne de l'employé ... pour la compagne ..." width="800" if="true" 
+			height="400" type="bar" threeD="true" fgAlpha="128" model="${model}" context="editPopup"/>
+			
+		<menupopup id="editPopup">      
+        	<menuitem id= "downloadimage" label="Enregistrer l'image..." />
+    	</menupopup>
+			
+	</vbox>
+	
+
+
 </window>
-</zk>
