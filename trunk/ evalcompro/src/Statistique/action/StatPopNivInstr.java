@@ -37,12 +37,12 @@ public class StatPopNivInstr extends  GenericForwardComposer{
 //		mychart.setModel(model);
 		
 		CategoryModel catmodel = new SimpleCategoryModel();
-        catmodel.setValue("Directeur de pôle", "Universitaire", new Integer(20));
-        catmodel.setValue("Directeur de pôle", "Moyen", new Integer(35));
-        catmodel.setValue("Directeur de pôle", "Sans niveau", new Integer(40));
-        catmodel.setValue("Comptable", "Universitaire", new Integer(40));
-        catmodel.setValue("Comptable", "Moyen", new Integer(60));
-        catmodel.setValue("Comptable", "Sans niveau", new Integer(70));
+        catmodel.setValue("Directeur de pôle", "Universitaire", new Integer(75));
+        catmodel.setValue("Directeur de pôle", "Moyen", new Integer(20));
+        catmodel.setValue("Directeur de pôle", "Sans niveau", new Integer(5));
+        catmodel.setValue("Comptable", "Universitaire", new Integer(66));
+        catmodel.setValue("Comptable", "Moyen", new Integer(33));
+        catmodel.setValue("Comptable", "Sans niveau", new Integer(1));
         mychart.setModel(catmodel);
         
         //ces instructions permettent de récuperer l'objet image pour l'export
