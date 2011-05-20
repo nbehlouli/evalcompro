@@ -37,14 +37,15 @@ public class StatPopAncien extends  GenericForwardComposer{
 //		mychart.setModel(model);
 		
 		CategoryModel catmodel = new SimpleCategoryModel();
-        catmodel.setValue("2001", "Q1", new Integer(20));
-        catmodel.setValue("2001", "Q2", new Integer(35));
-        catmodel.setValue("2001", "Q3", new Integer(40));
-        catmodel.setValue("2001", "Q4", new Integer(55));
-        catmodel.setValue("2002", "Q1", new Integer(40));
-        catmodel.setValue("2002", "Q2", new Integer(60));
-        catmodel.setValue("2002", "Q3", new Integer(70));
-        catmodel.setValue("2002", "Q4", new Integer(90));
+        catmodel.setValue("Directeur de pôle", "Entre 1 et 15 ans", new Integer(60));
+        catmodel.setValue("Directeur de pôle", "Entre 16 et 30 ans", new Integer(20));
+        catmodel.setValue("Directeur de pôle", "Supérieur à 31", new Integer(10));
+        
+        
+        catmodel.setValue("comptable", "Entre 1 et 15 ans", new Integer(55));
+        catmodel.setValue("comptable", "Entre 16 et 30 ans", new Integer(30));
+        catmodel.setValue("comptable", "Supérieur à 31", new Integer(5));
+        
         mychart.setModel(catmodel);
         //ces instructions permettent de récuperer l'objet image pour l'export
         
