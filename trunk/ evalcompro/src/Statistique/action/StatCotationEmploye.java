@@ -30,7 +30,8 @@ public class StatCotationEmploye extends  GenericForwardComposer{
         
 		super.doAfterCompose(comp);
 		ListModel dictModel= new SimpleListModel(getDirectory());
-		nom_employe.setModel(dictModel);		
+		nom_employe.setModel(dictModel);	
+		
 		CategoryModel catmodel = new SimpleCategoryModel();
 		//catmodel.setValue("poste", "entre 18 et 30 ans", new Integer(pourcentage));
         catmodel.setValue("IMI", "Affaire", new Double(2));
