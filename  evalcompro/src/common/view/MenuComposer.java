@@ -54,7 +54,7 @@ public class MenuComposer extends GenericForwardComposer{
 		while(iterator.hasNext())
 		{
 			EcranBean ecranBean=(EcranBean)iterator.next();
-			System.out.println(ecranBean.getLibelle_ecran());
+			
 			//affecter ces informations au menuModel appropriés
 			menuModel.add(new MenuNode(ecranBean.getLibelle_ecran(),"../pages/"+ecranBean.getCode_ecran()+".zul"));
 			//System.out.println(" libelle --> "+ecranBean.getLibelle_ecran()+  "  code ecran --> "+ecranBean.getCode_ecran()+".zul");
