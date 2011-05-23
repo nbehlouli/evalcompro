@@ -15,7 +15,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.UploadEvent;
+
 
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
@@ -68,6 +68,8 @@ public class StructureEntreprise extends GenericForwardComposer {
 	
 	StructureEntrepriseBean selected;
 	
+	
+
 
 	public StructureEntreprise() {
 	}
@@ -387,20 +389,10 @@ public class StructureEntreprise extends GenericForwardComposer {
 		//chargement du contenu de la table structure_entreprise et creation du fichier excel
 		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
 		
-		byte[] fichier=structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
-		
-		//InputStream file=new InputStream(fichier);
-		
-		//enregistrement du fichier
-		Filedownload fichierdownload=new Filedownload();
+		structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
 
-		
-		fichierdownload.save(fichier, "xls", "Structure_entreprise.xls");
-		
-		// partie affichage
-		
-		//partie base de données
 	}
+	
 	public void onSelect$structureEntrepriselb() {
 		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
 				codeUnite,nomUnite, codeDepartement, nomdepatrement, codeService,NomService, codeSection, nomSection });
@@ -559,5 +551,10 @@ public class StructureEntreprise extends GenericForwardComposer {
             ex.printStackTrace();
         }
     }
+
+    
+
+
+
 
 }
