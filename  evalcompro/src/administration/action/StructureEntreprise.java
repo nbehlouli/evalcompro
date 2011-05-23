@@ -150,7 +150,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 			return;
 		}
 		String codeStructureselectione=selected.getCodestructure();
-		System.out.println(getSelectedcodeStructure());
+		
 		selected.setCodestructure(getSelectedcodeStructure());
 		selected.setCodeDivision(getSelectedcodeDivision());
 		selected.setLibelleDivision(getSelectednomDivision());
@@ -222,10 +222,11 @@ public class StructureEntreprise extends GenericForwardComposer {
 		}
 	}
 	
-	public void onUpload$divupdown(UploadEvent event) throws InterruptedException
+	//public void onUpload$divupdown(UploadEvent event)throws InterruptedException
+	public void processMedia(Media med)
 	{
 		
-		Media med=event.getMedia();
+		//Media med=event.getMedia();
 		
 		if ((med != null)&&(med.getName()!=null)) 
 		{
@@ -237,9 +238,8 @@ public class StructureEntreprise extends GenericForwardComposer {
 			} 
 			else 
 			{
-			  // process the file...
 				
-
+			  // process the file...
 				StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
 				if ( filename.endsWith(".xls") ) 
 				{
@@ -285,7 +285,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 								+ ";"+donnee.getCodesection()
 								+ ";"+donnee.getLibelleSection();
 								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-								System.out.println("-->"+listeRejet);
+								
 							}
 							AfficherFenetreRejet(listeRejet);
 
@@ -300,6 +300,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 				else
 					if(filename.endsWith(".xlsx"))
 					{
+						
 						// lecture de fichiers Office 2007+ XML
 						List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadXLSXFile(med.getStreamData());
 						List<StructureEntrepriseBean> donneeRejetes;
@@ -342,7 +343,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 									+ ";"+donnee.getCodesection()
 									+ ";"+donnee.getLibelleSection();
 									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-									System.out.println("-->"+listeRejet);
+									
 								}
 								AfficherFenetreRejet(listeRejet);
 
@@ -353,24 +354,27 @@ public class StructureEntreprise extends GenericForwardComposer {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						
 					}
 				
 				} 				
-			}  
-
+			}
 		}	
 
 
 	
 	public void onClick$upload() {
-		Executions.getCurrent().getDesktop().setAttribute(
-	            "org.zkoss.zul.Fileupload.target", divupdown);
+		Executions.getCurrent().getDesktop().setAttribute("org.zkoss.zul.Fileupload.target", divupdown);
+		
 		try 
 		{
+			
 			Fileupload fichierupload=new Fileupload();
+			
+			//Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
 			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
 			
-			
+			processMedia(me);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -378,20 +382,21 @@ public class StructureEntreprise extends GenericForwardComposer {
 
 	}
 
+	
 	public void onClick$download() {
 		//chargement du contenu de la table structure_entreprise et creation du fichier excel
 		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
-		System.out.println("avant recup donnee");
+		
 		byte[] fichier=structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
 		
 		//InputStream file=new InputStream(fichier);
-		System.out.println("apres recup donnee");
+		
 		//enregistrement du fichier
 		Filedownload fichierdownload=new Filedownload();
 
-		System.out.println("avant save");
+		
 		fichierdownload.save(fichier, "xls", "Structure_entreprise.xls");
-		System.out.println("save");
+		
 		// partie affichage
 		
 		//partie base de données
@@ -531,10 +536,10 @@ public class StructureEntreprise extends GenericForwardComposer {
     	Map<String, String> listDonne=new HashMap <String, String>();
 		listDonne.put("rejet", listeRejet);
 		
-		System.out.println("rrrrr==="+listeRejet);
-		Map<String, String > ll=new HashMap<String, String>();
-		String ss="rrrrrrr"+System.getProperty("line.separator")+"gggggggg"; 
-		ll.put("rejet", ss);
+		
+//		Map<String, String > ll=new HashMap<String, String>();
+//		String ss="rrrrrrr"+System.getProperty("line.separator")+"gggggggg"; 
+//		ll.put("rejet", ss);
     	final Window win = (Window) Executions.createComponents("../pages/REJDATA.zul", self, listDonne);
         // We send a message to the Controller of the popup that it works in popup-mode.
         win.setAttribute("popup", true);
