@@ -1,6 +1,9 @@
 package administration.model;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -12,14 +15,17 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 
 
@@ -725,7 +731,7 @@ public class StructureEntrepriseModel {
 	/**
 	 * Cette méthode permet de charger le contenu de la table Structure_entreprise et de créer un fichier excel avec ces données
 	 */
-	public byte[] downloadStructureEntrepriseDataToXls()
+	public void downloadStructureEntrepriseDataToXls()
 	{
 		
 		//recupération du contenu de la table Structure_entreprise
@@ -746,59 +752,59 @@ public class StructureEntrepriseModel {
 			 HSSFRow row = sheet.createRow(0);
 			 HSSFCell cell = row.createCell((short)0);
 			 
-			 //HSSFCellStyle cellStyle = null;
-//			 cellStyle = workBook.createCellStyle();
-//			 cellStyle.setFillForegroundColor(HSSFColor.RED.index);
-//			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+			 HSSFCellStyle cellStyle = null;
+			 cellStyle = workBook.createCellStyle();
+			 cellStyle.setFillForegroundColor(HSSFColor.RED.index);
+			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 			 cell.setCellValue("Code structure");
-			 //			 cell.setCellStyle(cellStyle);
+			 			 cell.setCellStyle(cellStyle);
 			 HSSFCell cell1 = row.createCell((short)1);
 			 cell1.setCellValue("Code division");
-			 //			 cell1.setCellStyle(cellStyle);
+			 			 cell1.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell2 = row.createCell((short)2);
 			 cell2.setCellValue("Nom division");
-			 //			 cell2.setCellStyle(cellStyle);
+			 			 cell2.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell3 = row.createCell((short)3);
 			 cell3.setCellValue("Code direction");
-			 //			 cell3.setCellStyle(cellStyle);
+			 			 cell3.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell4 = row.createCell((short)4);
 			 cell4.setCellValue("Nom direction");
-			 //			 cell4.setCellStyle(cellStyle);
+			 			 cell4.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell5 = row.createCell((short)5);
 			 cell5.setCellValue("Code unité");
-			 //			 cell5.setCellStyle(cellStyle);
+			 			 cell5.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell6 = row.createCell((short)6);
 			 cell6.setCellValue("Nom unité");
-			 //			 cell6.setCellStyle(cellStyle);
+			 			 cell6.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell7 = row.createCell((short)7);
 			 cell7.setCellValue("Code département");
-			 //			 cell7.setCellStyle(cellStyle);
+			 			 cell7.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell8 = row.createCell((short)8);
 			 cell8.setCellValue("Nom département");
-			 //			 cell8.setCellStyle(cellStyle);
+			 			 cell8.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell9 = row.createCell((short)9);
 			 cell9.setCellValue("Code service");
-			 //			 cell9.setCellStyle(cellStyle);
+			 			 cell9.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell10 = row.createCell((short)10);
 			 cell10.setCellValue("Nom service");
-			 //			 cell10.setCellStyle(cellStyle);
+			 			 cell10.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell11 = row.createCell((short)11);
 			 cell11.setCellValue("Code section");
-			 //			 cell11.setCellStyle(cellStyle);
+			 			 cell11.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell12 = row.createCell((short)12);
 			 cell12.setCellValue("Nom section");
-			 //			 cell12.setCellStyle(cellStyle);
+			 			 cell12.setCellStyle(cellStyle);
 			 
 			 int i=1;
 			while (index.hasNext())
@@ -837,25 +843,35 @@ public class StructureEntrepriseModel {
 				 i++;
 			}
 
+
+			
+			FileOutputStream fOut;
+			try 
+			{
+				fOut = new FileOutputStream("Structure_entreprise.xls");
+				workBook.write(fOut);
+				fOut.flush();
+				fOut.close();
 				
-				//FileOutputStream fichier=new FileOutputStream("tmp.xls");
-
+				File file = new File("Structure_entreprise.xls");
+				Filedownload.save(file, "XLS");
+			} 
+			catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 					
-					//workBook.write(fichier);
-					
-					byte[] flux=workBook.getBytes();
-					
-					return flux;
-
-
 		}
 		catch (SQLException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		return null;
+
 	}
 }
