@@ -97,9 +97,9 @@ public class TabComposer extends GenericForwardComposer{
 				borderLayout.setContentDiv(contentDiv);
 				
 				newPanel.appendChild(borderLayout.getMenuListbox());
-				System.out.println("avant");
+				
 				tbpanels.appendChild(newPanel);
-				System.out.println("apres");
+				
 				tbtabs.appendChild(newTab);		
 			}
 
