@@ -71,7 +71,7 @@ public class StructureEntrepriseModel {
 					structureEntreprise.setLibelleSection(rs.getString("libelle_section"));
 					  
 					listStructureEntreprise.add(structureEntreprise);
-				   System.out.println(rs.getString("code_structure"));
+				   
 					
 				}else {
 					return listStructureEntreprise;
@@ -174,20 +174,16 @@ public class StructureEntrepriseModel {
 			select_structure = select_structure.replaceAll("#libelle_service", "'"+addedData.getLibelleService()+"'");
 			select_structure = select_structure.replaceAll("#code_section", "'"+addedData.getCodesection()+"'");
 			select_structure = select_structure.replaceAll("#libelle_section", "'"+addedData.getLibelleSection()+"'");
-		System.out.println(select_structure);
+			
+			
 			
 			 stmt.execute(select_structure);
+			 conn.close();
 		} 
 		catch (SQLException e) 
 		{
-			try 
-			{
-				Messagebox.show("La donnée n'a pas été insérée dans la base car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
-			} 
-			catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			e.printStackTrace();
+
 			// TODO Auto-generated catch block
 			try {
 				conn.close();
@@ -201,12 +197,7 @@ public class StructureEntrepriseModel {
 			
 			return false;
 		}
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		return true;
 	}
 	/**
@@ -334,7 +325,7 @@ public class StructureEntrepriseModel {
 			update_structure = update_structure.replaceAll("#code_section", "'"+addedData.getCodesection()+"'");
 			update_structure = update_structure.replaceAll("#libelle_section", "'"+addedData.getLibelleSection()+"'");
 			update_structure = update_structure.replaceAll("#valeur_code_structure", "'"+selectedCodeStructure+"'");
-		System.out.println(update_structure);
+		
 			
 			 stmt.executeUpdate(update_structure);
 		} 
@@ -385,7 +376,7 @@ public class StructureEntrepriseModel {
 			String update_structure="DELETE FROM  structure_entreprise  WHERE code_structure=#code_structure"; 
 			update_structure = update_structure.replaceAll("#code_structure", "'"+codeStructure+"'");
 			
-		System.out.println(update_structure);
+		
 			
 			 stmt.executeUpdate(update_structure);
 		} 
@@ -410,7 +401,7 @@ public class StructureEntrepriseModel {
 	 */
 	public HashMap <String,List<StructureEntrepriseBean>> ChargementDonneedansBdd(List <StructureEntrepriseBean> liste)throws Exception
 	{
-		//Verification de l'integrité des données à inserer
+		//Verification de l'integrité des données à inserer doublon dans le fichier
 		List <StructureEntrepriseBean> listeAInserer=new ArrayList <StructureEntrepriseBean>();
 		List <StructureEntrepriseBean> listeDonneesRejetes=new ArrayList <StructureEntrepriseBean>();
 
@@ -425,15 +416,15 @@ public class StructureEntrepriseModel {
 				{
 					listeDonneesRejetes.add(donnee);
 					donneerejete=true;
-					System.out.println("donnee rejete "+donnee.getCodestructure());
+					
 				}
 			}
 			if((i==liste.size()-1)||(i==0)||(donneerejete==false))
 				listeAInserer.add(donnee);
-			System.out.println("donne a inserer "+donnee.getCodestructure());
+			
 		}
 		
-		//Verification de l'integrité des données à inserer
+		//Verification de l'integrité des données à inserer doublon avec les données de la base
 		
 		List <StructureEntrepriseBean> listeAInsererFinal=new ArrayList <StructureEntrepriseBean>();
 		ArrayList<StructureEntrepriseBean>strctureEntreprisebdd =checkStructureEntreprise();
@@ -441,18 +432,18 @@ public class StructureEntrepriseModel {
 		
 		while(iterator.hasNext())
 		{
-			System.out.println("1");
+			
 			StructureEntrepriseBean bean=(StructureEntrepriseBean)iterator.next();
 			
 			Iterator<StructureEntrepriseBean> index=strctureEntreprisebdd.iterator();
 			boolean donneerejete=false;
 			while(index.hasNext())
 			{
-				System.out.println("2");
+				
 				StructureEntrepriseBean bean2=(StructureEntrepriseBean)index.next();
 				if(bean.getCodestructure().equals(bean2.getCodestructure()))
 				{
-					System.out.println("3");
+					
 					listeDonneesRejetes.add(bean);
 					donneerejete=true;
 					continue;
@@ -460,10 +451,10 @@ public class StructureEntrepriseModel {
 			}
 			if(!donneerejete)
 			{
-				System.out.println("ajout donnee"+bean.getCodestructure() );
+				
 				listeAInsererFinal.add(bean);
 			}
-			System.out.println("4");
+			
 		}
 		
 		//Insertion des données dans la table Structure_entreprise
@@ -479,7 +470,7 @@ public class StructureEntrepriseModel {
 			HashMap <String,List<StructureEntrepriseBean>> donneeMap=new HashMap<String,List<StructureEntrepriseBean>>();
 			donneeMap.put("inserer", listeAInsererFinal);
 			donneeMap.put("supprimer", listeDonneesRejetes);
-		System.out.println("taille liste= "+ liste.size());
+		
 		return donneeMap;
 	}
 	
@@ -510,7 +501,7 @@ public class StructureEntrepriseModel {
 	        
 	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
 	        {
-	        	System.out.println("de nouveau dans la boucle");
+	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
@@ -518,11 +509,11 @@ public class StructureEntrepriseModel {
 	            // parcours des colonnes de la ligne en cours
 	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
 	            {
-	            	System.out.println("de nouveau dan scolonne");
+	            	
 	            	cellule = ligne.getCell(numColonne);
 	            	
 	            	String valeur= cellule.getStringCellValue();
-	            	System.out.println(" numligne = "+numLigne+" numColonne= "+numColonne +" valeur ="+valeur);
+	            	
 	            	
 	            	if(numColonne==0)
 	            	{
@@ -630,7 +621,7 @@ public class StructureEntrepriseModel {
 	        
 	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
 	        {
-	        	System.out.println("de nouveau dans la boucle");
+	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
@@ -640,11 +631,11 @@ public class StructureEntrepriseModel {
 	            {
 	            	try
 	            	{
-	            	System.out.println("de nouveau dan scolonne");
+	            	
 	            	cellule = ligne.getCell(numColonne);
 	            	
 	            	String valeur= cellule.getStringCellValue();
-	            	System.out.println(" numligne = "+numLigne+" numColonne= "+numColonne +" valeur ="+valeur);
+	            	
 	            	
 	            	if(numColonne==0)
 	            	{
