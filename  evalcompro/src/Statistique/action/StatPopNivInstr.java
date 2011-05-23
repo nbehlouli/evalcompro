@@ -26,7 +26,7 @@ public class StatPopNivInstr extends  GenericForwardComposer{
 
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		System.out.println("1111");
+		
 //	   	PieModel model = new SimplePieModel();
 //
 //		
