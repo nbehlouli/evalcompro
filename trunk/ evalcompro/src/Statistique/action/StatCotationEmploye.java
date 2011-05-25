@@ -103,7 +103,7 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 //        catmodel.setValue("IMI", "Relationnelle", new Double(3.5));
 //        catmodel.setValue("IMI", "Personnelle", new Double(1.3));
 //        catmodel.setValue("IMI", "Opérationnelle", new Double(1));
-
+		mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
         mychart.setModel(catmodel);
         
         //ces instructions permettent de récuperer l'objet image pour l'export
@@ -172,6 +172,7 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 					catmodel.setValue("IMI", valeurcles, valeurStat);
 					
 				}
+				mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
 				mychart.setModel(catmodel);
 		        
 		        //ces instructions permettent de récuperer l'objet image pour l'export
@@ -199,6 +200,7 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 				catmodel.setValue("IMI", valeurcles, valeurStat);
 				
 			}
+			mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
 			mychart.setModel(catmodel);
 	        
 	        //ces instructions permettent de récuperer l'objet image pour l'export
