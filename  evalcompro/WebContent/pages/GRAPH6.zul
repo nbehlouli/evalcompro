@@ -11,11 +11,8 @@
 			<hbox spacing ="100">
 			<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/>
         	
-			<combobox id="compagne" autodrop="true" mold="rounded" buttonVisible="true">
-			<comboitem id="scf" label="Server+client Fusion" />
-    <comboitem id="pd" label="Pattern Driven" />
-    <comboitem id="ei" label="Enterprise Integration" />
-</combobox>
+			<combobox  id="compagne" autodrop="true" mold="rounded" buttonVisible="true">
+			</combobox>
 			</hbox>
 			</vbox>
     	
