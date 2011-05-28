@@ -1,5 +1,7 @@
 package administration.action;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -7,15 +9,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jxl.read.biff.BiffException;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.zkoss.lang.Strings;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -23,9 +31,13 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.RepCompetenceBean;
@@ -51,6 +63,7 @@ public class RepCompetenceAction extends GenericForwardComposer {
 	Textbox definition_competence;
 	Textbox aptitude_observable;
 	Listbox affichable;
+	Div divupdown;
 		
 	AnnotateDataBinder binder;
 	List<RepCompetenceBean> model = new ArrayList<RepCompetenceBean>();
@@ -242,21 +255,9 @@ public class RepCompetenceAction extends GenericForwardComposer {
 		
 	}
 
-	public void onClick$upload() {
-	//excel vers BDD
-		//chargement du fichier excel contenant les données
-		//partie affichage
-		
-		//partie base de données
-	}
 
-	public void onClick$download() {
-		//BDD vers excel
 	
-		// partie affichage
-		
-		//partie base de données
-	}
+	
 
 	public void onSelect$admincomptelb() {
 		closeErrorBox(new Component[] { id_repertoire_competence, code_famille,famille,code_groupe,  groupe, 
@@ -375,6 +376,198 @@ public class RepCompetenceAction extends GenericForwardComposer {
 		affichable.setSelectedIndex(0);
 		
 		
+  }
+  
+  public void onClick$upload() throws BiffException, InvalidFormatException, IOException {
+		Executions.getCurrent().getDesktop().setAttribute("org.zkoss.zul.Fileupload.target", divupdown);
+		
+		try 
+		{
+			
+			Fileupload fichierupload=new Fileupload();
+			
+			//Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
+			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier");
+			
+			processMedia(me);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+  
+  public void onClick$download() {
+		//chargement du contenu de la table structure_entreprise et creation du fichier excel
+		RepCompetenceModel repcommodel =new RepCompetenceModel();
+		repcommodel.downloadStructureEntrepriseDataToXls();
+		
+		
+	}
+  
+public void processMedia(Media med) throws BiffException, InvalidFormatException, IOException
+	{
+		
+		//Media med=event.getMedia();
+		
+		if ((med != null)&&(med.getName()!=null)) 
+		{
+			String filename = med.getName();
+			
+			if ( filename.indexOf(".xls") == -1 ) 
+			{
+			  alert(filename + " n'est pas un fichier excel");
+			} 
+			else 
+			{
+				
+			  // process the file...
+				RepCompetenceModel repcomModel =new RepCompetenceModel();
+				if ( filename.endsWith(".xls") ) 
+				{
+					//lecture et upload de fichiers OLE2 Office Documents 
+					//InputStream ss=med.getStreamData();
+					List<RepCompetenceBean> liste=repcomModel.uploadXLSFile(med.getStreamData());
+					//List<RepCompetenceBean> liste=repcomModel.uploadXLSFileS(filename);
+					List<RepCompetenceBean> donneeRejetes;
+					try 
+					{
+						 HashMap <String,List<RepCompetenceBean>> listeDonnees=repcomModel.ChargementDonneedansBdd(liste);
+						 donneeRejetes =listeDonnees.get("supprimer");
+						 liste=null;
+						 liste=listeDonnees.get("inserer");;
+						
+					
+						//raffrechissement de l'affichage
+						Iterator<RepCompetenceBean> index=liste.iterator();
+						while(index.hasNext())
+						{
+							RepCompetenceBean donnee=index.next();
+							model.add(donnee);
+							
+						}
+				
+						binder.loadAll();
+						if(donneeRejetes.size()!=0)
+						{
+							String listeRejet=new String("-->");
+							//Afficharge de la liste des données rejetées
+							Iterator<RepCompetenceBean> index1 =donneeRejetes.iterator();
+							while(index1.hasNext())
+							{
+							
+
+								RepCompetenceBean donnee=index1.next();
+								String donneeString=donnee.getCode_famille()+";"+donnee.getFamille()
+								+";"+donnee.getCode_groupe()
+								 +";"+donnee.getGroupe()
+								+";"+donnee.getCode_competence()
+								+";"+donnee.getLibelle_competence()
+								+";"+donnee.getDefinition_competence()
+								+";"+donnee.getAptitude_observable()
+								+ ";"+donnee.getAffichable();
+								
+								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+								
+							}
+							AfficherFenetreRejet(listeRejet);
+
+						}
+					} 
+					catch (Exception e) 
+					{
+							// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+					if(filename.endsWith(".xlsx"))
+					{
+						
+						// lecture de fichiers Office 2007+ XML
+						InputStream ss=med.getStreamData();
+						List<RepCompetenceBean> liste=repcomModel.uploadXLSXFile(ss);
+						List<RepCompetenceBean> donneeRejetes;
+						try 
+						{
+							 HashMap <String,List<RepCompetenceBean>> listeDonnees=repcomModel.ChargementDonneedansBdd(liste);
+							 donneeRejetes =listeDonnees.get("supprimer");
+							 liste=null;
+							 liste=listeDonnees.get("inserer");;
+							
+						
+							//raffrechissement de l'affichage
+							Iterator<RepCompetenceBean> index=liste.iterator();
+							while(index.hasNext())
+							{
+								RepCompetenceBean donnee=index.next();
+								model.add(donnee);
+								
+							}
+					
+							binder.loadAll();
+							if(donneeRejetes.size()!=0)
+							{
+								String listeRejet=new String("-->");
+								//Afficharge de la liste des données rejetées
+								Iterator<RepCompetenceBean> index1 =donneeRejetes.iterator();
+								while(index1.hasNext())
+								{
+									RepCompetenceBean donnee=index1.next();
+									String donneeString=donnee.getCode_famille()+";"+donnee.getFamille()
+									+";"+donnee.getCode_groupe()
+									 +";"+donnee.getGroupe()
+									+";"+donnee.getCode_competence()
+									+";"+donnee.getLibelle_competence()
+									+";"+donnee.getDefinition_competence()
+									+";"+donnee.getAptitude_observable()
+									+ ";"+donnee.getAffichable();
+									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+									
+								}
+								AfficherFenetreRejet(listeRejet);
+
+							}
+						} 
+						catch (Exception e) 
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+				
+				} 				
+			}
+		}	
+  
+  
+  public void AfficherFenetreRejet(String listeRejet)
+  {
+  	Map<String, String> listDonne=new HashMap <String, String>();
+		listDonne.put("rejet", listeRejet);
+		
+		
+
+  	final Window win = (Window) Executions.createComponents("../pages/REJDATA.zul", self, listDonne);
+     
+      win.setAttribute("popup", true);
+      
+      //decoratePopup(win);
+      try 
+      {
+          win.doModal();
+         
+      } 
+      catch (InterruptedException ex) 
+      {
+         ex.printStackTrace();
+      } 
+      catch (SuspendNotAllowedException ex) 
+      {
+          ex.printStackTrace();
+      }
   }
 
 }
