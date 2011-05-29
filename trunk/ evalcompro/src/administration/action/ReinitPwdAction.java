@@ -8,6 +8,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 import com.sun.xml.internal.bind.v2.TODO;
 
@@ -19,6 +20,7 @@ public class ReinitPwdAction extends GenericForwardComposer{
 	Textbox email;
 	Label msg;
 	Div div;
+	Window main;
 	
 	public void onClick$login(MouseEvent event) throws Exception{
 		
@@ -52,6 +54,8 @@ public class ReinitPwdAction extends GenericForwardComposer{
 		
 	public void onClick$cancel(MouseEvent event) throws Exception{
 		Executions.createComponents("../login/login.zul", div, null);	
+		main=(Window)this.self;
+		main.detach();
 	}
 
 }
