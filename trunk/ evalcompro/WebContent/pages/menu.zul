@@ -28,6 +28,10 @@ border-bottom: none;
 							</html>
 						</column>
 						
+						<column >
+						 <label id="firstname_welcome"   />
+						</column>
+						
 						<column width="70px">
 						 <button id="exit" image="/image/WAYOUT.gif" height="27px" width="30px" tooltiptext="Quiter l'application"/>
 						</column>
