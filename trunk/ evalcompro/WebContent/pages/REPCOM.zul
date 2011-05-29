@@ -92,12 +92,13 @@
 			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier un utilisateur"/>
 			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer un utilisateur "/>
 			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retourner a la selection"/>
+			
 		</div>
 		<div id="divupdown">
 
-			<button id="upload" label="upload"  tooltip="Ajouter une ligne" />
+			<button id="upload" image="/image/upload1616.bmp" height="25px" width="30px" tooltiptext="Charger les données en base de données" />
 				
-			<button id="download" label="download" />
+			<button id="download" image="/image/download1616.ico" height="25px" width="30px" tooltiptext="Télécharger les données de la base de données"  />
  
 		</div>
  
