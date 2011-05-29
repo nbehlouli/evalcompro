@@ -1,5 +1,12 @@
 <zk>
-	<window border="normal" width="400px" apply="administration.action.ReinitPwdAction" mode="modal">
+<style>
+ body { 
+          <!-- background image -->
+           background: #084B8A;
+           background-repeat:repeat-x; 
+ }	
+</style>          
+	<window border="normal" width="400px"  apply="administration.action.ReinitPwdAction" mode="modal">
 
 
 		<div id="loginDiv" visible="${empty user}">
@@ -17,7 +24,7 @@
 				</rows>
 				
 			</grid>	
-			<grid >
+			<grid  zclass="none">
 			<columns>	
 				<column>		
 					<hbox pack="center" width="100%">

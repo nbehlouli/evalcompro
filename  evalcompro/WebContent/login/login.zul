@@ -1,8 +1,28 @@
 <zk>
-	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" style="background:#dfe8f6 url('image/logo_rsmanagement.PNG')no-repeat center center;">
+
+<style>
+    body { padding: 0 0; /* 0 padding on top and bottom and 0 padding on right and left */
+           <!-- background image -->
+           background: #084B8A;
+           background-repeat:repeat-x; 
+          }		
+          
+          img_logo {
+           <!-- background image -->
+            background-image : url('/image/logo_rsmanagement.png');
+           background-repeat:repeat-x; 
+          }	
+          
+         
+</style>
 
 
-		<div id="loginDiv" visible="${empty user}">
+	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
+		<div height="50px" >
+             <image src="/image/logo_rsmanagement.PNG" width="380px" height="50px"/>
+   </div>
+
+		<div id="loginDiv"  visible="${empty user}">
 			<grid>
 				<rows>
 					<row>
@@ -45,5 +65,14 @@
 				<button label="Logout" onClick="doLogout()"/>
 			</hbox>
 		</div>
+		
+		<div  >
+		
+		                       
+		
+		
+		       
+       
+         </div>
 	</window>
 </zk>
