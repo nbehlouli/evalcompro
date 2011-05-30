@@ -1,5 +1,5 @@
 <!-- window   title="Répartion des compétences par poste de travail" apply="Statistique.action.ExtractRepCompPDFAction" width="100%" height="100%" border="normal" >
-
+ 
     Selectionner le format : <listbox id="format" mold="select" >
         <listitem label="PDF" value="pdf" selected="true" />
           </listbox>
@@ -12,13 +12,13 @@
 </window-->
 
 <window id="winGraph2" border="normal" height="100%" apply="Statistique.action.ExtractRepCompPDFAction" contentStyle="overflow:auto">
-	
-	
-	
-	 Selectionner le format : <listbox id="format" mold="select" >
-        <listitem label="PDF" value="pdf" selected="true" />
-          </listbox>
-    <button id="pdfDownload" label="Exporter en PDF"  />
-    <iframe id="report" height="360px" />
-
+	<div>	
+		 Selectionner le format : <listbox id="format" mold="select" >
+	        <listitem label="PDF" value="pdf" selected="true" />
+	          </listbox>
+	    <button id="pdfDownload" label="Exporter en PDF"  />
+    </div>
+   <div>
+    <iframe id="report" height="600px" width="800px" />
+    </div>
 </window>
