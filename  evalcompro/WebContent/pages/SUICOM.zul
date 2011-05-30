@@ -1,6 +1,6 @@
-<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<?page title="page under construction" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window title="new page title" border="normal">
+<window title="page under construction" border="normal">
 New Content Here!
 </window>
 </zk>
