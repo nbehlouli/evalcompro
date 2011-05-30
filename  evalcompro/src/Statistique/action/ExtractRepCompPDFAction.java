@@ -84,9 +84,8 @@ public void onClick$pdfDownload() throws IOException, SQLException  {
 		 Map parametres = new HashMap();
 
         // - Chargement et compilation du rapport
-		 File file = new File("D:\\cvsviews\\zkevalcom\\WebContent\\WEB-INF\\report\\");
-		
-		 JasperDesign jDesign = JRXmlLoader.load("D:\\cvsviews\\zkevalcom\\WebContent\\WEB-INF\\report\\repcomp_pst_travail.jrxml");
+		 String repSrc = Sessions.getCurrent().getWebApp().getRealPath("/WEB-INF/report/repcomp_pst_travail.jrxml");
+ 		 JasperDesign jDesign = JRXmlLoader.load(repSrc);
 		 JasperReport jReport = JasperCompileManager.compileReport(jDesign);
 		 JasperPrint jasperPrint = JasperFillManager.fillReport( jReport,
 				 null, conn);
