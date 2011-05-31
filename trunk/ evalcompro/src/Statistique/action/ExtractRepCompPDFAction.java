@@ -82,9 +82,11 @@ public void onClick$pdfDownload() throws IOException, SQLException  {
 	try {
     
 		 Map parametres = new HashMap();
+		 String jasperPath="./WEB-INF/report/";
+		 //parametres.put( "jasperPath", jasperPath );
 
         // - Chargement et compilation du rapport
-		 String repSrc = Sessions.getCurrent().getWebApp().getRealPath("/WEB-INF/report/repcomp_pst_travail.jrxml");
+		 String repSrc = Sessions.getCurrent().getWebApp().getRealPath("./WEB-INF/report/report1.jrxml");
  		 JasperDesign jDesign = JRXmlLoader.load(repSrc);
 		 JasperReport jReport = JasperCompileManager.compileReport(jDesign);
 		 JasperPrint jasperPrint = JasperFillManager.fillReport( jReport,
