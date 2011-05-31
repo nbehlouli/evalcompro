@@ -17,14 +17,15 @@
 </style>
 
 
-	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
-		<div height="50px" >
-             <image src="/image/logo_rsmanagement.PNG" width="380px" height="50px"/>
-   </div>
+	<window border="normal" width="300px" apply="administration.action.Login" mode="modal" sclass="img_logo">
+		<div height="50px" align="center">
+             <image  src="/image/logo_rsmanagement.PNG" width="280px" height="50px"  border="10" />
+        </div>
 
 		<div id="loginDiv"  visible="${empty user}">
 			<grid>
 				<rows>
+				
 					<row>
 						Utilisateur :
 						<textbox id="usertb" width="200px" value="" />
