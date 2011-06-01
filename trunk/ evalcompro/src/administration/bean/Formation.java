@@ -3,12 +3,20 @@
  */
 package administration.bean;
 
+import common.AbstractEnterpriseObject;
+
 /**
  * @author FTERZI
  *
  */
 public class Formation
+    extends AbstractEnterpriseObject
 {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     private String codeFormation;
 
