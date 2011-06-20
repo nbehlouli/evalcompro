@@ -98,11 +98,12 @@ public class RepCompetenceAction extends GenericForwardComposer {
 		
 		
 		//ces trois instructions permettent de selection le premier element de la listebox
-		selected=model.get(0);
+		if(model.size()!=0)
+			selected=model.get(0);
+		
+		if(admincomptelb.getItemCount()!=0)
+			admincomptelb.setSelectedIndex(0);
 		binder.loadAll();
-		
-		admincomptelb.setSelectedIndex(0);
-		
 	}
 
 	public List<RepCompetenceBean> getModel() {
