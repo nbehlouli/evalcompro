@@ -14,6 +14,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import administration.bean.Formation;
+import administration.bean.StructureEntrepriseBean;
 import administration.model.FormationModel;
 
 /**
@@ -62,10 +63,30 @@ public class FormationAction
         comp.setVariable( comp.getId() + "Ctrl", this, true );
 
         binder = new AnnotateDataBinder( comp );
+        
+
+        if(model.size()!=0)
+        	selected = model.get( 0 );
+        
+        if(formationlb.getItemCount()!=0)
+        	formationlb.setSelectedIndex( 0 );
+        
         binder.loadAll();
 
-        selected = model.get( 0 );
-        formationlb.setSelectedIndex( 0 );
-
     }
+    
+	public List<Formation> getModel() {
+		return model;
+	}
+
+
+
+	public Formation getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Formation selected) {
+		this.selected = selected;
+	}
+
 }
