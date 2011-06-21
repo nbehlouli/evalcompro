@@ -32,16 +32,18 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add" label="Ajouter" tooltip="Ajouter la ligne" />
-			<button id="update" label="Modifier" tooltip="Modifier la ligne" />
-			<button id="delete" label="Supprimer" tooltip="Supprimer la ligne" />
-			<button id="effacer" label="Effacer" tooltip="Effacer la ligne"
-				onClick="Clients.closeErrorBox(new Component[]{codeFormationtb,libelleFormationtb,libelleDiplometb})" />
+			<button id="add"  image="/image/DITEnabled.bmp" height="25px" width="30px" tooltiptext="Ajouter"/>
+			<button id="okAdd"  image="/image/OkEnabled.bmp" height="25px" width="30px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier"/>
+			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer"/>
+			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retour"/>
 		</div>
-		<div id="divupdown">
-			<button id="upload" label="upload" tooltiptext="Uploader la ligne" />
-			<button id="download" label="download" tooltip="Downloader la ligne" />
+		<div>
+
+			
 		</div>
+
+		
 	</hbox>
 </window>
 
