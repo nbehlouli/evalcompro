@@ -11,7 +11,7 @@ import common.AbstractEnterpriseObject;
  */
 public class Formation
     extends AbstractEnterpriseObject
-    implements Comparable<Formation>
+    implements Comparable<Object>
 {
 
     /**
@@ -72,10 +72,23 @@ public class Formation
     }
 
     @Override
-    public int compareTo( Formation o )
+    public int compareTo( Object o )
     {
-        // TODO Auto-generated method stub
-        return this.getCodeFormation().compareTo( o.getCodeFormation() );
-    }
+        Formation f = (Formation) o;
 
+        if ( codeFormation.equals( f.codeFormation ) )
+        {
+            if ( libelleFormation.equals( f.libelleFormation ) )
+            {
+                return libelleDiplome.compareTo( f.libelleDiplome );
+            }
+            else
+            {
+                return libelleFormation.compareTo( f.libelleFormation );
+            }
+
+        }
+
+        return codeFormation.compareTo( f.codeFormation );
+    }
 }
