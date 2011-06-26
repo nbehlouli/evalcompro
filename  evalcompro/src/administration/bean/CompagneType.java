@@ -13,18 +13,11 @@ public class CompagneType
     extends AbstractEnterpriseObject
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private int idCompagneType;
-
     private String libelleCompagneType;
 
-    /**
-     * 
-     */
     public CompagneType()
     {
         // TODO Auto-generated constructor stub
@@ -34,6 +27,11 @@ public class CompagneType
     {
         this.idCompagneType = id;
         this.libelleCompagneType = libelle;
+    }
+    
+    public CompagneType( int id )
+    {
+        this.idCompagneType = id;
     }
 
     public int getIdCompagneType()
