@@ -15,32 +15,16 @@ public class Compagne
     extends AbstractEnterpriseObject
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private int idCompagne;
-
-    private String codeDirection;
-
-    private String codeService;
-
-    private int idEmploye;
-
+    private Employe employe;
     private Date dateDebut;
-
     private Date dateFin;
-
     private String libelleCompagne;
-
-    private String codeStructure;
-
+    private StructureEntrepriseBean structure;
     private CompagneType compagneType;
 
-    /**
-     * 
-     */
     public Compagne()
     {
         // TODO Auto-generated constructor stub
@@ -56,34 +40,14 @@ public class Compagne
         this.idCompagne = idCompagne;
     }
 
-    public String getCodeDirection()
+    public Employe getEmploye()
     {
-        return codeDirection;
+        return employe;
     }
 
-    public void setCodeDirection( String codeDirection )
+    public void setEmploye( Employe employe )
     {
-        this.codeDirection = codeDirection;
-    }
-
-    public String getCodeService()
-    {
-        return codeService;
-    }
-
-    public void setCodeService( String codeService )
-    {
-        this.codeService = codeService;
-    }
-
-    public int getIdEmploye()
-    {
-        return idEmploye;
-    }
-
-    public void setIdEmploye( int idEmploye )
-    {
-        this.idEmploye = idEmploye;
+        this.employe = employe;
     }
 
     public Date getDateDebut()
@@ -116,14 +80,14 @@ public class Compagne
         this.libelleCompagne = libelleCompagne;
     }
 
-    public String getCodeStructure()
+    public StructureEntrepriseBean getStructure()
     {
-        return codeStructure;
+        return structure;
     }
 
-    public void setCodeStructure( String codeStructure )
+    public void setStructure( StructureEntrepriseBean structure )
     {
-        this.codeStructure = codeStructure;
+        this.structure = structure;
     }
 
     public CompagneType getCompagneType()
