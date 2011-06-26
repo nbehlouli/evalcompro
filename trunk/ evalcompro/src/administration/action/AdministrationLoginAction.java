@@ -229,6 +229,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		if (Messagebox.show("Voulez vous supprimer cet utilisateur?", "Prompt", Messagebox.YES|Messagebox.NO,
 			    Messagebox.QUESTION) == Messagebox.YES) {
 			    //System.out.println("pressyes");
+			admini_login_model.supprimerLogin(selected);
 			model.remove(selected);
 			selected = null;
 			binder.loadAll();
