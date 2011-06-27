@@ -56,10 +56,13 @@ public class CreateDatabaseCon
             CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean=ApplicationFacade.getInstance().getCompteEntrepriseDatabasebean();
             intctx.setJdbcpassword(compteEntrepriseDataBaseBean.getJdbcpassword());
             intctx.setJdbcusername(compteEntrepriseDataBaseBean.getJdbcusername());
-            intctx.setJdbcurl(compteEntrepriseDataBaseBean.getJdbcurl());*/
+            intctx.setJdbcurl(compteEntrepriseDataBaseBean.getJdbcurl());
             Class.forName("com.mysql.jdbc.Driver");
             CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean=ApplicationFacade.getInstance().getCompteEntrepriseDatabasebean();
-            compteEntrepriseDataBaseBean.setDBParams();
+            compteEntrepriseDataBaseBean.setDBParams();*/
+            
+            CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean = new CompteEntrepriseDatabaseBean("jdbc:mysql://localhost:3306/evalcom", "root", "root");
+
             connection = (Connection) DriverManager.getConnection(compteEntrepriseDataBaseBean.getJdbcurl(), compteEntrepriseDataBaseBean.getJdbcusername(), compteEntrepriseDataBaseBean.getJdbcpassword());
             connection.setAutoCommit(true);
         }

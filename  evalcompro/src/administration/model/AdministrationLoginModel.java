@@ -20,7 +20,7 @@ import administration.bean.SelCliDBNameBean;
 import administration.bean.StructureEntrepriseBean;
 
 import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.ResultSet;
+import java.sql.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
 import common.PwdCrypt;
@@ -32,7 +32,7 @@ private ArrayList<AdministrationLoginBean>  listlogin =null;
 private ListModel strset =null;
 	
 	/**
-	 * cette méthode fournit le contenu de la table structure_entreprise
+	 * cette mï¿½thode fournit le contenu de la table structure_entreprise
 	 * @return
 	 * @throws SQLException
 	 */
@@ -90,7 +90,7 @@ private ListModel strset =null;
 	}
 	
 	/**
-	 * cette méthode permet d'inserer la donnée addedData dans la table structure_entreprise de la base de donnée
+	 * cette mï¿½thode permet d'inserer la donnï¿½e addedData dans la table structure_entreprise de la base de donnï¿½e
 	 * @param addedData
 	 * @return
 	 * @throws ParseException 
@@ -128,7 +128,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La donnée n'a pas été insérée dans la base car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La donnï¿½e n'a pas ï¿½tï¿½ insï¿½rï¿½e dans la base car il existe une donnï¿½e ayant le mï¿½me code ï¿½tablissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -156,7 +156,7 @@ private ListModel strset =null;
 		return true;
 	}
 	/**
-	 * cette classe permet de controler la validité des données insérées (par rapport à leurs taille)
+	 * cette classe permet de controler la validitï¿½ des donnï¿½es insï¿½rï¿½es (par rapport ï¿½ leurs taille)
 	 * @param addedData
 	 * @return
 	 * @throws InterruptedException 
@@ -174,20 +174,20 @@ private ListModel strset =null;
 			DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			if(addedData.getNom().length()>50)
 			{
-				Messagebox.show("La taille du champ nom ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La taille du champ nom ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
 				
 				return false;
 			}
 			else
 				if(addedData.getPrenom().length()>50)
 				{
-					Messagebox.show("La taille du champ prénom ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+					Messagebox.show("La taille du champ prï¿½nom ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
 					return false;
 				}
 				else
 					if(addedData.getLogin().length()>11)
 					{
-						Messagebox.show("La taille du champ login ne doit pas dépasser 10 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+						Messagebox.show("La taille du champ login ne doit pas dï¿½passer 10 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
 						return false;
 					}
 					else
@@ -200,19 +200,19 @@ private ListModel strset =null;
 						else
 							if(addedData.getBasedonnee().length()>50)
 							{
-								Messagebox.show("La taille du champ base de données ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+								Messagebox.show("La taille du champ base de donnï¿½es ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
 								return false;
 							}
 							else
 								if(!isValidDateStr(formatter.format(addedData.getDate_deb_val())))
 								{
-									Messagebox.show("La date debut validité doit être au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
+									Messagebox.show("La date debut validitï¿½ doit ï¿½tre au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
 									return false;
 								}
 								else
 									if(!isValidDateStr(formatter.format(addedData.getDate_fin_val())))
 									{
-										Messagebox.show("La date fin validité doit être au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
+										Messagebox.show("La date fin validitï¿½ doit ï¿½tre au format AAAA/MM/DD", "Erreur",Messagebox.OK, Messagebox.ERROR);
 										return false;
 									}
 									
@@ -223,7 +223,7 @@ private ListModel strset =null;
 		}
 		catch (NumberFormatException nfe)
 	    {
-			Messagebox.show("Le mot de passe doit être un entier composé de 8 chiffres Exemple 21012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show("Le mot de passe doit ï¿½tre un entier composï¿½ de 8 chiffres Exemple 21012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			return false;
 	    }
 		
@@ -232,7 +232,7 @@ private ListModel strset =null;
 	}
 	
 	/**
-	 * Cette classe permet de mettre à jour la table structure_entreprise
+	 * Cette classe permet de mettre ï¿½ jour la table structure_entreprise
 	 * @param addedData
 	 * @return
 	 */
@@ -267,7 +267,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La modification n'a pas été prise en compte car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La modification n'a pas ï¿½tï¿½ prise en compte car il existe une donnï¿½e ayant le mï¿½me code ï¿½tablissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -295,7 +295,7 @@ private ListModel strset =null;
 		return true;
 	}
 	/**
-	 * cette classe permet de supprimer une donnée de la table structure_entreprise
+	 * cette classe permet de supprimer une donnï¿½e de la table structure_entreprise
 	 * @param codeStructure
 	 */
 	public void supprimerLogin(AdministrationLoginBean addedData)
@@ -331,7 +331,7 @@ private ListModel strset =null;
 	}
 	
 	/**
-	 * cette classe permet de supprimer une donnée de la table structure_entreprise
+	 * cette classe permet de supprimer une donnï¿½e de la table structure_entreprise
 	 * @param codeStructure
 	 * @throws SQLException 
 	 */
