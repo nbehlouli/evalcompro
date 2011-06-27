@@ -15,8 +15,9 @@ public class CompagneType
 
     private static final long serialVersionUID = 1L;
 
-    private int idCompagneType;
-    private String libelleCompagneType;
+    private int id;
+
+    private String libelle;
 
     public CompagneType()
     {
@@ -25,33 +26,33 @@ public class CompagneType
 
     public CompagneType( int id, String libelle )
     {
-        this.idCompagneType = id;
-        this.libelleCompagneType = libelle;
+        this.id = id;
+        this.libelle = libelle;
     }
-    
+
     public CompagneType( int id )
     {
-        this.idCompagneType = id;
+        this.id = id;
     }
 
-    public int getIdCompagneType()
+    public int getId()
     {
-        return idCompagneType;
+        return id;
     }
 
-    public void setIdCompagneType( int idCompagneType )
+    public void setId( int id )
     {
-        this.idCompagneType = idCompagneType;
+        this.id = id;
     }
 
-    public String getLibelleCOmpagneType()
+    public String getLibelle()
     {
-        return libelleCompagneType;
+        return libelle;
     }
 
-    public void setLibelleCOmpagneType( String libelleCOmpagneType )
+    public void setLibelle( String libelle )
     {
-        this.libelleCompagneType = libelleCOmpagneType;
+        this.libelle = libelle;
     }
 
 }
