@@ -180,7 +180,8 @@ public class CompagneModel
             ins_compagne = ins_compagne.replaceAll( "#date_debut", "'" + addedData.getDateDebut() + "'" );
             ins_compagne = ins_compagne.replaceAll( "#date_fin", "'" + addedData.getDateFin() + "'" );
             ins_compagne = ins_compagne.replaceAll( "#libelle_compagne", "'" + addedData.getLibelleCompagne() + "'" );
-            ins_compagne = ins_compagne.replaceAll( "#code_structure", "'" + addedData.getStructure().getCodestructure() + "'" );
+            ins_compagne = ins_compagne.replaceAll( "#code_structure", "'"
+                + addedData.getStructure().getCodestructure() + "'" );
 
             stmt.execute( ins_compagne );
             conn.close();
@@ -220,13 +221,14 @@ public class CompagneModel
             stmt = (Statement) conn.createStatement();
             String upd_compagne = UPD_COMPAGNE;
             upd_compagne = upd_compagne.replaceAll( "#id_compagne", String.valueOf( data.getIdCompagne() ) );
-            upd_compagne = upd_compagne.replaceAll( "#id_employe", String.valueOf( data.getIdEmploye() ) );
+            upd_compagne = upd_compagne.replaceAll( "#id_employe", String.valueOf( data.getEmploye().getId() ) );
             upd_compagne = upd_compagne.replaceAll( "#id_compagne_type",
                                                     String.valueOf( data.getCompagneType().getIdCompagneType() ) );
             upd_compagne = upd_compagne.replaceAll( "#date_debut", "'" + data.getDateDebut() + "'" );
             upd_compagne = upd_compagne.replaceAll( "#date_fin", "'" + data.getDateFin() + "'" );
             upd_compagne = upd_compagne.replaceAll( "#libelle_compagne", "'" + data.getLibelleCompagne() + "'" );
-            upd_compagne = upd_compagne.replaceAll( "#code_structure", "'" + data.getCodeStructure() + "'" );
+            upd_compagne = upd_compagne.replaceAll( "#code_structure", "'" + data.getStructure().getCodestructure()
+                + "'" );
 
             stmt.execute( upd_compagne );
             conn.close();
@@ -336,7 +338,7 @@ public class CompagneModel
                     }
                     else if ( numColonne == 1 )
                     {
-                        compagne.setIdEmploye( Integer.valueOf( valeur ) );
+                        compagne.setEmploye( new Employe( Integer.valueOf( valeur ) ) );
                     }
                     else if ( numColonne == 2 )
                     {
@@ -352,7 +354,7 @@ public class CompagneModel
                     }
                     else if ( numColonne == 5 )
                     {
-                        compagne.setCodeStructure( valeur );
+                        compagne.setStructure( new StructureEntrepriseBean( valeur ) );
                     }
                     else if ( numColonne == 6 )
                     {
@@ -490,7 +492,7 @@ public class CompagneModel
                         }
                         else if ( numColonne == 1 )
                         {
-                            compagne.setIdEmploye( Integer.valueOf( valeur ) );
+                            compagne.setEmploye( new Employe( Integer.valueOf( valeur ) ) );
                         }
 
                         else if ( numColonne == 2 )
@@ -510,7 +512,7 @@ public class CompagneModel
 
                         else if ( numColonne == 5 )
                         {
-                            compagne.setCodeStructure( valeur );
+                            compagne.setStructure( new StructureEntrepriseBean( valeur ) );
                         }
 
                         else if ( numColonne == 6 )
@@ -603,7 +605,7 @@ public class CompagneModel
                 cel.setCellValue( donnee.getIdCompagne() );
 
                 cel = row1.createCell( (short) 1 );
-                cel.setCellValue( donnee.getIdEmploye() );
+                cel.setCellValue( donnee.getEmploye().getId() );
 
                 cel = row1.createCell( (short) 2 );
                 cel.setCellValue( donnee.getDateDebut() );
@@ -615,7 +617,7 @@ public class CompagneModel
                 cel.setCellValue( donnee.getLibelleCompagne() );
 
                 cel = row1.createCell( (short) 5 );
-                cel.setCellValue( donnee.getCodeStructure() );
+                cel.setCellValue( donnee.getStructure().getCodestructure() );
 
                 cel = row1.createCell( (short) 6 );
                 cel.setCellValue( donnee.getCompagneType().getIdCompagneType() );
