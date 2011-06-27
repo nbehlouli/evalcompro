@@ -13,7 +13,19 @@ public class StructureEntrepriseBean {
 	private String libelleDepartement;
 	private String codeService;
 	private String libelleService;
-	public String getCodestructure() {
+	
+	public StructureEntrepriseBean( String codestructure )
+    {
+        super();
+        this.codestructure = codestructure;
+    }
+	
+    public StructureEntrepriseBean()
+    {
+        // TODO Auto-generated constructor stub
+    }
+
+    public String getCodestructure() {
 		return codestructure;
 	}
 	public void setCodestructure(String codestructure) {

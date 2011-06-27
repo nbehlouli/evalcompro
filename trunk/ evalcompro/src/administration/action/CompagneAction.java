@@ -27,6 +27,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import administration.bean.Compagne;
+import administration.bean.StructureEntrepriseBean;
 import administration.model.CompagneModel;
 import administration.model.FormationModel;
 
@@ -47,13 +48,13 @@ public class CompagneAction
     Textbox codeStructuretb;
 
     Textbox libelleCompagnetb;
-    
+
     Textbox dateDebuttb;
-    
+
     Textbox dateFintb;
-    
+
     Textbox idEmployetb;
-    
+
     Textbox idCompagneTypetb;
 
     AnnotateDataBinder binder;
@@ -120,12 +121,7 @@ public class CompagneAction
     private int getSelectedIdCompagne()
         throws WrongValueException
     {
-        int id = (int) Integer.valueOf( idCompagnetb.getValue() );
-        if ( Strings.isBlank( String.valueOf( id ) ) )
-        {
-            throw new WrongValueException( idCompagnetb, "l'id compagne ne doit pas etre vide!" );
-        }
-        return id;
+        return Integer.valueOf( idCompagnetb.getValue() );
     }
 
     private String getSelectedLibelleCompagne()
@@ -224,8 +220,8 @@ public class CompagneAction
                             while ( index1.hasNext() )
                             {
                                 Compagne donnee = index1.next();
-                                String donneeString = donnee.getIdCompagne() + ";" + donnee.getLibelleCompagne()
-                                    + ";" + donnee.getCodeStructure();
+                                String donneeString = donnee.getIdCompagne() + ";" + donnee.getLibelleCompagne() + ";"
+                                    + donnee.getStructure().getCodestructure();
                                 listeRejet = listeRejet + System.getProperty( "line.separator" ) + donneeString;//saut de ligne
 
                             }
@@ -269,8 +265,8 @@ public class CompagneAction
                             while ( index1.hasNext() )
                             {
                                 Compagne donnee = index1.next();
-                                String donneeString = donnee.getIdCompagne() + ";" + donnee.getLibelleCompagne()
-                                    + ";" + donnee.getCodeStructure();
+                                String donneeString = donnee.getIdCompagne() + ";" + donnee.getLibelleCompagne() + ";"
+                                    + donnee.getStructure().getCodestructure();
                                 listeRejet = listeRejet + System.getProperty( "line.separator" ) + donneeString;//saut de ligne
 
                             }
@@ -365,9 +361,8 @@ public class CompagneAction
 
         Compagne addedData = new Compagne();
 
-        addedData.setIdCompagne( getSelectedIdCompagne() );
         addedData.setLibelleCompagne( getSelectedLibelleCompagne() );
-        addedData.setCodeStructure( getSelectedCodeStructure() );
+        addedData.setStructure( new StructureEntrepriseBean( getSelectedCodeStructure() ) );
 
         //controle d'integrite 
         CompagneModel compagneModel = new CompagneModel();
@@ -401,11 +396,11 @@ public class CompagneAction
             alert( "No row selected" );
             return;
         }
-        
+
         selected.setIdCompagne( getSelectedIdCompagne() );
         selected.setLibelleCompagne( getSelectedLibelleCompagne() );
-        selected.setCodeStructure( getSelectedCodeStructure() );
-        
+        selected.setStructure( new StructureEntrepriseBean( getSelectedCodeStructure() ) );
+
         //controle d'integrite 
         CompagneModel compagneModel = new CompagneModel();
         Boolean donneeValide = compagneModel.controleIntegrite( selected );
