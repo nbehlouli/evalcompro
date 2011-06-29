@@ -9,6 +9,26 @@ public class CompetencePosteTravailBean {
 
 	private ArrayList <String >posteTravail;
 
+	
+	private HashMap <String, String > mapCodeCompetence;
+	private HashMap <String, String > mapCodePoste;
+	
+	public HashMap<String, String> getMapCodePoste() {
+		return mapCodePoste;
+	}
+
+	public void setMapCodePoste(HashMap<String, String> mapCodePoste) {
+		this.mapCodePoste = mapCodePoste;
+	}
+
+	public HashMap<String, String> getMapCodeCompetence() {
+		return mapCodeCompetence;
+	}
+
+	public void setMapCodeCompetence(HashMap<String, String> mapCodeCompetence) {
+		this.mapCodeCompetence = mapCodeCompetence;
+	}
+
 	public HashMap<String, HashMap<String, HashMap<String, ArrayList<String>>>> getListefamilles() {
 		return listefamilles;
 	}
