@@ -27,7 +27,7 @@ public class CompetencePosteTravailModel {
 	 * 
 	 */
 	
-	public void updateUnCheckedPoteTravailCompetence(ArrayList <String>listunselected)
+	public void updateUnCheckedPoteTravailCompetence(ArrayList <String>listunselected, HashMap <String, String>mapCodeCompetence, HashMap <String, String>mapCodePoste)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
@@ -44,28 +44,10 @@ public class CompetencePosteTravailModel {
 			
 			//récuperation du code_competence et du code_posteTravail
 			
-			try 
-			{
-				stmt = (Statement) conn.createStatement();
-				String select="SELECT DISTINCT r.code_competence, t.code_poste FROM poste_travail_description t, repertoire_competence r where intitule_poste=#posteTravail and famille=#famille and groupe=#groupe and libelle_competence=#competence";
-				 
-				select = select.replaceAll("#famille", "'"+famille+"'");
-				select = select.replaceAll("#groupe", "'"+groupe+"'");
-				select = select.replaceAll("#competence", "'"+competence+"'");
-				select = select.replaceAll("#posteTravail", "'"+posteTravail+"'");
-				
+			String code_competence=mapCodeCompetence.get(competence);
+			String code_poste=mapCodePoste.get(posteTravail);
 			
-				
-				ResultSet rs = (ResultSet) stmt.executeQuery(select);
-				
-				String code_competence="";
-				String code_poste="";
-				while(rs.next())
-				{
-					code_competence=rs.getString("code_competence");
-					code_poste=rs.getString("code_poste");
-					
-				}
+			
 
 				
 				//mise à jour de la table poste_travail_competence
@@ -77,7 +59,7 @@ public class CompetencePosteTravailModel {
 					update_structure = update_structure.replaceAll("#code_poste", "'"+code_poste+"'");
 					update_structure = update_structure.replaceAll("#code_competence", "'"+code_competence+"'");
 				
-					
+					System.out.println(update_structure);
 					 stmt.executeUpdate(update_structure);
 				} 
 				catch (SQLException e) 
@@ -92,15 +74,7 @@ public class CompetencePosteTravailModel {
 				/**********************************************/
 				
 				
-			} 
-			catch (SQLException e) 
-			{
-				
-					e.printStackTrace();
-					//return false;
-
-
-			}
+			
 			
 		}
 		try {
@@ -117,7 +91,7 @@ public class CompetencePosteTravailModel {
 	 * 
 	 */
 	
-	public void updateCheckedPoteTravailCompetence(ArrayList <String>listselected)
+	public void updateCheckedPoteTravailCompetence(ArrayList <String>listselected, HashMap <String, String>mapCodeCompetence, HashMap <String, String>mapCodePoste)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
@@ -127,72 +101,43 @@ public class CompetencePosteTravailModel {
 		{
 			String cles=iterator.next();
 			String[] liste=cles.split("#");
-			String famille=liste[0];
-			String groupe=liste[1];
+			//String famille=liste[0];
+			//String groupe=liste[1];
 			String competence=liste[2];
 			String posteTravail=liste[3];
 			
 			//récuperation du code_competence et du code_posteTravail
 			
+			
+			String code_competence=mapCodeCompetence.get(competence);
+			String code_poste=mapCodePoste.get(posteTravail);
+			
+			//mise à jour de la table poste_travail_competence
+				/*****************************************/
 			try 
 			{
 				stmt = (Statement) conn.createStatement();
-				String select="SELECT DISTINCT r.code_competence, t.code_poste FROM poste_travail_description t, repertoire_competence r where intitule_poste=#posteTravail and famille=#famille and groupe=#groupe and libelle_competence=#competence";
-				 
-				select = select.replaceAll("#famille", "'"+famille+"'");
-				select = select.replaceAll("#groupe", "'"+groupe+"'");
-				select = select.replaceAll("#competence", "'"+competence+"'");
-				select = select.replaceAll("#posteTravail", "'"+posteTravail+"'");
-				
+				String insert_structure="INSERT INTO  poste_travail_competence  (code_poste,code_competence) VALUES (#code_poste, #code_competence)"; 
+				insert_structure = insert_structure.replaceAll("#code_poste", "'"+code_poste+"'");
+				insert_structure = insert_structure.replaceAll("#code_competence", "'"+code_competence+"'");
 			
-				
-				ResultSet rs = (ResultSet) stmt.executeQuery(select);
-				
-				String code_competence="";
-				String code_poste="";
-				while(rs.next())
-				{
-					code_competence=rs.getString("code_competence");
-					code_poste=rs.getString("code_poste");
-					
-				}
-
-				
-				//mise à jour de la table poste_travail_competence
-				/*****************************************/
-				try 
-				{
-					stmt = (Statement) conn.createStatement();
-					String insert_structure="INSERT INTO  poste_travail_competence  (code_poste,code_competence) VALUES (#code_poste, #code_competence)"; 
-					insert_structure = insert_structure.replaceAll("#code_poste", "'"+code_poste+"'");
-					insert_structure = insert_structure.replaceAll("#code_competence", "'"+code_competence+"'");
-				
-					
-					stmt.execute(insert_structure);
-				} 
-				catch (SQLException e) 
-				{
-					
-						e.printStackTrace();
-						//return false;
-
-
-				}
-
-				/**********************************************/
-				
-				
+				System.out.println(insert_structure);	
+				stmt.execute(insert_structure);
 			} 
 			catch (SQLException e) 
 			{
-				
+					
 					e.printStackTrace();
 					//return false;
 
 
 			}
 
-		}
+			/**********************************************/
+				
+				
+		} 
+			
 		try {
 			conn.close();
 		} catch (SQLException e) {
@@ -215,7 +160,7 @@ public class CompetencePosteTravailModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT intitule_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			String select_structure="SELECT intitule_poste  FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -251,6 +196,56 @@ public class CompetencePosteTravailModel {
 		return listposteTravail;	
 	
 	}
+	
+	public HashMap<String, String> getlistepostesCode_postes()
+	{
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		HashMap<String, String > mapcode_poste=new HashMap<String, String >();
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					String intitule_poste=rs.getString("intitule_poste");
+					String code_poste=rs.getString("code_poste");
+					
+					mapcode_poste.put(intitule_poste, code_poste);
+	
+				}
+				else {
+					return mapcode_poste;
+				}
+				
+			}
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+			
+		return mapcode_poste;	
+	
+	}
 	/**
 	 * récupération des données qui associe le repertoire de competence au poste de travail
 	 * @throws SQLException 
@@ -267,7 +262,7 @@ public class CompetencePosteTravailModel {
 
 			stmt = (Statement) conn.createStatement();
 			//String select_structure="select distinct a.id_repertoire_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste from repertoire_competence a, poste_travail_competence b, poste_travail_description e where a.code_competence=b.code_competence and e.code_poste=b.code_poste and e.code_poste in(select distinct code_poste from planning_evaluation)"; 
-			String select_structure="select distinct  a.famille, a.groupe, a.libelle_competence, e.intitule_poste from repertoire_competence a, poste_travail_competence b, poste_travail_description e where a.code_competence=b.code_competence and e.code_poste=b.code_poste and e.code_poste in(select distinct code_poste from planning_evaluation)";
+			String select_structure="select distinct  a.code_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste from repertoire_competence a, poste_travail_competence b, poste_travail_description e where a.code_competence=b.code_competence and e.code_poste=b.code_poste and e.code_poste in(select distinct code_poste from planning_evaluation)";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -276,7 +271,7 @@ public class CompetencePosteTravailModel {
 			competencePosteTravailBean.setListefamilles(mapFamille);
 			HashMap<String, HashMap<String, ArrayList<String>> > mapgroupe=new HashMap<String, HashMap<String, ArrayList<String>> >();
 			HashMap<String, ArrayList<String>> mapcompetence=new HashMap<String, ArrayList<String>>();
-			
+			HashMap <String, String > mapCodeCompetence=new HashMap <String, String >();
 			//int i=0;
 			while(rs.next())
 			{
@@ -288,7 +283,10 @@ public class CompetencePosteTravailModel {
 					String groupe=rs.getString("groupe");
 					String libelle_competence=rs.getString("libelle_competence");
 					String intitule_poste=rs.getString("intitule_poste");
+					String code_competence=rs.getString("code_competence");
 					
+					
+					mapCodeCompetence.put(libelle_competence, code_competence);
 					
 					mapFamille=competencePosteTravailBean.getListefamilles();
 					if(mapFamille.containsKey(famille))
@@ -333,6 +331,7 @@ public class CompetencePosteTravailModel {
 					}
 
 					competencePosteTravailBean.setListefamilles(mapFamille);
+					competencePosteTravailBean.setMapCodeCompetence(mapCodeCompetence);
 				}
 				else 
 				{
