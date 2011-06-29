@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import common.CreateDatabaseCon;
  * @author FTERZI
  *
  */
+
 public class CompagneModel
 {
 
@@ -58,18 +60,6 @@ public class CompagneModel
     id_compagne_type int(11)
      */
 
-    private static final String SEL_COMPAGNE = "SELECT id_compagne," + "id_employe," + "date_debut," + "date_fin,"
-        + "libelle_compagne," + "code_structure," + "id_compagne_type " + "FROM compagne_evaluation";
-
-    private static final String INS_COMPAGNE = "INSERT INTO compagne_evaluation (id_compagne,id_employe,date_debut,date_fin,libelle_compagne,code_structure,id_compagne_type) "
-        + "VALUES (#id_compagne,#id_employe,#date_debut,#date_fin,#libelle_compagne,#code_structure,#id_compagne_type)";
-
-    private static final String UPD_COMPAGNE = "UPDATE compagne_evaluation " + "SET " + "id_employe=#id_employe"
-        + "date_debut=#date_debut" + "date_fin=#date_fin" + "libelle_compagne=#libelle_compagne"
-        + "code_structure=#code_structure" + "id_compagne_type=#id_compagne_type " + "WHERE id_compagne = #id_compagne";
-
-    private static final String DEL_COMPAGNE = "DELETE FROM compagne_evaluation WHERE id_compagne = #id_compagne";
-
     private List<Compagne> compagnes = null;
 
     public List<Compagne> getAllCompagnes()
@@ -85,7 +75,7 @@ public class CompagneModel
         try
         {
             stmt = (Statement) conn.createStatement();
-            String select_all_compagne = SEL_COMPAGNE;
+            String select_all_compagne = ConstantsModel.SEL_COMPAGNE;
 
             ResultSet rs = (ResultSet) stmt.executeQuery( select_all_compagne );
 
@@ -101,7 +91,7 @@ public class CompagneModel
                     compagne.setDateDebut( rs.getDate( "date_debut" ) );
                     compagne.setDateFin( rs.getDate( "date_fin" ) );
                     compagne.setLibelleCompagne( rs.getString( "libelle_compagne" ) );
-                    compagne.setStructure( new StructureEntrepriseBean( rs.getString( "code_tructure" ) ) );
+                    compagne.setStructure( new StructureEntrepriseBean( rs.getString( "code_structure" ) ) );
                     compagne.setCompagneType( new CompagneType( rs.getInt( "id_compagne_type" ), null ) );
 
                     compagnes.add( compagne );
@@ -172,11 +162,10 @@ public class CompagneModel
         {
             // id_compagne, code_direction, code_service, id_employe, date_debut, date_fin, libelle_compagne, code_structure, id_compagne_type
             stmt = (Statement) conn.createStatement();
-            String ins_compagne = INS_COMPAGNE;
-            ins_compagne = ins_compagne.replaceAll( "#id_compagne", String.valueOf( addedData.getIdCompagne() ) );
+            String ins_compagne = ConstantsModel.INS_COMPAGNE;
             ins_compagne = ins_compagne.replaceAll( "#id_employe", String.valueOf( addedData.getEmploye().getId() ) );
             ins_compagne = ins_compagne.replaceAll( "#id_compagne_type",
-                                                    String.valueOf( addedData.getCompagneType().getIdCompagneType() ) );
+                                                    String.valueOf( addedData.getCompagneType().getId() ) );
             ins_compagne = ins_compagne.replaceAll( "#date_debut", "'" + addedData.getDateDebut() + "'" );
             ins_compagne = ins_compagne.replaceAll( "#date_fin", "'" + addedData.getDateFin() + "'" );
             ins_compagne = ins_compagne.replaceAll( "#libelle_compagne", "'" + addedData.getLibelleCompagne() + "'" );
@@ -219,11 +208,11 @@ public class CompagneModel
         try
         {
             stmt = (Statement) conn.createStatement();
-            String upd_compagne = UPD_COMPAGNE;
+            String upd_compagne = ConstantsModel.UPD_COMPAGNE;
             upd_compagne = upd_compagne.replaceAll( "#id_compagne", String.valueOf( data.getIdCompagne() ) );
             upd_compagne = upd_compagne.replaceAll( "#id_employe", String.valueOf( data.getEmploye().getId() ) );
             upd_compagne = upd_compagne.replaceAll( "#id_compagne_type",
-                                                    String.valueOf( data.getCompagneType().getIdCompagneType() ) );
+                                                    String.valueOf( data.getCompagneType().getId() ) );
             upd_compagne = upd_compagne.replaceAll( "#date_debut", "'" + data.getDateDebut() + "'" );
             upd_compagne = upd_compagne.replaceAll( "#date_fin", "'" + data.getDateFin() + "'" );
             upd_compagne = upd_compagne.replaceAll( "#libelle_compagne", "'" + data.getLibelleCompagne() + "'" );
@@ -266,7 +255,7 @@ public class CompagneModel
         try
         {
             stmt = (Statement) conn.createStatement();
-            String del_compagne = DEL_COMPAGNE;
+            String del_compagne = ConstantsModel.DEL_COMPAGNE;
             del_compagne = del_compagne.replaceAll( "#id_compagne", String.valueOf( data.getIdCompagne() ) );
 
             stmt.execute( del_compagne );
@@ -620,7 +609,7 @@ public class CompagneModel
                 cel.setCellValue( donnee.getStructure().getCodestructure() );
 
                 cel = row1.createCell( (short) 6 );
-                cel.setCellValue( donnee.getCompagneType().getIdCompagneType() );
+                cel.setCellValue( donnee.getCompagneType().getId() );
 
                 i++;
             }

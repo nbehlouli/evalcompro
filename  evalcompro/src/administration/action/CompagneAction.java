@@ -86,7 +86,7 @@ public class CompagneAction
         // creation formation
         CompagneModel compagneModel = new CompagneModel();
         model = compagneModel.getAllCompagnes();
-
+        
         comp.setVariable( comp.getId() + "Ctrl", this, true );
         okAdd.setVisible( false );
         effacer.setVisible( false );
