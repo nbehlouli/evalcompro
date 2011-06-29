@@ -32,7 +32,7 @@ import org.zkoss.zul.Messagebox;
 import administration.bean.StructureEntrepriseBean;
 
 import com.mysql.jdbc.Connection;
-import java.sql.ResultSet;
+import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
 
@@ -41,7 +41,7 @@ public class StructureEntrepriseModel {
 	private ArrayList<StructureEntrepriseBean>  listStructureEntreprise =null; 
 	
 	/**
-	 * cette mï¿½thode fournit le contenu de la table structure_entreprise
+	 * cette méthode fournit le contenu de la table structure_entreprise
 	 * @return
 	 * @throws SQLException
 	 */
@@ -99,7 +99,7 @@ public class StructureEntrepriseModel {
 		
 	}
 	/**
-	 * cette mï¿½thode permet de supprimer le contenu de la table structure_entreprise
+	 * cette méthode permet de supprimer le contenu de la table structure_entreprise
 	 * @param addedData
 	 * @return
 	 */
@@ -151,7 +151,7 @@ public class StructureEntrepriseModel {
 		return true;
 	}
 	/**
-	 * cette mï¿½thode permet d'inserer la donnï¿½e addedData dans la table structure_entreprise de la base de donnï¿½e
+	 * cette méthode permet d'inserer la donnée addedData dans la table structure_entreprise de la base de donnée
 	 * @param addedData
 	 * @return
 	 */
@@ -207,7 +207,7 @@ public class StructureEntrepriseModel {
 		return true;
 	}
 	/**
-	 * cette classe permet de controler la validitï¿½ des donnï¿½es insï¿½rï¿½es (par rapport ï¿½ leurs taille)
+	 * cette classe permet de controler la validité des données insérées (par rapport à leurs taille)
 	 * @param addedData
 	 * @return
 	 */
@@ -217,79 +217,79 @@ public class StructureEntrepriseModel {
 		{
 			if(addedData.getCodestructure().length()>5)
 			{
-				Messagebox.show("La taille du champ Code structure ne doit pas dï¿½passer 5 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La taille du champ Code structure ne doit pas dépasser 5 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 				return false;
 			}
 			else
 				if(addedData.getCodeDivision().length()>4)
 				{
-					Messagebox.show("La taille du champ Code division ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+					Messagebox.show("La taille du champ Code division ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 					return false;
 				}
 				else
 					if(addedData.getLibelleDivision().length()>50)
 					{
-						Messagebox.show("La taille du champ Libelle division ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+						Messagebox.show("La taille du champ Libelle division ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 						return false;
 					}
 					else
 						if(addedData.getCodeDirection().length()>4)
 						{
-							Messagebox.show("La taille du champ Code direction ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+							Messagebox.show("La taille du champ Code direction ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 							return false;
 						}
 						else
 							if(addedData.getLibelleDirection().length()>50)
 							{
-								Messagebox.show("La taille du champ Libelle direction ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+								Messagebox.show("La taille du champ Libelle direction ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 								return false;
 							}
 							else
 								if(addedData.getCodeUnite().length()>4)
 								{
-									Messagebox.show("LaL taille du champ Code unite ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+									Messagebox.show("LaL taille du champ Code unite ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 									return false;
 								}
 								else
 									if(addedData.getLibelleUnite().length()>50)
 									{
-										Messagebox.show("La taille du champ Libelle unite ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+										Messagebox.show("La taille du champ Libelle unite ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 										return false;
 									}
 									else
 										if(addedData.getCodeDepartement().length()>4)
 										{
-											Messagebox.show("La taille du champ Code dï¿½partement ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+											Messagebox.show("La taille du champ Code département ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 											return false;
 										}
 										else
 											if(addedData.getLibelleDepartement().length()>50)
 											{
-												Messagebox.show("La taille du champ Libelle dï¿½partement ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+												Messagebox.show("La taille du champ Libelle département ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 												return false;
 											}
 											else
 												if(addedData.getCodeService().length()>4)
 												{
-													Messagebox.show("La taille du champ Code service ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+													Messagebox.show("La taille du champ Code service ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 													return false;
 												}
 												else
 													if(addedData.getLibelleService().length()>50)
 													{
-														Messagebox.show("La taille du champ Libelle service ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+														Messagebox.show("La taille du champ Libelle service ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 														return false;
 													}
 													else
 														if(addedData.getCodesection().length()>4)
 														{
-															Messagebox.show("La taille du champ Code section ne doit pas dï¿½passer 4 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+															Messagebox.show("La taille du champ Code section ne doit pas dépasser 4 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 															return false;
 														}
 														else
 															if(addedData.getLibelleSection().length()>5)
 															{
-																Messagebox.show("La taille du champ Libelle section ne doit pas dï¿½passer 50 caractï¿½res", "Erreur",Messagebox.OK, Messagebox.ERROR);
+																Messagebox.show("La taille du champ Libelle section ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
 																return false;
 															}
 		} 
@@ -303,7 +303,7 @@ public class StructureEntrepriseModel {
 	}
 	
 	/**
-	 * Cette classe permet de mettre ï¿½ jour la table structure_entreprise
+	 * Cette classe permet de mettre à jour la table structure_entreprise
 	 * @param addedData
 	 * @return
 	 */
@@ -339,7 +339,7 @@ public class StructureEntrepriseModel {
 		{
 			try 
 			{
-				Messagebox.show("La modification n'a pas ï¿½tï¿½ prise en compte car il existe une donnï¿½e ayant le mï¿½me code ï¿½tablissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La modification n'a pas été prise en compte car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -367,7 +367,7 @@ public class StructureEntrepriseModel {
 		return true;
 	}
 	/**
-	 * cette classe permet de supprimer une donnï¿½e de la table structure_entreprise
+	 * cette classe permet de supprimer une donnée de la table structure_entreprise
 	 * @param codeStructure
 	 */
 	public void supprimerStructureEntrepriseBean(String codeStructure)
@@ -402,12 +402,12 @@ public class StructureEntrepriseModel {
 		}
 	}
 	/**
-	 * cette mï¿½thode permet de vï¿½rifier l'integrite des donnï¿½es et retourne les donnï¿½es rejetï¿½s
+	 * cette méthode permet de vérifier l'integrite des données et retourne les données rejetés
 	 * @return
 	 */
 	public HashMap <String,List<StructureEntrepriseBean>> ChargementDonneedansBdd(List <StructureEntrepriseBean> liste)throws Exception
 	{
-		//Verification de l'integritï¿½ des donnï¿½es ï¿½ inserer doublon dans le fichier
+		//Verification de l'integrité des données à inserer doublon dans le fichier
 		List <StructureEntrepriseBean> listeAInserer=new ArrayList <StructureEntrepriseBean>();
 		List <StructureEntrepriseBean> listeDonneesRejetes=new ArrayList <StructureEntrepriseBean>();
 
@@ -430,7 +430,7 @@ public class StructureEntrepriseModel {
 			
 		}
 		
-		//Verification de l'integritï¿½ des donnï¿½es ï¿½ inserer doublon avec les donnï¿½es de la base
+		//Verification de l'integrité des données à inserer doublon avec les données de la base
 		
 		List <StructureEntrepriseBean> listeAInsererFinal=new ArrayList <StructureEntrepriseBean>();
 		ArrayList<StructureEntrepriseBean>strctureEntreprisebdd =checkStructureEntreprise();
@@ -463,7 +463,7 @@ public class StructureEntrepriseModel {
 			
 		}
 		
-		//Insertion des donnï¿½es dans la table Structure_entreprise
+		//Insertion des données dans la table Structure_entreprise
 		Iterator<StructureEntrepriseBean> index =listeAInsererFinal.iterator();
 		while(index.hasNext())
 		{
@@ -481,7 +481,7 @@ public class StructureEntrepriseModel {
 	}
 	
 	/**
-	 * Cette mï¿½thode permet de faire un chargement d'un fichier xls 
+	 * Cette méthode permet de faire un chargement d'un fichier xls 
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
@@ -499,7 +499,7 @@ public class StructureEntrepriseModel {
 	        // creer l'objet representant les cellules Excel
 	        HSSFCell cellule;
 
-	        //lecture de la premiï¿½re feuille excel
+	        //lecture de la première feuille excel
 	        HSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
 	        
 	        // lecture du contenu de la feuille excel
@@ -602,7 +602,7 @@ public class StructureEntrepriseModel {
 	}
 	
 	/**
-	 * Cette mï¿½thode permet de faire un upload d'un fichier xlsx (fichier vers BDD)
+	 * Cette méthode permet de faire un upload d'un fichier xlsx (fichier vers BDD)
 	 * @return
 	 */
 	public List <StructureEntrepriseBean> uploadXLSXFile(InputStream inputStream)
@@ -619,7 +619,7 @@ public class StructureEntrepriseModel {
 	        // creer l'objet representant les cellules Excel
 	        XSSFCell cellule;
 
-	        //lecture de la premiï¿½re feuille excel
+	        //lecture de la première feuille excel
 	        XSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
 	        
 	        // lecture du contenu de la feuille excel
@@ -729,12 +729,12 @@ public class StructureEntrepriseModel {
 	
 	
 	/**
-	 * Cette mï¿½thode permet de charger le contenu de la table Structure_entreprise et de crï¿½er un fichier excel avec ces donnï¿½es
+	 * Cette méthode permet de charger le contenu de la table Structure_entreprise et de créer un fichier excel avec ces données
 	 */
 	public void downloadStructureEntrepriseDataToXls()
 	{
 		
-		//recupï¿½ration du contenu de la table Structure_entreprise
+		//recupération du contenu de la table Structure_entreprise
 		try 
 		{
 			ArrayList<StructureEntrepriseBean> listeStructureEntrepriseBean=checkStructureEntreprise();
@@ -748,7 +748,7 @@ public class StructureEntrepriseModel {
 			//creation d'une feuille excel
 			 HSSFSheet sheet = workBook.createSheet("struture_entreprise");
 			 
-			 //creation de l'entï¿½te du document excel
+			 //creation de l'entête du document excel
 			 HSSFRow row = sheet.createRow(0);
 			 HSSFCell cell = row.createCell((short)0);
 			 
@@ -775,19 +775,19 @@ public class StructureEntrepriseModel {
 			 			 cell4.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell5 = row.createCell((short)5);
-			 cell5.setCellValue("Code unitï¿½");
+			 cell5.setCellValue("Code unité");
 			 			 cell5.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell6 = row.createCell((short)6);
-			 cell6.setCellValue("Nom unitï¿½");
+			 cell6.setCellValue("Nom unité");
 			 			 cell6.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell7 = row.createCell((short)7);
-			 cell7.setCellValue("Code dï¿½partement");
+			 cell7.setCellValue("Code département");
 			 			 cell7.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell8 = row.createCell((short)8);
-			 cell8.setCellValue("Nom dï¿½partement");
+			 cell8.setCellValue("Nom département");
 			 			 cell8.setCellStyle(cellStyle);
 			 
 			 HSSFCell cell9 = row.createCell((short)9);
