@@ -11,8 +11,7 @@ import administration.bean.SelCliDBNameBean;
 import administration.bean.SelCliDbBean;
 
 import com.mysql.jdbc.Connection;
-//import com.mysql.jdbc.ResultSet;
-import java.sql.ResultSet;
+import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
 
