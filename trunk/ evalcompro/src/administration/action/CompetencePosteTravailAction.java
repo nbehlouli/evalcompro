@@ -56,6 +56,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 	
 	Checkbox cc;
 	HashMap<String,HashMap<String, HashMap<String, ArrayList<String>> >> familleGroupe;
+	HashMap<String, String> mapCodeCompetence=new HashMap <String, String>();
+	HashMap<String, String> mapCodePoste=new HashMap <String, String>();
 	ArrayList<String> listeposteTravail;
 	
 	HashMap <String, Checkbox> selectedCheckBox;
@@ -78,8 +80,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		CompetencePosteTravailModel model=new CompetencePosteTravailModel();
 		competencePosteTravailBean=model.getCompetencePosteTravailBean();
 		competencePosteTravailBean.setPosteTravail(model.getlistepostes());
-		
-		
+		mapCodePoste=model.getlistepostesCode_postes();
+		competencePosteTravailBean.setMapCodePoste(mapCodePoste);
 		//MapFamille mapFamille=competencePosteTravailBean.getMapFamille();
 		/*ArrayList<String>*/ listeposteTravail=competencePosteTravailBean.getPosteTravail();
 		
@@ -102,7 +104,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		//construction des rows spreadsheet
 		
 		familleGroupe=competencePosteTravailBean.getListefamilles();
-
+		mapCodeCompetence=competencePosteTravailBean.getMapCodeCompetence();
+		
 		Set<String> setFamille = familleGroupe.keySet( );
 		
 		
@@ -442,12 +445,12 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 			
 		ArrayList<String> listunselected = new ArrayList<String>(setunselected);
 		CompetencePosteTravailModel competencePosteTravailModel=new CompetencePosteTravailModel();
-		competencePosteTravailModel.updateUnCheckedPoteTravailCompetence(listunselected);
+		competencePosteTravailModel.updateUnCheckedPoteTravailCompetence(listunselected,mapCodeCompetence, mapCodePoste);
 		
 		//mise a jour de la liste des checked
 		 Set<String> setselected = selectedCheckBox.keySet( );
 		 ArrayList<String> listselected = new ArrayList<String>(setselected);
-		competencePosteTravailModel.updateCheckedPoteTravailCompetence(listselected);
+		competencePosteTravailModel.updateCheckedPoteTravailCompetence(listselected,mapCodeCompetence, mapCodePoste);
 		
 		 selectedCheckBox=new HashMap <String, Checkbox>();
 		 unselectedCheckBox=new HashMap <String, Checkbox>();
