@@ -9,6 +9,7 @@ public class SelCliDBNameBean {
 		
 	}
 	
+	
 	public SelCliDBNameBean(int database_id,String nombase){
 		this.datbase_id=database_id;
 		this.nombase=nombase;
