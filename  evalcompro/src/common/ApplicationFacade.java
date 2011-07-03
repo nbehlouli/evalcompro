@@ -34,6 +34,18 @@ public class ApplicationFacade {
     //variable contenant la database id rattachée à l'utilisateur
     private int client_database_id;
     
+    private int profile_id;
+    
+    
+    
+	public int getProfile_id() {
+		return profile_id;
+	}
+
+	public void setProfile_id(int profile_id) {
+		this.profile_id = profile_id;
+	}
+
 	public int getClient_database_id() {
 		return client_database_id;
 	}
