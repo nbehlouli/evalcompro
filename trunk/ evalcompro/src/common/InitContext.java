@@ -18,6 +18,7 @@ public class InitContext
     public String jdbcusername;
     public String jdbcpassword;
     public Properties props;
+    public String smtpsubject_alert;
     public static final String DIRECTORY_CONNECTION_PARAMETERS = "resources.properties";
 
     public InitContext()
@@ -43,6 +44,7 @@ public class InitContext
             setJdbcpassword(props.getProperty("jdbc.password"));
             setJdbcusername(props.getProperty("jdbc.username"));
             setJdbcurl(props.getProperty("jdbc.url"));
+            setSmtpsubject_alert(props.getProperty("alert.subject"));
                         
         }
         catch(IOException e)
@@ -175,10 +177,20 @@ public class InitContext
     {
         this.jdbcpassword = jdbcpassword;
     }
+
+	public String getSmtpsubject_alert() {
+		return smtpsubject_alert;
+	}
+
+	public void setSmtpsubject_alert(String smtpsubject_alert) {
+		this.smtpsubject_alert = smtpsubject_alert;
+	}
     
    /* public static void main(String arg[]){
     	InitContext init =new InitContext();
     	init.loadProperties();
     } */  
+    
+    
     
 }
