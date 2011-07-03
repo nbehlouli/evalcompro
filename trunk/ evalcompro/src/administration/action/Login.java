@@ -88,6 +88,8 @@ public class Login extends GenericForwardComposer{
 					 * aprer la selection de la base via l'ecran SELCLI
 					 */
 					ApplicationFacade.getInstance().setClient_database_id(init.getDatabase_id());
+					//mise en session du profile de l'utilisateur
+					ApplicationFacade.getInstance().setProfile_id(init.getProfile_id());
 					//System.out.println("AVANT"+ApplicationFacade.getInstance().getClient_database_id());
 					if (init.getProfile_id()==1){
 						Executions.createComponents("../pages/SELCLI.zul", div, data);	
