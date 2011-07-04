@@ -2,11 +2,11 @@ package administration.action;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
+
 import java.util.Map;
 
 import org.zkoss.Version;
-import org.zkoss.zk.ui.Component;
+
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -15,19 +15,22 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.lang.Strings;
 import org.zkoss.zul.Div; 
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zk.ui.Component;
+
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Div;
+
 
 import common.ApplicationFacade;
 
-import administration.bean.SelCliDbBean;
+
+
 import administration.model.LoginModel;
 
 
 public class Login extends GenericForwardComposer{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Button login;
 	Window main;
 	Div   loginDiv;
@@ -88,8 +91,8 @@ public class Login extends GenericForwardComposer{
 					 * aprer la selection de la base via l'ecran SELCLI
 					 */
 					ApplicationFacade.getInstance().setClient_database_id(init.getDatabase_id());
-					//mise en session du profile de l'utilisateur
-					ApplicationFacade.getInstance().setProfile_id(init.getProfile_id());
+			
+
 					//System.out.println("AVANT"+ApplicationFacade.getInstance().getClient_database_id());
 					if (init.getProfile_id()==1){
 						Executions.createComponents("../pages/SELCLI.zul", div, data);	
