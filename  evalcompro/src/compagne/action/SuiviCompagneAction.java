@@ -21,6 +21,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Textbox;
 
 import common.ApplicationFacade;
@@ -37,6 +38,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 	Listbox  struct_list;
 	//Checkbox checkbox_prog;
 	AnnotateDataBinder binder;
+	Progressmeter progressbar;
 	//List<AdministrationLoginBean> model = new ArrayList<AdministrationLoginBean>();
 	//SuiviCompagneBean selected;
 	Button search;
@@ -78,8 +80,9 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		Map.Entry me = (Map.Entry)i1.next();
 		struct_list.appendItem((String) me.getKey(),(String) me.getKey());
 		//basedonneemodel.add((String) me.getKey());
+		 * 
 		}*/
-	
+		progressbar.setStyle("background:#FF0000;");
 		// création de la structure de l'entreprise bean
 		//AdministrationLoginModel admin_compte =new AdministrationLoginModel();
 		model=init.uploadListEvaluateur();
@@ -187,7 +190,7 @@ public void onClick$valider() throws SQLException, InterruptedException, ParseEx
     if (compagne!=-1){
      
     
-				if (Messagebox.show("Voulez vous valider la compagne XXXXX", "Prompt", Messagebox.YES|Messagebox.NO,
+				if (Messagebox.show("Voulez vous valider la compagne  "+comp_list.getSelectedItem().getLabel(), "Prompt", Messagebox.YES|Messagebox.NO,
 					    Messagebox.QUESTION) == Messagebox.YES) {
 					    //System.out.println("pressyes");
 					    if (init.validerCompagne(compagne) ){
@@ -222,6 +225,10 @@ SuiviCompagneModel init= new SuiviCompagneModel();
     }
     else {
     	model=init.filtrerListEvaluateur(compagne);
+    	if (init.isCompagneValidated(compagne)){
+    		msg.setValue("La compagne (vague):"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
+    		valider.setDisabled(true);
+    	}
     }
 	
 	//binder = new AnnotateDataBinder(comp);

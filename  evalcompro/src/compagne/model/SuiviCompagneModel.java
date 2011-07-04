@@ -387,6 +387,40 @@ public boolean validerCompagne(int idcompagne) throws ParseException
 	}
 	return true;
 }
+
+public boolean isCompagneValidated(Integer id_compagne) throws SQLException
+{
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt = null;
+	boolean result=false;
+	
+	try 
+	{
+		stmt = (Statement) conn.createStatement();
+		String sql_query="select id_compagne_valide from compagne_validation where id_compagne=#id_compagne and compagne_valide=1";
+		sql_query = sql_query.replaceAll("#id_compagne", String.valueOf(id_compagne));
+		ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+		
+		
+		while(rs.next()){
+			if (rs.getRow()==1  ) {
+				result=true;
+				
+			}
+        }
+		stmt.close();conn.close(); 
+	} 
+	catch (SQLException e){
+			e.printStackTrace();
+			stmt.close();conn.close();result=false;
+	}
+	
+	return result;
+	
+
+}
+
 	
 	/*select concat (nom ,' ',prenom) as nom_evaluateur , round(sum(nbfichevalide)*100/ sum(totalemploye)) as progress 
 from (	select id_evaluateur as evaluateur ,count(r.id_employe) as nbfichevalide,0 as totalemploye 
