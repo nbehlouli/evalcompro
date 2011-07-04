@@ -10,11 +10,25 @@ public class CompteBean implements  Serializable {
 	 private int database_id;
 	 private Date val_date_deb;
 	 private Date val_date_fin; 
+	
+	 //cette variable est utilisé dans la fiche d'evaluation
+	 private int id_employe;
 	 
+	 public int getId_employe() {
+		return id_employe;
+	}
+	public void setId_employe(int id_employe) {
+		this.id_employe = id_employe;
+	}
+	public CompteBean()
+	 {
+		 
+	 }
 	 public CompteBean ( int id_compte,int id_profile,
 						String login,String pwd,int database_id, Date val_date_deb,
 						Date val_date_fin) {	
 	 
+
 	 this.id_compte=id_compte;
 	 this.id_profile=id_profile;
 	 this.login=login;
