@@ -92,7 +92,7 @@ public class ApplicationFacade {
 	
 	public void resetArguments(){
 		
-		this.compteEntrepriseDatabasebean=null;
+		//this.compteEntrepriseDatabasebean=null;
 		this.arborescenceMenubean=null;
 		this.client_database_id=0;
 		this.compteUtilisateur=null;
