@@ -2,6 +2,7 @@ package common;
 
 import java.util.ArrayList;
 
+import administration.bean.CompteBean;
 import administration.bean.CompteEntrepriseDatabaseBean;
 import administration.bean.StructureEntrepriseBean;
 import common.bean.ArborescenceMenu;
@@ -25,25 +26,30 @@ public class ApplicationFacade {
 
     //variable contenant les informations pour se connecter à la base evalcom associée à une entreprise spécifique
     
-    /**
-     * TODO enlever l'initialisation de la variable compteEntrepriseDatabasebean
-     */
+    
    private  CompteEntrepriseDatabaseBean compteEntrepriseDatabasebean =new CompteEntrepriseDatabaseBean("","","");
     // variable contenant la structure du menu principale
     private ArborescenceMenu arborescenceMenubean;
     //variable contenant la database id rattachée à l'utilisateur
     private int client_database_id;
     
-    private int profile_id;
+    //variable contenant des informations relatifs à l'utilisateur connecté
+    private CompteBean compteUtilisateur=new CompteBean();
     
     
     
-	public int getProfile_id() {
-		return profile_id;
+    
+    
+	public CompteBean getCompteUtilisateur() {
+		return compteUtilisateur;
 	}
 
-	public void setProfile_id(int profile_id) {
-		this.profile_id = profile_id;
+	public void setCompteUtilisateur(CompteBean compteUtilisateur) {
+		this.compteUtilisateur = compteUtilisateur;
+	}
+
+	public static void setInstance(ApplicationFacade instance) {
+		ApplicationFacade.instance = instance;
 	}
 
 	public int getClient_database_id() {
@@ -89,6 +95,7 @@ public class ApplicationFacade {
 		this.compteEntrepriseDatabasebean=null;
 		this.arborescenceMenubean=null;
 		this.client_database_id=0;
+		this.compteUtilisateur=null;
 	}
 
 	
