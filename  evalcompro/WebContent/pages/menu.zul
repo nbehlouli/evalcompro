@@ -61,7 +61,7 @@ border-bottom: none;
 			<south size="20px">
 				<hbox pack="center" width="100%">
 					<html><![CDATA[
-						<span style="color:#0C7A9A;font-size:7pt;">©2011 RS Management IT. All Rights Reserved. Powered by Soft Solutions </span>
+						<span style="color:#0C7A9A;font-size:7pt;">©2011 SR Management IT. All Rights Reserved. Powered by Soft Solutions </span>
 					]]></html>
 				</hbox>
 			</south>
