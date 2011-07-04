@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 import administration.bean.CompteBean;
 
 import com.mysql.jdbc.Connection;
@@ -98,12 +99,15 @@ public static void checkProfile(List compte_user) throws SQLException  {
 	CreateDatabaseCon dbcon=new CreateDatabaseCon();
 	Connection conn=(Connection) dbcon.connectToDB();
 	Statement stmt;
- 	CompteBean cpb;
+ 	CompteBean cpb=new CompteBean();
  	Integer profile=0;
  	while (it.hasNext()){
  		cpb  = (CompteBean) it.next();
 		profile=cpb.getId_profile();
  	}
+ 	
+ 	//enregistrement des informations relatifs à la personne connecté au niveau de la façade
+ 	ApplicationFacade.getInstance().setCompteUtilisateur(cpb);
  	profile_id=profile;	
 	stmt = (Statement) conn.createStatement();
 	String select_profile=" select id_ecran,code_ecran,libelle_ecran,code_menu,libelle_menu"+ 
