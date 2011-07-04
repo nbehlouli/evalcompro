@@ -1,5 +1,25 @@
 <zk>
-		
+<style   >
+div.z-progressmeter {
+background:#FFFFFF
+}
+span.z-progressmeter-img {
+background:#00CC00
+}
+
+upm.z-progressmeter-img {
+background:#FF0000
+}
+
+body
+{
+font-family: arial, helvetica, sans-serif ;
+font-size: 10pt ;
+color: black ;
+font-weight: bold;
+background-color: #00CC00 ;
+}
+</style>  	
 	
        
 <window  id="win" title="Suivi des compagnes d'évaluation" apply="compagne.action.SuiviCompagneAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto"
@@ -30,21 +50,8 @@
        
 			<listcell label="@{listevaluateur.evaluateur}" />
 			<listcell label="@{listevaluateur.pourcentage}" >%
-			
-			 
-			 
-			  <zscript> System.out.println("jesuisla")</zscript>
-	              	<style  if="@{listevaluateur.pourcentage==100}" dynamic="true">
-							div.z-progressmeter {
-							background:#FFFFFF
-							}
-							span.z-progressmeter-img {
-							background:#00CC00
-							}
-	               </style>
-               
-                <zscript> System.out.println("jenesuisla")</zscript>
-                    <progressmeter value="@{listevaluateur.pourcentage}" />
+	
+	        <progressmeter  id="progressbar" value="@{listevaluateur.pourcentage}"  style="upm"/>
    		
 			</listcell>		
 			<listcell >
@@ -56,7 +63,9 @@
 		</listitem>
 	</listbox>
  
- 
+ <div>
+	<label id="msg" style="font-family: arial, helvetica, sans-serif ;font-size: 10pt ;color: black ;font-weight: bold;background-color: #00CC00 ;"/>
+</div>
  </div>
 
 
@@ -72,8 +81,6 @@
  </grid>
  </div>
 
-<div>
-	<label id="msg" style="color:red"/>
-</div>
+
 </window>
 </zk>
