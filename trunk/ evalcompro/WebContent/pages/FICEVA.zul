@@ -1,6 +1,74 @@
-<?page title="page under construction" contentType="text/html;charset=UTF-8"?>
-<zk>
-<window title="page under construction" border="normal">
-New Content Here!
+<window  id="win" title="Fiche d'evaluation" apply="compagne.action.FicheEvaluationAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto">
+
+	<tabbox id="tb" width="100%" height="100%"  >
+		<tabs id="tbtabs" >
+			<tab id="AEvaluer" label="Fiches des employés à évaluer" />
+			<tab id="FicheEvaluation" label="Ma fiche d'évaluation" />
+    	</tabs>
+		<tabpanels id="tbpanels" height="100%">
+           	<tabpanel id="evaluations" >
+				<grid span="true" sizedByContent="true" width="100%" height="500">        
+               		<rows>
+            			<row>
+                			<!-- Selected contributor's title value is same as title model's data-->
+                			<listbox id="poste_travail" mold="select" />
+                			<button id="help1" />
+                			<listbox id="employe" mold="select"/>
+                			<button id="help2"  />                
+            			</row>
+        			</rows>
+    			</grid>
+    			
+    			<groupbox id="gb2" mold="3d" width="100%" height="500">
+        			<caption label="Fiche Employé" />    
+        			<vlayout spacing="20px">    
+       					<hlayout spacing="20px" >
+       						<label value="Nom de l'employé"> </label>
+       						<hlayout spacing="450px" >
+       							<textbox id="nomEmploye"/>
+       							<hlayout spacing="20px" >
+       								<button id="precedent" label="Employé précédent" image="/image/precedent.ico"  tooltiptext="Sélectionner l'employé précédent"/>
+       								<button id="suivant" label="Employé suivant" image="/image/suivant.ico" tooltiptext="Sélectionner l'employé suivant" dir="reverse"/>
+       							</hlayout>
+       						</hlayout>
+       					</hlayout>
+       					
+       					
+       					<vlayout spacing="10px">  
+       						<hlayout spacing="35px" >
+       							<label value="Poste de travail"> </label>
+       							<textbox id="posteTravail"/>
+       							<hlayout spacing="50px" >
+       								<label value="Groupe"> </label>
+       								<textbox id="groupe"/>
+       							</hlayout>
+       						</hlayout>       				
+       					</vlayout>   
+       					<div>
+ 							<listbox id="employelb"  model="@{winCtrl.model}" multiple="true"  width="100%" height="250px" >
+ 								<listhead sizable="true">
+									<listheader label="Compétence" width="250px" sort="auto" align="center" />
+									<listheader label="Aptitude observable" width="450px" sort="auto" align="center" />
+									<listheader label="Niveau de maitrise" width="150px" align="center" />
+								</listhead>	
+								<listitem self="@{each=listevaluateur}">
+									<listcell label="@{listevaluateur.evaluateur}" />			
+								</listitem>
+							</listbox> 
+ 						</div>    				
+       				</vlayout>
+					<hbox pack="center" width="100%" spacing="20">
+						<div>
+							<button id="modifier" label="Modifier " />
+							<button id="enregistrer" label="Enregistrer" />
+						</div>
+					</hbox>
+    			</groupbox>      			        	
+           	</tabpanel>
+           	
+           	
+       		<tabpanel id="maFiche"> </tabpanel>			 	
+   		</tabpanels>
+   	</tabbox>
+   
 </window>
-</zk>
