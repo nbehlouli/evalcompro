@@ -86,7 +86,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		comp_list.setSelectedIndex(0);
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
-		int profileid=ApplicationFacade.getInstance().getProfile_id();
+		int profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		 for (int pos=0;pos< this.getModel().size();pos++){
 		    	
 		    	if (this.getModel().get(pos).getPourcentage()<100 && profileid !=1){
