@@ -37,8 +37,8 @@ public class CompetencePosteTravailModel {
 		{
 			String cles=iterator.next();
 			String[] liste=cles.split("#");
-			String famille=liste[0];
-			String groupe=liste[1];
+//			String famille=liste[0];
+//			String groupe=liste[1];
 			String competence=liste[2];
 			String posteTravail=liste[3];
 			
