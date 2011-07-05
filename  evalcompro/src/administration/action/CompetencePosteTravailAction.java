@@ -395,20 +395,43 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 			}
 	 }
 	 
-	 public void onClick$valider()
+	 public void onClick$valider() throws InterruptedException
 	 {
 		 //valider les modifications
+		 if (Messagebox.show("Voulez vous valider ces modifications ?  ", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) {
 		 validerModifications();
+		 return;
+		 }
+		 else{
+			 return;
+		 }
+		 
 	 }
 	 /**
 	  * cet evennement permet d'annuler les modifications apports sur cet écran
+	 * @throws InterruptedException 
 	  */
-	 public void onClick$annuler()
+	 public void onClick$annuler() throws InterruptedException
 	 {
 		 //mise à jour de l'affichage 
-		 Set<String> setunselected = unselectedCheckBox.keySet( );
-			
-			
+		 if (Messagebox.show("Voulez vous annuler les sélections ?  ", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) {
+		 annulerModifications();
+		 return;
+		 }
+		 
+		 else{
+			 return;
+		 }
+	 }
+
+
+	/**
+	 * 
+	 */
+	public void annulerModifications() {
+		Set<String> setunselected = unselectedCheckBox.keySet( );
 		ArrayList<String> listunselected = new ArrayList<String>(setunselected);
 		Iterator<String>iterator=listunselected.iterator();
 		while (iterator.hasNext())
@@ -419,8 +442,6 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		}
 		
 		 Set<String> setselected = selectedCheckBox.keySet( );
-			
-			
 			ArrayList<String> listselected = new ArrayList<String>(setselected);
 			iterator=listselected.iterator();
 			while (iterator.hasNext())
@@ -432,7 +453,7 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		 
 		 selectedCheckBox=new HashMap <String, Checkbox>();
 		 unselectedCheckBox=new HashMap <String, Checkbox>();
-	 }
+	}
 	 
 	 /**
 	  * cette méthode permet d'enregistrer les modifications apportés dans la base de données
