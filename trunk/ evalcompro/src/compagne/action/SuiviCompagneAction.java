@@ -20,6 +20,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Textbox;
@@ -36,7 +37,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 	
 	Listbox comp_list;
 	Listbox  struct_list;
-	//Checkbox checkbox_prog;
+	Listcell listcheckbox;
 	AnnotateDataBinder binder;
 	Progressmeter progressbar;
 	//List<AdministrationLoginBean> model = new ArrayList<AdministrationLoginBean>();
@@ -61,6 +62,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		unselectedCheckBox=new HashMap <String, Checkbox>();
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		SuiviCompagneModel init= new SuiviCompagneModel();
+		msg.setVisible(false);
 		
 		
 		Set set = (init.getCompagneList()).entrySet(); 
@@ -82,13 +84,18 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		//basedonneemodel.add((String) me.getKey());
 		 * 
 		}*/
+				
 		progressbar.setStyle("background:#FF0000;");
 		// création de la structure de l'entreprise bean
 		//AdministrationLoginModel admin_compte =new AdministrationLoginModel();
+		
+		
+		
 		model=init.uploadListEvaluateur();
 		comp_list.setSelectedIndex(0);
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
+		
 		int profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		 for (int pos=0;pos< this.getModel().size();pos++){
 		    	
@@ -99,6 +106,8 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		    	}
 		    	
 		    }
+		 
+		 
 	
 	
 	}
@@ -126,6 +135,13 @@ public void onClick$search() throws SQLException {
 		
 				
 	}
+public void onCreation(ForwardEvent event){
+	Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
+	if (Integer.parseInt(checkbox.getName())==100){
+		checkbox.setVisible(false);
+	}
+	
+}
 
 public void onModifyCheckedBox(ForwardEvent event){
 	Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
@@ -213,7 +229,7 @@ public void onClick$valider() throws SQLException, InterruptedException, ParseEx
 
 public void onSelect$comp_list() throws SQLException {
 SuiviCompagneModel init= new SuiviCompagneModel(); 	
-	
+	msg.setVisible(false);
     Map map = new HashMap();
     //Map map_struct = new HashMap();
     map=init.getCompagneList();
@@ -226,7 +242,8 @@ SuiviCompagneModel init= new SuiviCompagneModel();
     else {
     	model=init.filtrerListEvaluateur(compagne);
     	if (init.isCompagneValidated(compagne)){
-    		msg.setValue("La compagne (vague):"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
+    		msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
+    		msg.setVisible(true);
     		valider.setDisabled(true);
     	}
     }
