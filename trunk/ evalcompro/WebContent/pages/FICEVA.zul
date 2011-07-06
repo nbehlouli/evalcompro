@@ -13,7 +13,7 @@
                 			<!-- Selected contributor's title value is same as title model's data-->
                 			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true"/>
                 			<button id="help1" />
-                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true"/>
+                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true" width="70%"/>
                 			<button id="help2"  />                
             			</row>
         			</rows>
