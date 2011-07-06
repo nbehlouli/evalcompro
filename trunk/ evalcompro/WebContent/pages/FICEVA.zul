@@ -11,9 +11,9 @@
                		<rows>
             			<row>
                 			<!-- Selected contributor's title value is same as title model's data-->
-                			<listbox id="poste_travail" mold="select" />
+                			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true"/>
                 			<button id="help1" />
-                			<listbox id="employe" mold="select"/>
+                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true"/>
                 			<button id="help2"  />                
             			</row>
         			</rows>
@@ -24,28 +24,23 @@
         			<vlayout spacing="20px">    
        					<hlayout spacing="20px" >
        						<label value="Nom de l'employé"> </label>
-       						<hlayout spacing="450px" >
+       						<hlayout spacing="70px" >
        							<textbox id="nomEmploye"/>
        							<hlayout spacing="20px" >
-       								<button id="precedent" label="Employé précédent" image="/image/precedent.ico"  tooltiptext="Sélectionner l'employé précédent"/>
-       								<button id="suivant" label="Employé suivant" image="/image/suivant.ico" tooltiptext="Sélectionner l'employé suivant" dir="reverse"/>
+       								<label value="Poste de travail"> </label>
+       								<hlayout spacing="70px" >
+       									<textbox id="posteTravail"/>
+       									<hlayout spacing="20px" >
+       									<label value="Famille"> </label>
+       									<combobox id="Famille"/>
+       								</hlayout>
+       								</hlayout>
        							</hlayout>
        						</hlayout>
        					</hlayout>
-       					
-       					
-       					<vlayout spacing="10px">  
-       						<hlayout spacing="35px" >
-       							<label value="Poste de travail"> </label>
-       							<textbox id="posteTravail"/>
-       							<hlayout spacing="50px" >
-       								<label value="Groupe"> </label>
-       								<textbox id="groupe"/>
-       							</hlayout>
-       						</hlayout>       				
-       					</vlayout>   
+       					 
        					<div>
- 							<listbox id="employelb"  model="@{winCtrl.model}" multiple="true"  width="100%" height="250px" >
+ 							<listbox id="employelb"  model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
  								<listhead sizable="true">
 									<listheader label="Compétence" width="250px" sort="auto" align="center" />
 									<listheader label="Aptitude observable" width="450px" sort="auto" align="center" />
@@ -59,8 +54,7 @@
        				</vlayout>
 					<hbox pack="center" width="100%" spacing="20">
 						<div>
-							<button id="modifier" label="Modifier " />
-							<button id="enregistrer" label="Enregistrer" />
+							<button id="valider" label="Valider " />
 						</div>
 					</hbox>
     			</groupbox>      			        	
