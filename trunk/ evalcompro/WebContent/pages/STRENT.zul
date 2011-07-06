@@ -76,7 +76,7 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add" label="Ajouter " image="C:/evalcom/zCRUD/WebContent/images/valider.png" tooltip="Ajouter une ligne"/>
+			<button id="add" label="Ajouter "  tooltip="Ajouter une ligne"/>
 			<button id="update" label="Modifier" />
 			<button id="delete" label="Supprimer" />
 			<button id="effacer" label="Effacer" onClick="Clients.closeErrorBox(new Component[]{codeStructure,codeDivision})"/>
