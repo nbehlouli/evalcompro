@@ -79,6 +79,11 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		CompetencePosteTravailBean competencePosteTravailBean=new CompetencePosteTravailBean();
 		CompetencePosteTravailModel model=new CompetencePosteTravailModel();
 		competencePosteTravailBean=model.getCompetencePosteTravailBean();
+		//assocation
+		HashMap<String , ArrayList<String>> mapCompetencePoste=model.getAssociationPosteTravailCompetence();
+		competencePosteTravailBean=model.fusion(competencePosteTravailBean,mapCompetencePoste );
+		
+		
 		competencePosteTravailBean.setPosteTravail(model.getlistepostes());
 		mapCodePoste=model.getlistepostesCode_postes();
 		competencePosteTravailBean.setMapCodePoste(mapCodePoste);
@@ -187,6 +192,7 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 
 					
 					ArrayList <String> listPosteTravailmap=competencePosteTravail.get(scompetence);
+					
 					
 
 					for(int i=0;i<listeposteTravail.size();i++)
@@ -393,6 +399,7 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 					//}
 				}
 			}
+			binder.loadAll();
 	 }
 	 
 	 public void onClick$valider() throws InterruptedException
@@ -453,6 +460,7 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		 
 		 selectedCheckBox=new HashMap <String, Checkbox>();
 		 unselectedCheckBox=new HashMap <String, Checkbox>();
+		 binder.loadAll();
 	}
 	 
 	 /**
@@ -467,15 +475,68 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		ArrayList<String> listunselected = new ArrayList<String>(setunselected);
 		CompetencePosteTravailModel competencePosteTravailModel=new CompetencePosteTravailModel();
 		competencePosteTravailModel.updateUnCheckedPoteTravailCompetence(listunselected,mapCodeCompetence, mapCodePoste);
+		updateAffichageuncheked(listunselected);
 		
 		//mise a jour de la liste des checked
 		 Set<String> setselected = selectedCheckBox.keySet( );
 		 ArrayList<String> listselected = new ArrayList<String>(setselected);
 		competencePosteTravailModel.updateCheckedPoteTravailCompetence(listselected,mapCodeCompetence, mapCodePoste);
+		updateAffichagecheked(listselected);
 		
 		 selectedCheckBox=new HashMap <String, Checkbox>();
 		 unselectedCheckBox=new HashMap <String, Checkbox>();
+		 
+		 binder.loadAll();
 
+	 }
+	 /**
+	  * 
+	  * @param listunselected
+	  * @param selectedFamille
+	  */
+	 public void updateAffichageuncheked(ArrayList <String>listunselected )
+	 {
+		 
+			
+			
+			Iterator<String> iterator=listunselected.iterator();
+			while (iterator.hasNext())
+			{
+				String cles=iterator.next();
+				String[] liste=cles.split("#");
+				String famille=liste[0];
+				String groupe=liste[1];
+				String competence=liste[2];
+				String posteTravail=liste[3];
+				HashMap<String, HashMap<String, ArrayList<String>>> mapgroupe=familleGroupe.get(famille);
+				HashMap<String, ArrayList<String>> mapcompetence=mapgroupe.get(groupe);
+				ArrayList<String> listPosteTravail=mapcompetence.get(competence);
+				
+				listPosteTravail.remove(posteTravail);
+				
+			}
+	 }
+	 public void updateAffichagecheked(ArrayList <String>listselected )
+	 {
+		 
+			
+			
+			Iterator<String> iterator=listselected.iterator();
+			while (iterator.hasNext())
+			{
+				String cles=iterator.next();
+				String[] liste=cles.split("#");
+				String famille=liste[0];
+				String groupe=liste[1];
+				String competence=liste[2];
+				String posteTravail=liste[3];
+				HashMap<String, HashMap<String, ArrayList<String>>> mapgroupe=familleGroupe.get(famille);
+				HashMap<String, ArrayList<String>> mapcompetence=mapgroupe.get(groupe);
+				ArrayList<String> listPosteTravail=mapcompetence.get(competence);
+				
+				listPosteTravail.add(posteTravail);
+				
+			}
 	 }
 }
 
