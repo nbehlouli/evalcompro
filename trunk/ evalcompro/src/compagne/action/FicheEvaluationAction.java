@@ -1,5 +1,9 @@
 package compagne.action;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
@@ -13,6 +17,7 @@ import org.zkoss.zul.Textbox;
 import administration.bean.CompteBean;
 
 import common.ApplicationFacade;
+import compagne.bean.EmployesAEvaluerBean;
 import compagne.bean.MapEmployesAEvaluerBean;
 import compagne.model.FicheEvaluationModel;
 
@@ -76,7 +81,34 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
 		if(compteUtilisateur.getId_profile()==3)
 		{
+			
+			//remplissage du contenu de la combo associée aux postes de travail
 			MapEmployesAEvaluerBean mapEmployeAEvaluerBean=ficheEvaluationModel.getListEmployesAEvaluer(id_employe);
+			HashMap<String,EmployesAEvaluerBean> Mapclesposte=mapEmployeAEvaluerBean.getMapclesposte();
+			Set <String>listePoste= Mapclesposte.keySet();
+			Iterator <String > iterator=listePoste.iterator();
+			poste_travail.appendItem("Tous poste de travail");
+			while(iterator.hasNext())
+			{
+				String nomPoste=iterator.next();
+				poste_travail.appendItem(nomPoste);
+			}
+			//selection du premier item (tous poste de travail)
+			poste_travail.setSelectedIndex(0);
+			
+			//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+			HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeAEvaluerBean.getMapclesnomEmploye();
+			Set <String>listeEmploye=mapclesEmploye.keySet();
+			iterator=listeEmploye.iterator();
+			employe.appendItem("sélectionner un employé");
+			while(iterator.hasNext())
+			{
+				String nomEmploye=iterator.next();
+				employe.appendItem(nomEmploye);
+			}
+			//selection du premier item de la combobox employe
+			if(employe.getItemCount()>0)
+				employe.setSelectedIndex(0);
 			
 		}
 		else //ne pas afficher cet onglet
