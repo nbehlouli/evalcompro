@@ -2,6 +2,7 @@ package compagne.action;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -12,6 +13,7 @@ import org.zkoss.zul.Textbox;
 import administration.bean.CompteBean;
 
 import common.ApplicationFacade;
+import compagne.bean.MapEmployesAEvaluerBean;
 import compagne.model.FicheEvaluationModel;
 
 public class FicheEvaluationAction extends GenericForwardComposer{
@@ -30,6 +32,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	Textbox posteTravail;
 	Textbox nomEmploye;
 	Textbox groupe;
+	Combobox employe; 
+	Combobox poste_travail;
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		
@@ -53,7 +57,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		evaluations.setStyle("overflow:auto");
 		posteTravail.setDisabled(true);
 		nomEmploye.setDisabled(true);
-		groupe.setDisabled(true);
+
 		if(ficheValide)
 		{
 			
@@ -72,7 +76,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
 		if(compteUtilisateur.getId_profile()==3)
 		{
-
+			MapEmployesAEvaluerBean mapEmployeAEvaluerBean=ficheEvaluationModel.getListEmployesAEvaluer(id_employe);
+			
 		}
 		else //ne pas afficher cet onglet
 		{
