@@ -160,15 +160,15 @@ public class FicheEvaluationModel {
 					
 					int id_employe =rs.getInt("id_employe") ;
 					String poste_travail=rs.getString("intitule_poste");
-					int code_poste=rs.getInt("code_poste") ; ;
-					String nom_employe=rs.getString("nom")+" "+ rs.getShort("prenom");
+					String code_poste=rs.getString("code_poste") ; ;
+					String nom_employe=rs.getString("nom")+" "+ rs.getString("prenom");
 					String famille=rs.getString("famille");
-					int code_famille=rs.getInt("code_famille");
+					String code_famille=rs.getString("code_famille");
 					
 					if(MapclesnomEmploye.containsKey(nom_employe))
 					{
-						ArrayList<Integer> listFamille=MapclesnomEmploye.get(nom_employe).getCode_famille();
-						listFamille.add(new Integer(code_famille));
+						ArrayList<String> listFamille=MapclesnomEmploye.get(nom_employe).getCode_famille();
+						listFamille.add(code_famille);
 						MapclesnomEmploye.get(nom_employe).setCode_famille(listFamille);
 						
 						ArrayList<String> listLibelleFamille=MapclesnomEmploye.get(nom_employe).getFamille();
@@ -188,8 +188,8 @@ public class FicheEvaluationModel {
 					}
 					if(Mapclesposte.containsKey(poste_travail))
 					{
-						ArrayList<Integer> listFamille=Mapclesposte.get(poste_travail).getCode_famille();
-						listFamille.add(new Integer(code_famille));
+						ArrayList<String> listFamille=Mapclesposte.get(poste_travail).getCode_famille();
+						listFamille.add(code_famille);
 						Mapclesposte.get(poste_travail).setCode_famille(listFamille);
 						
 						ArrayList<String> listLibelleFamille=Mapclesposte.get(poste_travail).getFamille();
