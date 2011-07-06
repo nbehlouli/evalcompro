@@ -6,12 +6,12 @@ public class EmployesAEvaluerBean {
 	
 	private int id_employe;
 	private String poste_travail;
-	private int code_poste;
+	private String code_poste;
 	private String nom_employe;
 	
 	
 	private ArrayList <String> famille=new ArrayList<String>();
-	private ArrayList <Integer> code_famille=new ArrayList<Integer>();
+	private ArrayList <String> code_famille=new ArrayList<String>();
 	public int getId_employe() {
 		return id_employe;
 	}
@@ -24,10 +24,10 @@ public class EmployesAEvaluerBean {
 	public void setPoste_travail(String poste_travail) {
 		this.poste_travail = poste_travail;
 	}
-	public int getCode_poste() {
+	public String getCode_poste() {
 		return code_poste;
 	}
-	public void setCode_poste(int code_poste) {
+	public void setCode_poste(String code_poste) {
 		this.code_poste = code_poste;
 	}
 	public String getNom_employe() {
@@ -42,10 +42,10 @@ public class EmployesAEvaluerBean {
 	public void setFamille(ArrayList<String> famille) {
 		this.famille = famille;
 	}
-	public ArrayList<Integer> getCode_famille() {
+	public ArrayList<String> getCode_famille() {
 		return code_famille;
 	}
-	public void setCode_famille(ArrayList<Integer> code_famille) {
+	public void setCode_famille(ArrayList<String> code_famille) {
 		this.code_famille = code_famille;
 	}
 	
