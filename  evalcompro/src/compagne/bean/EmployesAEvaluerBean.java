@@ -8,10 +8,19 @@ public class EmployesAEvaluerBean {
 	private String poste_travail;
 	private String code_poste;
 	private String nom_employe;
+	private int id_planning_evaluation;
 	
 	
+	public int getId_planning_evaluation() {
+		return id_planning_evaluation;
+	}
+	public void setId_planning_evaluation(int id_planning_evaluation) {
+		this.id_planning_evaluation = id_planning_evaluation;
+	}
 	private ArrayList <String> famille=new ArrayList<String>();
 	private ArrayList <String> code_famille=new ArrayList<String>();
+	
+	
 	public int getId_employe() {
 		return id_employe;
 	}
