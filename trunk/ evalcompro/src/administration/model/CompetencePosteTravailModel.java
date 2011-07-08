@@ -60,7 +60,7 @@ public class CompetencePosteTravailModel {
 					update_structure = update_structure.replaceAll("#code_poste", "'"+code_poste+"'");
 					update_structure = update_structure.replaceAll("#code_competence", "'"+code_competence+"'");
 				
-					System.out.println(update_structure);
+					//System.out.println(update_structure);
 					 stmt.executeUpdate(update_structure);
 				} 
 				catch (SQLException e) 
@@ -122,7 +122,7 @@ public class CompetencePosteTravailModel {
 				insert_structure = insert_structure.replaceAll("#code_poste", "'"+code_poste+"'");
 				insert_structure = insert_structure.replaceAll("#code_competence", "'"+code_competence+"'");
 			
-				System.out.println(insert_structure);	
+				//System.out.println(insert_structure);	
 				stmt.execute(insert_structure);
 			} 
 			catch (SQLException e) 
