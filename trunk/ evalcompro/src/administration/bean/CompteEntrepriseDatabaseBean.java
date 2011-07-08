@@ -81,7 +81,7 @@ public class CompteEntrepriseDatabaseBean {
 			//sel_db = sel_db.replaceAll("#databaseid", Integer.toString(1));
 			//System.out.println(select_login);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sel_db);
-			
+						
 			
 			while(rs.next()){
 			ClientDBParams db = new ClientDBParams(rs.getString("login"),rs.getString("pwd"),rs.getString("adresse_ip"),rs.getString("nom_instance"));
