@@ -11,9 +11,9 @@
                		<rows>
             			<row>
                 			<!-- Selected contributor's title value is same as title model's data-->
-                			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true"/>
+                			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true" readonly="true"/>
                 			<button id="help1" />
-                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true" width="70%"/>
+                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true" width="70%" readonly="true"/>
                 			<button id="help2"  />                
             			</row>
         			</rows>
@@ -32,7 +32,7 @@
        									<textbox id="posteTravail"/>
        									<hlayout spacing="20px" >
        									<label value="Famille"> </label>
-       									<combobox id="Famille"/>
+       									<combobox id="Famille" readonly="true"/>
        								</hlayout>
        								</hlayout>
        							</hlayout>
@@ -40,21 +40,19 @@
        					</hlayout>
        					 
        					<div>
- 							<listbox id="employelb"  model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
+ 							<listbox id="employelb"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
  								<listhead sizable="true">
-									<listheader label="Compétence" width="250px" sort="auto" align="center" />
-									<listheader label="Aptitude observable" width="450px" sort="auto" align="center" />
+									<listheader label="Compétence" width="250px" sort="auto" align="left" />
+									<listheader label="Aptitude observable" width="450px" sort="auto" align="left" />
 									<listheader label="Niveau de maitrise" width="150px" align="center" />
 								</listhead>	
-								<listitem self="@{each=listevaluateur}">
-									<listcell label="@{listevaluateur.evaluateur}" />			
-								</listitem>
+								
 							</listbox> 
  						</div>    				
        				</vlayout>
 					<hbox pack="center" width="100%" spacing="20">
 						<div>
-							<button id="valider" label="Valider " />
+							<button id="valider" label="Valider " tooltiptext="valider les modifications apportées à cette fiche" />
 						</div>
 					</hbox>
     			</groupbox>      			        	
