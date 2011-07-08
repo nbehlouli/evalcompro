@@ -6,12 +6,12 @@
         <hbox spacing ="100">
         	<label value="Nom de l'employé:   "  sclass="textboxdetail"/>
         	
-			<combobox id="nom_employe" autodrop="true" mold="rounded" buttonVisible="true"/>
+			<combobox id="nom_employe" autodrop="true" mold="rounded" buttonVisible="true" readonly="true"/>
 			<vbox spacing ="100">
 			<hbox spacing ="100">
 			<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/>
         	
-			<combobox  id="compagne" autodrop="true" mold="rounded" buttonVisible="true">
+			<combobox  id="compagne" autodrop="true" mold="rounded" buttonVisible="true" readonly="true">
 			</combobox>
 			</hbox>
 			</vbox>
