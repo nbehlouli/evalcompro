@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import administration.bean.CotationBean;
+
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
@@ -161,8 +163,10 @@ public class FicheEvaluationModel {
 			            "in ( select distinct id_compagne "+   
 			                    "from compagne_evaluation "+   
 			                    "where  date_fin>=now() and date_debut<=now()))  "+  
-			"and e.code_poste=t.code_poste  and e.code_poste =k.code_poste and e.id_employe=k.id_employe ";
+			"and e.code_poste=t.code_poste  and e.code_poste =k.code_poste and e.id_employe=k.id_employe "+
+			"and e.id_employe not in (select i.id_employe from fiche_validation i where i.fiche_valide='1')";
 			
+			//la dernière ligne permet la selection des employé ayant une fiche d'evaluation non encore valide
 			
 			select_structure = select_structure.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
 			
@@ -357,5 +361,188 @@ public class FicheEvaluationModel {
 		}
 		
 		return mapPosteTravailFiche;
+	}
+	
+	public HashMap<String, String > getPosteTravailDescription()
+	{
+		HashMap<String, String> mapcode_descriptionPoste=new HashMap<String, String>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="SELECT code_poste, sommaire_poste  FROM poste_travail_description  ";
+			
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					String code_poste=rs.getString("code_poste");
+					String description_poste=rs.getString("sommaire_poste");
+					mapcode_descriptionPoste.put(code_poste, description_poste);
+	
+				}
+				else {
+					return mapcode_descriptionPoste;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return mapcode_descriptionPoste;
+	}
+	public ArrayList <CotationBean> getCotations()
+	{
+		ArrayList <CotationBean>listCotation=new ArrayList<CotationBean>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="SELECT id_cotation, label_cotation, definition_cotation, valeur_cotation  FROM cotation_competence ";
+			
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					int id_cotation=rs.getInt("id_cotation");
+					String label_cotation=rs.getString("label_cotation");
+					String definition_cotation=rs.getString("definition_cotation");
+					int valeur_cotation=rs.getInt("valeur_cotation");
+					CotationBean cotationBean=new CotationBean();
+					cotationBean.setId_cotation(id_cotation);
+					cotationBean.setLabel_cotation(label_cotation);
+					cotationBean.setDefinition_cotation(definition_cotation);
+					cotationBean.setValeur_cotation(valeur_cotation);
+					listCotation.add(cotationBean);
+	
+				}
+				else {
+					return listCotation;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		
+		return listCotation;
+	}
+	public void updateFicheEvalution(String id_repertoire_competence,String id_employe,String id_planning_evaluation,String id_cotation)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String insert_structure="INSERT INTO fiche_evaluation (id_planning_evaluation,id_repertoire_competence,id_cotation,id_employe) VALUES (#id_planning_evaluation,#id_repertoire_competence,#id_cotation,#id_employe)";
+			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+			insert_structure = insert_structure.replaceAll("#id_repertoire_competence", id_repertoire_competence);
+			insert_structure = insert_structure.replaceAll("#id_cotation", id_cotation);
+			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
+			
+			
+			 stmt.execute(insert_structure);
+			 System.out.println("requete "+insert_structure);
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+
+	
+	}
+	public void validerFicheEvaluation(String id_planning_evaluation, String id_employe)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String insert_structure="INSERT INTO fiche_validation (id_planning_evaluation,id_employe, fiche_valide) VALUES (#id_planning_evaluation,#id_employe,1)";
+			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+
+			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
+			
+			
+			 stmt.execute(insert_structure);
+			 System.out.println("requete "+insert_structure);
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+
 	}
 }
