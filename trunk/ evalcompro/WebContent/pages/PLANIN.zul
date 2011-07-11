@@ -1,6 +1,99 @@
-<?page title="page under construction" contentType="text/html;charset=UTF-8"?>
-<zk>
-<window title="page under construction" border="normal">
-New Content Here!
+<window  id="win" title="Planning des évaluations" apply="compagne.action.PlanningCompagneAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto"
+ closable="true"  onClose="self.visible = false; event.stopPropagation();">
+ 
+<style>
+.textboxdetail {font-family: Verdana, Arial,Helvetica,sans-serif;
+ font-size: 10px;font-weight: ;
+}
+</style>
+
+	<listbox id="admincomptelb" rows="1" model="@{winCtrl.model}"
+		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px" >
+		<listhead sizable="true">
+		
+		    <listheader label="id planing" width="180px" sort="auto" align="center"  visible="false"  />
+			<listheader label="Nom compagne" width="180px" sort="auto" align="center"   />
+			<listheader label="Nom évaluateur" width="180px" sort="auto" align="center"   />
+			<listheader label="Poste de travail" width="180px" sort="auto" align="center"   />
+			<listheader label="Nom évalué" width="180px" sort="auto" align="center"   />
+			<listheader label="Structure entreprise" width="180px" sort="auto" align="center"   />
+			<listheader label="Date de l'évaluation" width="180px" align="center"  />
+			<listheader label="Heure début" width="80px" align="center"   />
+			<listheader label="Heure fin" width="80px" align="center"   />
+			<listheader label="Lieu" width="100px" align="center"   />
+			<listheader label="Personne ressource" width="100px" align="center"  />
+	         
+		</listhead>
+		<listitem self="@{each=listcompagne}">
+		    <listcell label="@{listcompagne.id_planning_evaluation}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.libelle_compagne}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.evaluateur}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne.intitule_poste}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.evalue}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.code_structure}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.date_evaluation}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.heure_debut_evaluation}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"   />
+			<listcell label="@{listcompagne.heure_fin_evaluation}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.lieu}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.personne_ressources}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			
+			
+			
+		</listitem>
+	</listbox>
+	<grid span="true" sizedByContent="true" width="100%" height="130px">
+        <auxhead>
+            <auxheader colspan="13" class="topic">Edition des données</auxheader>
+        </auxhead>
+        <columns sizable="true">
+        
+            <column label="id planing" width="180px" sort="auto" align="center"  visible="false"  />
+			<column label="Nom compagne" width="180px" sort="auto" align="center" />
+			<column label="Nom évaluateur" width="180px" sort="auto" align="center" />
+			<column label="Poste de travail" width="150px" sort="auto" align="center" />
+			<column label="Nom évalué" width="180px" sort="auto" align="center" />
+			<column label="Structure " width="80px" sort="auto" align="center" />
+			<column label="Date de l'évaluation" width="180px" align="center" />
+			<column label="Heure début" width="80px" align="center"   />
+			<column label="Heure fin" width="80px" align="center"  />
+			<column label="Lieu" width="100px" align="center"  />
+			<column label="Personne ressource" width="150px" align="center"  />
+                   
+           
+        </columns>
+        <rows>
+            <row>
+
+				 <textbox id="id_planning"  width="180px"  sclass="textboxdetail" value="@{winCtrl.selected.id_planning_evaluation,save-when=none}"   visible="false"/>
+                 <listbox id="nom_compagne"  width="180px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.libelle_compagne,save-when=none}" />
+                 <listbox id="Evaluateur"  width="180px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.evaluateur,save-when=none}" />
+                 <listbox id="code_poste"  width="150px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.intitule_poste,save-when=none}" />
+                 <listbox id="evalue"  width="180px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.evalue,save-when=none}" />
+                 <listbox id="code_structure"  width="80px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.code_structure,save-when=none}" />
+                 <datebox id="date_evaluation"  cols="8"  sclass="textboxdetail" value="@{winCtrl.selected.date_evaluation,save-when=none}" format="yyyy/MM/dd"/>
+                 <listbox id="heure_debut_evaluation" sclass="textboxdetail"  width="80px" mold="select" selectedItem="@{winCtrl.selected.heure_debut_evaluation,save-when=none}"  />
+                 <listbox id="heure_fin_evaluation"  sclass="textboxdetail" width="80px"  mold="select" selectedItem="@{winCtrl.selected.heure_fin_evaluation,save-when=none}"  />
+                 <textbox id="lieu" width="100px"  sclass="textboxdetail" value="@{winCtrl.selected.lieu,save-when=none}"  />
+                 <textbox id="personne_ressources" sclass="textboxdetail" width="150px"  value="@{winCtrl.selected.personne_ressources,save-when=none}"  />
+                
+            </row>
+        </rows>
+    </grid>
+	
+
+	<hbox pack="center" width="100%" spacing="20">
+		<div>
+			<button id="add"  image="/image/DITEnabled.bmp" height="25px" width="30px" tooltiptext="Ajouter un utilisateur"/>
+			<button id="okAdd"  image="/image/OkEnabled.bmp" height="25px" width="30px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier un utilisateur"/>
+			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer un utilisateur "/>
+			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retourner a la selection"/>
+		</div>
+		<div>
+
+			
+		</div>
+
+		
+	</hbox>
 </window>
-</zk>
