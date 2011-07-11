@@ -69,13 +69,10 @@ public class CompagneCreationAction extends GenericForwardComposer {
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
 		CompagneCreationModel init= new CompagneCreationModel();
-		  map = new HashMap();
-		 map=init.getCompagneType();
-		
+	    map = new HashMap();
+		map=init.getCompagneType();
 		Set set = (map).entrySet(); 
-		
-		
-		Iterator i = set.iterator();
+    	Iterator i = set.iterator();
 		
 		// Display elements
 		while(i.hasNext()) {
@@ -131,7 +128,7 @@ public class CompagneCreationAction extends GenericForwardComposer {
 	
 		//controle d'intégrité 
 		CompagneCreationModel compagne_model =new CompagneCreationModel();
-		compagne_model.addCompagne(addedData);
+		//compagne_model.addCompagne(addedData);
 		Boolean donneeValide=compagne_model.controleIntegrite(addedData);
 		//Boolean donneeValide=true;
 		
