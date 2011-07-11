@@ -184,6 +184,7 @@ public class StructureEntrepriseModel {
 			
 			
 			 stmt.execute(select_structure);
+			 stmt.close();
 			 conn.close();
 		} 
 		catch (SQLException e) 
@@ -334,6 +335,7 @@ public class StructureEntrepriseModel {
 		
 			
 			 stmt.executeUpdate(update_structure);
+			 
 		} 
 		catch (SQLException e) 
 		{
