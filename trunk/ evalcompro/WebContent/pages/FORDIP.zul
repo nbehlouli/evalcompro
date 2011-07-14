@@ -3,8 +3,8 @@
 	<listbox id="formationlb" rows="3" model="@{winCtrl.model}" selectedItem="@{winCtrl.selected}" width="100%" mold="paging" pageSize="8" height="300px">
 		<listhead sizable="true">
 			<listheader label="Code formation" width="130px" sort="auto" align="center" />
-			<listheader label="Code division" width="130px" sort="auto" align="center" />
-			<listheader label="Nom division" width="200px" align="left" />
+			<listheader label="Libelle formation" width="130px" sort="auto" align="center" />
+			<listheader label="Libelle diplôme" width="200px" align="left" />
 		</listhead>
 		<listitem self="@{each=formation}">
 			<listcell label="@{formation.codeFormation}" />
