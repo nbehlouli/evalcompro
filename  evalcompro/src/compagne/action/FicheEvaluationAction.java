@@ -11,6 +11,7 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -57,10 +58,18 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	Listbox employelb;
 	Button help1;
 	Button help2;
+	Button help3;
 	Popup help1Pop;
 	Html htmlhelp1;
 	Component comp1;
-
+	
+	//objets graphique de l'onglet la fiche d'evaluation
+	
+	Textbox nomEmployeM;
+	Textbox posteTravailM;
+	Combobox FamilleM;
+	Groupbox gb3;
+	Listbox employelbM;
 	//objets a utiliser
 	
 	HashMap<String, ArrayList<FicheEvaluationBean>> mapPosteTravailFiche;
@@ -70,13 +79,24 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	HashMap <String, String > mapcode_description_poste;
 	ArrayList <CotationBean> listCotation;
 	HashMap<String , Combobox>listeCombo=new HashMap<String, Combobox>();
+	
+	HashMap<String,HashMap<String , Combobox>> mapFamilleCombo=new HashMap<String, HashMap<String , Combobox>> ();
 	ArrayList<Listitem> currentListItem=null;
+	
+	ArrayList<Listitem> currentListItemM=null;
 	
 	// objets de la selection en cours
 	String selectedEmploye;
 	MapEmployesAEvaluerBean mapEmployeAEvaluerBean;
 	String selectedFamille;
 	String selectednomposteTravail;
+
+	String selectedFamilleM;
+	
+	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationM;
+	
+	
+	EmployesAEvaluerBean employerAEvaluerBean1;
 	
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
@@ -92,6 +112,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
 		int id_employe=ficheEvaluationModel.getIdEmploye(compteUtilisateur.getId_compte());
 		compteUtilisateur.setId_employe(id_employe);
+		
 		
 		//récuperation de la description des poste pour le bouton help
 		
@@ -115,16 +136,122 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		evaluations.setStyle("overflow:auto");
 		posteTravail.setDisabled(true);
 		nomEmploye.setDisabled(true);
+		
+		//remplissage de la combobox famille
+		
 
 		if(ficheValide)
 		{
 			
 			//construction et affichage du contenu de la page
+			//récupération du nom de la personne connecté
+			String retour=ficheEvaluationModel.getNomUtilisateur(id_employe);
+			String[] val=retour.split("#");
+			nomEmployeM.setText(val[0]);
+			String intitule_posteM=val[1];
+			posteTravailM.setText(intitule_posteM);
 			
+			String code_posteM=mapintitule_codeposte.get(intitule_posteM);
+			Set <String> listeFamille=mapPosteTravailFiche.keySet();
+			Iterator<String> itarator =listeFamille.iterator();
+			ArrayList <String > listeFamilleM=new ArrayList<String>();
+			while(itarator.hasNext())
+			{
+				String cles=itarator.next();
+				if(cles.startsWith(code_posteM+"#"))
+				{
+					//inserer famille dans la comboBox
+					String[] val1=cles.split("#");
+					FamilleM.appendItem(val1[1]);
+					listeFamilleM.add(val1[1]);
+				}
+			}
+			if(listeFamilleM.size()==0)
+			{
+				//aucune compagne n'est prévu pour ce poste de travail
+				
+				//enlever ce qui existe et afficher la page HTML 
+				//affichage d'un message disant que la fiche ne peut être visible
+				gb3.detach();
+				html=new Html();
+				String content="Vous n'avez été convoqué à aucune compagne d'avaluation ";
+				html.setStyle("color:red;margin-left:15px");
+				html.setContent(content);
+				html.setParent(maFiche);
+			}
+			else
+			{
+				
+				//récupération de la fiche d'avaluation de l'id_employe
+				
+				mapfamilleFicheEvaluationM=ficheEvaluationModel.getMaFicheEvaluaton(id_employe);
+				//affichage de la cotation
+				if(FamilleM.getItemCount()>0)
+					FamilleM.setSelectedIndex(0);
+		 
+				selectedFamilleM=listeFamilleM.get(0);
+				ArrayList<FicheEvaluationBean> listficheEvaluationBean=mapfamilleFicheEvaluationM.get(selectedFamilleM);
+				ArrayList<Listitem> liste=new ArrayList<Listitem>();
+				
+				/******************************/
+				Iterator <FicheEvaluationBean> iteratorFiche=listficheEvaluationBean.iterator();
+				while (iteratorFiche.hasNext())
+				{
+					FicheEvaluationBean ficheEvaluationBean=iteratorFiche.next();
+				
+					//affichage des donnnées dans le tableau
+					Listitem listItem=new Listitem();
+					listItem.setParent(employelbM);
+				 	 
+					 
+					//cellule competence
+					Listcell cellulecompetence=new Listcell();
+					cellulecompetence.setLabel(ficheEvaluationBean.getLibelle_competence());
+					cellulecompetence.setTooltiptext(ficheEvaluationBean.getDefinition_competence());
+					cellulecompetence.setParent(listItem);
+					 
+					//cellule aptitude observable
+					Listcell celluleaptitude=new Listcell();
+					celluleaptitude.setLabel(ficheEvaluationBean.getAptitude_observable());
+					celluleaptitude.setParent(listItem);
+					 
+					 
+					//cellule niveau de maitrise
+					Listcell cellulecotation=new Listcell();
+					Iterator<CotationBean> itcotationBean =listCotation.iterator();
+					boolean conti=true;
+					int valCotation=0;
+					while((itcotationBean.hasNext() && conti))
+					{
+						CotationBean cotationbean=itcotationBean.next();
+						int valeur=cotationbean.getId_cotation();
+						System.out.println("valeur " +valeur);
+						valCotation=cotationbean.getValeur_cotation();
+						if(valeur==ficheEvaluationBean.getNiveau_maitrise())
+
+						{
+							conti=false;
+							valCotation=ficheEvaluationBean.getNiveau_maitrise();
+						}
+					}
+							
+					
+					cellulecotation.setLabel(valCotation+"");
+				 
+					cellulecotation.setParent(listItem);
+					
+					liste.add(listItem);
+				}
+				/*****************/
+				currentListItemM=liste;
+			}
 		}
 		else
 		{
 			//enlever ce qui existe et afficher la page HTML 
+			
+			gb3.detach();
+			
 			//affichage d'un message disant que la fiche ne peut être visible
 			html=new Html();
 			String content="Vous n'avez pas accès à votre fiche d'évaluation car elle n'a pas encore été complété par l'évaluateur";
@@ -159,6 +286,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			{
 				String nomEmploye=iterator.next();
 				employe.appendItem(nomEmploye);
+				System.out.println("++++++++++++++"+nomEmploye);
 			}
 			//selection du premier item de la combobox employe
 			if(employe.getItemCount()>0)
@@ -225,6 +353,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 nomEmploye.setText(selectedEmploye);
 			 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeAEvaluerBean.getMapclesnomEmploye().get(selectedEmploye);
+			 employerAEvaluerBean1=employerAEvaluerBean;
 			 selectednomposteTravail=employerAEvaluerBean.getPoste_travail();
 			 posteTravail.setText(selectednomposteTravail);
 			 ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
@@ -309,6 +438,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 }
 			 mapItemsFamille.put(cles, liste);
 			 currentListItem=liste;
+			 mapFamilleCombo.put(selectedFamille, listeCombo);
 		 }		 
 	 }
 	 
@@ -419,6 +549,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 ArrayList<Listitem> liste=new ArrayList<Listitem>();
 		 
+		 HashMap<String, Combobox> listeComboMAJ=mapFamilleCombo.get(selectedFamille);
+		 
 		 while (iterator2.hasNext())
 		 {
 			 FicheEvaluationBean ficheEvaluation=(FicheEvaluationBean)iterator2.next();
@@ -449,25 +581,44 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 Iterator <CotationBean> iterator4=listCotation.iterator();
 			 String valeur="";
+			 boolean dejaVisite=false;
+			 
+			 if(listeComboMAJ!=null)
+				 dejaVisite=true;
+				 
 			 while(iterator4.hasNext())
 			 {
 				 CotationBean cotationBean=(CotationBean)iterator4.next();
-				 cotation.appendItem(cotationBean.getValeur_cotation()+"");
+				 
 				 
 				 valeur= ficheEvaluation.getId_repertoire_competence()+"#"+employerAEvaluerBean.getId_employe()+"#"+employerAEvaluerBean.getId_planning_evaluation();
-				 cotation.setContext(valeur);
 				 
-				 cotation.setName("-1");
+				 if (dejaVisite==true)
+				 {
+					 
+					 cotation=listeComboMAJ.get(valeur);
+				 }
+				 else
+				 {
+					 cotation.appendItem(cotationBean.getValeur_cotation()+"");
+					 cotation.setContext(valeur);
+					 
+					 cotation.setName("-1");
+					 
+				 }
 				 cotation.setReadonly(true);
 				 cotation.setParent(cellulecotation);
 				 cellulecotation.setParent(listItem);
 				 
+				 
 			 }
+
 			 cotation.addForward("onSelect", comp1, "onSelectEvaluation");
 			 listeCombo.put(valeur,cotation );
 			 liste.add(listItem);
 				 
 		 }
+		 mapFamilleCombo.put(selectedFamille, listeCombo);
 		 mapItemsFamille.put(cles, liste);
 		 currentListItem=liste;
 	 		 
@@ -484,7 +635,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 //Html html=new Html();
 			 //htmlhelp1.setContent(content)
 			 String content=descriptionPoste;
-			 htmlhelp1.setStyle("background-color: #1eadff");
+			 //htmlhelp1.setStyle("background-color: #1eadff");
 			 htmlhelp1.setContent(content);
 			 htmlhelp1.setParent(help1Pop);
 			 help1Pop.open(help1);
@@ -494,6 +645,16 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 }
 	 
 	 public void onClick$help2()
+	 {
+		 String message=CreationMessageHelp2(listCotation);
+		 System.out.println(message);
+		 //htmlhelp1.setStyle("background-color: #1eadff");
+		 htmlhelp1.setContent(message);
+		 htmlhelp1.setParent(help1Pop);
+		 help1Pop.open(help2);
+	 }
+	 
+	 public void onClick$help3()
 	 {
 		 String message=CreationMessageHelp2(listCotation);
 		 System.out.println(message);
@@ -519,21 +680,94 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 //verifier que toutes les cotations ont été remplies 
 		 //sinon afficher un message comme quoi la validation n'a pas été prise en compte car
 		 // toutes les comptétences n'ont pas été évaluées
-		 Set <String >listclesCombo=listeCombo.keySet();
-		 Iterator<String> iterator =listclesCombo.iterator();
-		 boolean continuer=true;
-		 while (iterator.hasNext()&& continuer)
+		 //verifier que toutes les familles ont été selectionnées
+		 ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
+
+		 Set <String> famillesRemplies=mapFamilleCombo.keySet();
+		 if(listFamille.size()==famillesRemplies.size())
 		 {
-			 String cles=iterator.next();
-			 Combobox combo=listeCombo.get(cles);
-			 if(combo.getName().equals("-1"))
-			 		continuer=false;
+			 // famille par famille que tous les combos sont remplies
+			 Iterator <String>itfamille=famillesRemplies.iterator();
+			 boolean continuer=true;
+			 while(itfamille.hasNext())
+			 {
+				 String clles=itfamille.next();
+				 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+				 Set <String >listclesCombo=listeComb.keySet();
+				 Iterator<String> iterator =listclesCombo.iterator();
+				 
+				 while (iterator.hasNext()&& continuer)
+				 {
+					 String cles=iterator.next();
+					 Combobox combo=listeComb.get(cles);
+					 if(combo.getName().equals("-1"))
+					 {
+
+						 continuer=false;
+					 }
+					 
+				 }
+			 }
+			 
+			 if(continuer==false)
+			 {
+				 try 
+				 {
+					Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+				 } 
+				 catch (InterruptedException e) 
+				 {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			 }
+			 else
+			 {
+				 //récupérer les modifications et enregistrer dans la base de donnée
+				 //valider la fiche dans la table appropriée
+				 
+				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+				/**********************************/
+				 // famille par famille que tous les combos sont remplies
+				 famillesRemplies=mapFamilleCombo.keySet();
+				 itfamille=famillesRemplies.iterator();
+				
+				 while(itfamille.hasNext())
+				 {
+					 String clles=itfamille.next();
+					 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+					 Set <String >listclesCombo=listeComb.keySet();
+ 
+					 listclesCombo=listeComb.keySet();
+					 Iterator<String> iterator =listclesCombo.iterator();
+					 continuer=true;
+					 String id_planning_evaluation="";
+					 String id_employe="";
+					 while (iterator.hasNext())
+					 {
+						 String cles=(String)iterator.next();
+						 Combobox combo=listeComb.get(cles);
+						 String valeurs=combo.getContext();
+						 String[] val=valeurs.split("#");
+						 String id_repertoire_competence=val[0];
+						 id_employe=val[1];
+						 id_planning_evaluation=val[2];
+						 String id_cotation=combo.getName();
+						 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
+					 }
+				 
+					 //validation de la fiche
+					 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
+				 }
+			 }
 			 
 		 }
-		 if(continuer==false)
+		 else
 		 {
+			 //afficher messagebox
 			 try 
 			 {
+				 System.out.println("pas la même taille");
 				Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			 } 
 			 catch (InterruptedException e) 
@@ -542,35 +776,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				e.printStackTrace();
 			}
 		 }
-		 else
-		 {
-			 //récupérer les modifications et enregistrer dans la base de donnée
-			 //valider la fiche dans la table appropriée
-			 
-			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
-			 
-			 
-			 listclesCombo=listeCombo.keySet();
-			 iterator =listclesCombo.iterator();
-			 continuer=true;
-			 String id_planning_evaluation="";
-			 String id_employe="";
-			 while (iterator.hasNext())
-			{
-				 String cles=iterator.next();
-				 Combobox combo=listeCombo.get(cles);
-				 String valeurs=combo.getContext();
-				 String[] val=valeurs.split("#");
-				 String id_repertoire_competence=val[0];
-				 id_employe=val[1];
-				 id_planning_evaluation=val[2];
-				 String id_cotation=combo.getName();
-				 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
-			}
-			 
-			 //validation de la fiche
-			 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
-		 }
+		 
+		 
+	
 	 }
 	 
 	 public void onSelectEvaluation(ForwardEvent event)
@@ -597,5 +805,88 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 }
 		 combo.setName(id+"");
 
+	 }
+	 
+	 public void onSelect$FamilleM()
+	 {
+		//récupération de la famille selectionnée
+		 selectedFamilleM=(String)FamilleM.getSelectedItem().getLabel();
+		 
+		 //lors de la selection d'une famille, il faut :
+		 //1. vider le contenu de la table
+		 //2. remplir la table avec le cntenu de la nouvelle cles code_poste, famille
+		 
+		 
+		//1. vider le contenu de la table
+		 if (currentListItemM!=null)
+		 {
+			 Iterator<Listitem> iterator=currentListItemM.iterator();
+			 while(iterator.hasNext())
+			 {
+				 Listitem item=iterator.next();
+				 item.detach();
+			 }
+		 }
+		 
+		 
+		 /******************************************************************/
+
+
+			ArrayList<FicheEvaluationBean> listficheEvaluationBean=mapfamilleFicheEvaluationM.get(selectedFamilleM);
+			ArrayList<Listitem> liste=new ArrayList<Listitem>();
+			
+			/******************************/
+			Iterator <FicheEvaluationBean> iteratorFiche=listficheEvaluationBean.iterator();
+			while (iteratorFiche.hasNext())
+			{
+				FicheEvaluationBean ficheEvaluationBean=iteratorFiche.next();
+			
+				//affichage des donnnées dans le tableau
+				Listitem listItem=new Listitem();
+				listItem.setParent(employelbM);
+			 	 
+				 
+				//cellule competence
+				Listcell cellulecompetence=new Listcell();
+				cellulecompetence.setLabel(ficheEvaluationBean.getLibelle_competence());
+				cellulecompetence.setTooltiptext(ficheEvaluationBean.getDefinition_competence());
+				cellulecompetence.setParent(listItem);
+				 
+				//cellule aptitude observable
+				Listcell celluleaptitude=new Listcell();
+				celluleaptitude.setLabel(ficheEvaluationBean.getAptitude_observable());
+				celluleaptitude.setParent(listItem);
+				 
+				 
+				//cellule niveau de maitrise
+				Listcell cellulecotation=new Listcell();
+				Iterator<CotationBean> itcotationBean =listCotation.iterator();
+				boolean conti=true;
+				int valCotation=0;
+				while((itcotationBean.hasNext() && conti))
+				{
+					CotationBean cotationbean=itcotationBean.next();
+					int valeur=cotationbean.getId_cotation();
+					System.out.println("valeur " +valeur);
+					valCotation=cotationbean.getValeur_cotation();
+					if(valeur==ficheEvaluationBean.getNiveau_maitrise())
+
+					{
+						conti=false;
+						valCotation=ficheEvaluationBean.getNiveau_maitrise();
+					}
+				}
+						
+				
+				cellulecotation.setLabel(valCotation+"");
+			 
+				cellulecotation.setParent(listItem);
+				
+				liste.add(listItem);
+			}
+			/*****************/
+			currentListItemM=liste;
+		 
+		 /********************************************************************/
 	 }
 }
