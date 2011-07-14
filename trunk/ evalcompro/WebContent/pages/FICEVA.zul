@@ -61,6 +61,43 @@
            	
        		<tabpanel id="maFiche"> 
        		
+    			<groupbox id="gb3" mold="3d" width="100%" height="500">
+        			<caption label="Fiche Employé" />    
+        			<vlayout spacing="20px">    
+       					<hlayout spacing="20px" >
+       						<label value="Nom de l'employé"> </label>
+       						<hlayout spacing="70px" >
+       							<textbox id="nomEmployeM" readonly="true"/>
+       							<hlayout spacing="20px" >
+       								<label value="Poste de travail"> </label>
+       								<hlayout spacing="70px" >
+       									<textbox id="posteTravailM" readonly="true"/>
+       									<hlayout spacing="20px" >
+       									<label value="Famille"> </label>
+       									<hlayout spacing="70px" >
+       									<combobox id="FamilleM" readonly="true"/>       									
+       										<button id="help3"  image="/image/W95MBX04.gif" tooltiptext="Informations sur les niveaux de maitrise des aptitudes observables"/>
+       									</hlayout>
+       								</hlayout>
+       								</hlayout>
+       							</hlayout>
+       						</hlayout>
+       					</hlayout>
+       					 
+       					<div>
+ 							<listbox id="employelbM"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="320px" >
+ 								<listhead sizable="true">
+									<listheader label="Compétence" width="250px" sort="auto" align="left" />
+									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" />
+									<listheader label="Niveau de maitrise" width="180px" align="center" />
+								</listhead>	
+								
+							</listbox> 
+ 						</div>    				
+       				</vlayout>
+
+    			</groupbox>        		
+       		
        		</tabpanel>			 	
    		</tabpanels>
    	</tabbox>
