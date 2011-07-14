@@ -32,7 +32,7 @@ public class FicheEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT id_employe  FROM compte_backup where id_compte=#id_compte ";
+			String select_structure="SELECT id_employe  FROM employe where id_compte=#id_compte ";
 			
 			select_structure = select_structure.replaceAll("#id_compte", "'"+id_compte+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -544,5 +544,134 @@ public class FicheEvaluationModel {
 			
 		}
 
+	}
+	/**
+	 * retourne le nom et prenom d'un employé à partir de don identifiant
+	 * @param id_employe
+	 * @return
+	 */
+	public String getNomUtilisateur(int id_employe)
+	{
+		String nom_utilisateur="";
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="SELECT e.nom, e.prenom , p.intitule_poste FROM employe e, poste_travail_description p where e.id_employe=#id_employe and e.code_poste=p.code_poste";
+			
+			select_structure = select_structure.replaceAll("#id_employe", ""+id_employe);
+			System.out.println(select_structure);
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					nom_utilisateur=rs.getString("nom")+" "+ rs.getString("prenom") + "#"+rs.getString("intitule_poste");
+					
+				}
+				else {
+					return nom_utilisateur;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return nom_utilisateur;
+	}
+	
+	public HashMap <String, ArrayList<FicheEvaluationBean>> getMaFicheEvaluaton(int id_employe)
+	{
+		
+		HashMap <String, ArrayList<FicheEvaluationBean>> mapFamilleFicheEvaluation=new HashMap <String, ArrayList<FicheEvaluationBean>>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation from repertoire_competence r, fiche_evaluation f where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence";
+			
+			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					String famille=rs.getString("famille");
+					String libelle_competence=rs.getString("libelle_competence");
+					String aptitude_observable=rs.getString("aptitude_observable");
+					String id_cotation=rs.getString("id_cotation");
+					
+					
+					FicheEvaluationBean fiche=new FicheEvaluationBean();
+					fiche.setAptitude_observable(aptitude_observable);
+					fiche.setLibelle_competence(libelle_competence);
+					fiche.setNiveau_maitrise(new Integer(id_cotation));
+					
+					if(mapFamilleFicheEvaluation.containsKey(famille))
+					{
+						ArrayList<FicheEvaluationBean> listfiche=mapFamilleFicheEvaluation.get(famille);
+						listfiche.add(fiche);
+						mapFamilleFicheEvaluation.put(famille, listfiche);
+						
+					}
+					else
+					{
+						ArrayList<FicheEvaluationBean> listfiche=new ArrayList<FicheEvaluationBean>();
+						listfiche.add(fiche);
+						mapFamilleFicheEvaluation.put(famille, listfiche);
+						
+					}
+					
+	
+				}
+				else {
+					return mapFamilleFicheEvaluation;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return mapFamilleFicheEvaluation;
+		  
+		
 	}
 }
