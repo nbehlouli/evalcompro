@@ -41,8 +41,8 @@
 
 <hbox pack="center" width="100%" spacing="40">
 		<div>
-			<button id="valider" image="/image/OkEnabled.bmp" height="25px" width="30px"  tooltiptext="Valider les modifications"/>
-			<button id="annuler" image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Annuler les modifications"/>
+			<button id="valider" image="/image/OkEnabled.bmp" height="25px" width="50px"  tooltiptext="Valider les modifications"/>
+			<button id="annuler" image="/image/CancelEnabled.bmp" height="25px" width="50px" tooltiptext="Annuler les modifications"/>
 			
 			
 		</div>

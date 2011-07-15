@@ -71,7 +71,7 @@
 			            <hbox> 
 			            <textbox id="definition_competence" tabbable="true" width="400px" rows="6"  value="@{winCtrl.selected.definition_competence,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			             </hbox>
-			           <label id="app_obs_lbl"  value="Aptitude observable: "  sclass="textboxdetail"/>
+			           <label id="app_obs_lbl"  value=" Aptitude observable: "  sclass="textboxdetail"/>
 			          <textbox id="aptitude_observable" width="400px;" rows="5" cols="40"  value="@{winCtrl.selected.aptitude_observable,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			                        
 			            <textbox id="id_repertoire_competence" value="@{winCtrl.selected.id_repertoire_competence,save-when=none}" visible="false" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
@@ -86,21 +86,21 @@
    </groupbox>
 	<hbox pack="center" width="100%" spacing="20">
 	
-		<div>
-			<button id="add"  image="/image/DITEnabled.bmp" height="25px" width="30px" tooltiptext="Ajouter un utilisateur"/>
-			<button id="okAdd"  image="/image/OkEnabled.bmp" height="25px" width="30px" tooltiptext="Valider"/>
-			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier un utilisateur"/>
-			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer un utilisateur "/>
-			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retourner a la selection"/>
+	
+			<div>
+			
+				<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter une compétence"/>
+				<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
+				<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier une compétence"/>
+				<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer une compétence"/>
+				<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
+			
+				<button id="upload" image="/image/upload1616.bmp" height="25px" width="50px" tooltiptext="Charger les données en base de données" />			
+				<button id="download" image="/image/download1616.gif" height="25px" width="50px" tooltiptext="Télécharger les données de la base de données"  />
 			
 		</div>
-		<div id="divupdown">
+			
 
-			<button id="upload" image="/image/upload1616.bmp" height="25px" width="30px" tooltiptext="Charger les données en base de données" />
-				
-			<button id="download" image="/image/download1616.ico" height="25px" width="30px" tooltiptext="Télécharger les données de la base de données"  />
- 
-		</div>
  
 	</hbox>
 

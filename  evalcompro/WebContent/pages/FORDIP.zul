@@ -32,11 +32,11 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add"  image="/image/DITEnabled.bmp" height="25px" width="30px" tooltiptext="Ajouter"/>
-			<button id="okAdd"  image="/image/OkEnabled.bmp" height="25px" width="30px" tooltiptext="Valider"/>
-			<button id="update" image="/image/EDITREDOEnabled.bmp" height="25px" width="30px" tooltiptext="Modifier"/>
-			<button id="delete"  image="/image/DeleteEnabled.bmp" height="25px" width="30px" tooltiptext="Supprimer"/>
-			<button id="effacer"  image="/image/CancelEnabled.bmp" height="25px" width="30px" tooltiptext="Retour"/>
+			<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter une formation/diplôme"/>
+			<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier une formation/diplôme"/>
+			<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer une formation/diplôme"/>
+			<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
 		</div>
 		<div>
 
