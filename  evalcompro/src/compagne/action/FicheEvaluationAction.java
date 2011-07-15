@@ -346,10 +346,19 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
 		{
 			
-			 mapPosteTravailFicheV=ficheEvaluationModel.getInfosFicheEvaluationparPoste();
+			
+			mapPosteTravailFicheV=ficheEvaluationModel.getInfosFicheEvaluationparPoste();
+			 
+			 
 			 
 			//remplissage du contenu de la combo associée aux postes de travail
-			 mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
+			//si c'est un evaluateur lancer cette methode
+			if (compteUtilisateur.getId_profile()==3)
+				mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
+			 
+			//sinon (administrateur ) lancer un eautre méthode qui récupère tous ceux qui ont été évaluées
+			if (compteUtilisateur.getId_profile()==2)
+				mapEmployeEvalueBean=ficheEvaluationModel.getListTousEmployesvalue();
 			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
 			Set <String>listePoste= Mapclesposte.keySet();
 			Iterator <String > iterator=listePoste.iterator();
