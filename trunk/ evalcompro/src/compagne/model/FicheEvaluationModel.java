@@ -613,7 +613,9 @@ public class FicheEvaluationModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			//String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation from repertoire_competence r, fiche_evaluation f where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence";
-			String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence group by  r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
+			//String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence group by  r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
+			
+			String select_structure="select DISTINCT c.compagne_type, r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from compagne_type c , repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence and f.id_planning_evaluation=p.id_planning_evaluation and p.id_compagne=c.id_compagne_type group by  c.compagne_type,r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
 			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -628,12 +630,14 @@ public class FicheEvaluationModel {
 					String aptitude_observable=rs.getString("aptitude_observable");
 					String id_cotation=rs.getString("id_cotation");
 					String date_evaluation=rs.getString("max(p.date_evaluation)");
+					String compagne_type=rs.getString("compagne_type");
 					
 					FicheEvaluationBean fiche=new FicheEvaluationBean();
 					fiche.setAptitude_observable(aptitude_observable);
 					fiche.setLibelle_competence(libelle_competence);
 					fiche.setNiveau_maitrise(new Integer(id_cotation));
 					fiche.setDate_evaluation(date_evaluation);
+					fiche.setCompagne_type(compagne_type);
 					
 					if(mapFamilleFicheEvaluation.containsKey(famille))
 					{
@@ -727,5 +731,154 @@ public class FicheEvaluationModel {
 		return listeFamille;
 	
 		
+	}
+	
+	/**
+	 * cette méthode permet de récuperer les informations associes aux employés à évaluer
+	 */
+
+	public MapEmployesAEvaluerBean getListEmployesvalue(int id_evaluateur)
+	{
+		MapEmployesAEvaluerBean listEmployesAEvaluerBean=new MapEmployesAEvaluerBean();
+		HashMap<String, EmployesAEvaluerBean> MapclesnomEmploye=listEmployesAEvaluerBean.getMapclesnomEmploye();
+		HashMap<String, HashMap<String,EmployesAEvaluerBean>> Mapclesposte=listEmployesAEvaluerBean.getMapclesposte();
+		
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			
+			String select_structure="select distinct  k.id_planning_evaluation,r.famille, r.code_famille, e.nom, e.prenom , e.id_employe, t.intitule_poste , t.code_poste "+ 
+			"from repertoire_competence r, employe e , poste_travail_description t, planning_evaluation k "+ 
+			"where e.id_employe in "+   
+			   " (select distinct v.id_employe "+  
+			        "from planning_evaluation v , compagne_evaluation n "+  
+			           " where v.id_evaluateur=#id_evaluateur  and v.id_compagne "+ 
+			            "in ( select distinct id_compagne "+   
+			                    "from compagne_evaluation "+   
+			                    "where  date_fin>=now() and date_debut<=now()))  "+  
+			"and e.code_poste=t.code_poste  and e.code_poste =k.code_poste and e.id_employe=k.id_employe "+
+			"and e.id_employe  in (select i.id_employe from fiche_validation i where i.fiche_valide='1')";
+			
+			//la dernière ligne permet la selection des employé ayant une fiche d'evaluation non encore valide
+			
+			select_structure = select_structure.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
+			
+			
+			//System.out.println(select_structure);
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					
+					int id_employe =rs.getInt("id_employe") ;
+					String poste_travail=rs.getString("intitule_poste");
+					String code_poste=rs.getString("code_poste") ; ;
+					String nom_employe=rs.getString("nom")+" "+ rs.getString("prenom");
+					String famille=rs.getString("famille");
+					String code_famille=rs.getString("code_famille");
+					int id_planning_evaluation=rs.getInt("id_planning_evaluation");
+					
+					if(MapclesnomEmploye.containsKey(nom_employe))
+					{
+						ArrayList<String> listFamille=MapclesnomEmploye.get(nom_employe).getCode_famille();
+						listFamille.add(code_famille);
+						MapclesnomEmploye.get(nom_employe).setCode_famille(listFamille);
+						
+						ArrayList<String> listLibelleFamille=MapclesnomEmploye.get(nom_employe).getFamille();
+						listLibelleFamille.add(famille);
+						MapclesnomEmploye.get(nom_employe).setFamille(listLibelleFamille);
+					}
+					else
+					{
+						
+						EmployesAEvaluerBean employesAEvaluerBean=new EmployesAEvaluerBean();
+						employesAEvaluerBean.setCode_poste(code_poste);
+						employesAEvaluerBean.setId_employe(id_employe);
+						employesAEvaluerBean.setNom_employe(nom_employe);
+						employesAEvaluerBean.setPoste_travail(poste_travail);
+						employesAEvaluerBean.getCode_famille().add(code_famille);
+						employesAEvaluerBean.getFamille().add(famille);
+						employesAEvaluerBean.setId_planning_evaluation(id_planning_evaluation);
+						MapclesnomEmploye.put(nom_employe,employesAEvaluerBean);
+					}
+					if(Mapclesposte.containsKey(poste_travail))
+					{
+						HashMap<String, EmployesAEvaluerBean> mapEmploye=Mapclesposte.get(poste_travail);
+						if(mapEmploye.containsKey(nom_employe))
+						{
+							ArrayList<String> listFamille=mapEmploye.get(nom_employe).getCode_famille();
+							listFamille.add(code_famille);
+							mapEmploye.get(nom_employe).setCode_famille(listFamille);
+							
+							ArrayList<String> listLibelleFamille=mapEmploye.get(nom_employe).getFamille();
+							listLibelleFamille.add(famille);
+							mapEmploye.get(nom_employe).setFamille(listLibelleFamille);
+							Mapclesposte.put(poste_travail, mapEmploye);
+							
+						}
+						else
+						{
+							EmployesAEvaluerBean employesAEvaluerBean=new EmployesAEvaluerBean();
+							employesAEvaluerBean.setCode_poste(code_poste);
+							employesAEvaluerBean.setId_employe(id_employe);
+							employesAEvaluerBean.setNom_employe(nom_employe);
+							employesAEvaluerBean.setPoste_travail(poste_travail);
+							employesAEvaluerBean.getCode_famille().add(code_famille);
+							employesAEvaluerBean.getFamille().add(famille);
+							employesAEvaluerBean.setId_planning_evaluation(id_planning_evaluation);
+							mapEmploye.put(nom_employe,employesAEvaluerBean);
+							Mapclesposte.put(poste_travail, mapEmploye);
+						}
+
+					}
+					else
+					{
+						HashMap<String, EmployesAEvaluerBean> mapEmploye=new HashMap<String, EmployesAEvaluerBean>();
+						EmployesAEvaluerBean employesAEvaluerBean=new EmployesAEvaluerBean();
+						employesAEvaluerBean.setCode_poste(code_poste);
+						employesAEvaluerBean.setId_employe(id_employe);
+						employesAEvaluerBean.setNom_employe(nom_employe);
+						employesAEvaluerBean.setPoste_travail(poste_travail);
+						employesAEvaluerBean.getCode_famille().add(code_famille);
+						employesAEvaluerBean.getFamille().add(famille);
+						employesAEvaluerBean.setId_planning_evaluation(id_planning_evaluation);
+						mapEmploye.put(nom_employe,employesAEvaluerBean);
+						Mapclesposte.put(poste_travail, mapEmploye);
+					}			
+					
+					
+				}
+				else {
+					return listEmployesAEvaluerBean;
+				}
+				listEmployesAEvaluerBean.setMapclesnomEmploye(MapclesnomEmploye);
+				listEmployesAEvaluerBean.setMapclesposte(Mapclesposte);
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return listEmployesAEvaluerBean;
 	}
 }
