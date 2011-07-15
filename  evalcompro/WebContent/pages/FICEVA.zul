@@ -3,6 +3,7 @@
 	<tabbox id="tb" width="100%" height="100%"  >
 		<tabs id="tbtabs" >
 			<tab id="AEvaluer" label="Fiches des employés à évaluer" />
+			<tab id="FValide" label="Fiches des employés déjà évalués" />
 			<tab id="FicheEvaluation" label="Ma fiche d'évaluation" />
     	</tabs>
 		<tabpanels id="tbpanels" height="100%">
@@ -57,12 +58,63 @@
 					</hbox>
     			</groupbox>      			        	
            	</tabpanel>
+
+
+           	<tabpanel id="fichevalide" >
+				<grid span="true" sizedByContent="true" width="100%" height="500">        
+               		<rows>
+            			<row>
+                			<!-- Selected contributor's title value is same as title model's data-->
+                			<combobox id="poste_travailV" autodrop="true" mold="rounded" buttonVisible="true" readonly="true"/>
+                			<button id="help1V" image="/image/help.gif" tooltiptext="Description du poste de travail sélectionné"/>
+                			<combobox id="employeV" autodrop="true" mold="rounded" buttonVisible="true" width="70%" readonly="true"/>
+                			<button id="help2V"  image="/image/W95MBX04.gif" tooltiptext="Informations sur les niveaux de maitrise des aptitudes observables"/>                
+            			</row>
+        			</rows>
+    			</grid>
+    			
+    			<groupbox id="gb1" mold="3d" width="100%" height="500">
+        			<caption label="Fiche Employé" />    
+        			<vlayout spacing="20px">    
+       					<hlayout spacing="20px" >
+       						<label value="Nom de l'employé"> </label>
+       						<hlayout spacing="70px" >
+       							<textbox id="nomEmployeV" readonly="true"/>
+       							<hlayout spacing="20px" >
+       								<label value="Poste de travail"> </label>
+       								<hlayout spacing="70px" >
+       									<textbox id="posteTravailV" readonly="true"/>
+       									<hlayout spacing="20px" >
+       									<label value="Famille"> </label>
+       									<combobox id="FamilleV" readonly="true"/>
+       								</hlayout>
+       								</hlayout>
+       							</hlayout>
+       						</hlayout>
+       					</hlayout>
+       					 
+       					<div>
+ 							<listbox id="employelbV"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
+ 								<listhead sizable="true">
+									<listheader label="Compétence" width="250px" sort="auto" align="left" />
+									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" />
+									<listheader label="Niveau de maitrise" width="180px" align="center" />
+								</listhead>	
+								
+							</listbox> 
+ 						</div>    				
+       				</vlayout>
+    			</groupbox>      			        	
+           	</tabpanel>
+ 
+ 
+ 
            	
-           	
+         	
        		<tabpanel id="maFiche"> 
        		
     			<groupbox id="gb3" mold="3d" width="100%" height="500">
-        			<caption label="Fiche Employé" />    
+        			<caption id="labelM" label="Fiche Employé" />    
         			<vlayout spacing="20px">    
        					<hlayout spacing="20px" >
        						<label value="Nom de l'employé"> </label>
