@@ -8,10 +8,19 @@ public class FicheEvaluationBean {
 	int niveau_maitrise;
 	int id_employe;
 	int id_planning_evaluation;
+	String date_evaluation;
 	
 	String definition_competence;
 	String aptitude_observable;
 	
+	
+	
+	public String getDate_evaluation() {
+		return date_evaluation;
+	}
+	public void setDate_evaluation(String date_evaluation) {
+		this.date_evaluation = date_evaluation;
+	}
 	public String getDefinition_competence() {
 		return definition_competence;
 	}
