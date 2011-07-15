@@ -81,7 +81,9 @@ public class FicheEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT fiche_valide  FROM fiche_validation where id_employe=#id_employe ";
+			//String select_structure="SELECT fiche_valide  FROM fiche_validation where id_employe=#id_employe  ";
+			
+			String select_structure="SELECT fiche_valide, max(id_fiche_valide)  FROM fiche_validation where id_employe=#id_employe group by fiche_valide, id_fiche_valide ";
 			
 			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -300,7 +302,7 @@ public class FicheEvaluationModel {
 			stmt = (Statement) conn.createStatement();
 			String select_structure="select distinct r.famille,  p.code_poste, r.id_repertoire_competence, r.code_competence, r.libelle_competence , r.definition_competence, r.aptitude_observable from repertoire_competence r , poste_travail_competence p where r.code_competence=p.code_competence and p.code_poste in(select distinct code_poste from planning_evaluation) ";
 			
-			
+			System.out.println(select_structure);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
@@ -610,8 +612,8 @@ public class FicheEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation from repertoire_competence r, fiche_evaluation f where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence";
-			
+			//String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation from repertoire_competence r, fiche_evaluation f where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence";
+			String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence group by  r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
 			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -625,12 +627,13 @@ public class FicheEvaluationModel {
 					String libelle_competence=rs.getString("libelle_competence");
 					String aptitude_observable=rs.getString("aptitude_observable");
 					String id_cotation=rs.getString("id_cotation");
-					
+					String date_evaluation=rs.getString("max(p.date_evaluation)");
 					
 					FicheEvaluationBean fiche=new FicheEvaluationBean();
 					fiche.setAptitude_observable(aptitude_observable);
 					fiche.setLibelle_competence(libelle_competence);
 					fiche.setNiveau_maitrise(new Integer(id_cotation));
+					fiche.setDate_evaluation(date_evaluation);
 					
 					if(mapFamilleFicheEvaluation.containsKey(famille))
 					{
@@ -672,6 +675,57 @@ public class FicheEvaluationModel {
 		
 		return mapFamilleFicheEvaluation;
 		  
+		
+	}
+	
+	public ArrayList <String> getFamilleAssociePoste(String code_poste)
+	{
+		ArrayList <String> listeFamille= new ArrayList<String>();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select distinct  g.famille from repertoire_competence g , poste_travail_competence w , poste_travail_description a where g.code_competence=w.code_competence and w.code_poste=#code_poste";
+			
+			select_structure = select_structure.replaceAll("#code_poste", "'"+code_poste+"'");
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					listeFamille.add(rs.getString("famille"));
+	
+				}
+				else {
+					return listeFamille;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return listeFamille;
+	
 		
 	}
 }
