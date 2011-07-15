@@ -72,7 +72,7 @@ background-color: #00CC00 ;
 <grid zclass="none">
       <columns>
 	  <column><button id="valider" label="Valider Compagne"  tooltiptext="Valider la compagne" /> </column>			
-	  <column><button id="sendmail" image="/image/email_sending.ico" height="25px" width="30px" tooltiptext="Télécharger les données de la base de données"  /></column>		
+	  <column><button id="sendmail" image="/image/email.gif" height="30px" width="50px" tooltiptext="Télécharger les données de la base de données"  /></column>		
 	 </columns>
  </grid>
  </div>
