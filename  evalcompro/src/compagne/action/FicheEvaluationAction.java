@@ -95,8 +95,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	
 	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationM;
 	
+	ArrayList <String> listFamillePoste;
 	
-	EmployesAEvaluerBean employerAEvaluerBean1;
+	//EmployesAEvaluerBean employerAEvaluerBean1;
 	
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
@@ -353,11 +354,15 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 nomEmploye.setText(selectedEmploye);
 			 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeAEvaluerBean.getMapclesnomEmploye().get(selectedEmploye);
-			 employerAEvaluerBean1=employerAEvaluerBean;
+			 //employerAEvaluerBean1=employerAEvaluerBean;
 			 selectednomposteTravail=employerAEvaluerBean.getPoste_travail();
 			 posteTravail.setText(selectednomposteTravail);
-			 ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
-			 Iterator<String> iterator=listFamille.iterator();
+			 
+			 String code_poste=mapintitule_codeposte.get(selectednomposteTravail);
+			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+			 listFamillePoste=ficheEvaluationModel.getFamilleAssociePoste(code_poste);
+			 //ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
+			 Iterator<String> iterator=listFamillePoste.iterator();
 		 	while(iterator.hasNext())
 		 	{
 		 		String famille=iterator.next();
@@ -366,16 +371,16 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 	if(Famille.getItemCount()>0)
 		 		Famille.setSelectedIndex(0);
 		 
-		 	selectedFamille=listFamille.get(0);
+		 	selectedFamille=listFamillePoste.get(0);
 		 
 		 	//afficher toutes les données associées à ce poste de travail
 		 
 		 	//recuperation du code_poste associé à l'intitule
-		 	String code_poste=mapintitule_codeposte.get(selectednomposteTravail);
+		 	
 		 
 		 	String cles=code_poste+"#"+selectedFamille;
 		 
-		 
+		 System.out.println(cles);
 
 
 
@@ -386,7 +391,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
 			 System.out.println("taille="+listFiche.size());
 			 ArrayList<Listitem> liste=new ArrayList<Listitem>();
-			 
+			 listeCombo=new HashMap<String, Combobox>();
 			 while (iterator2.hasNext())
 			 {
 				 FicheEvaluationBean ficheEvaluation=(FicheEvaluationBean)iterator2.next();
@@ -550,7 +555,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 ArrayList<Listitem> liste=new ArrayList<Listitem>();
 		 
 		 HashMap<String, Combobox> listeComboMAJ=mapFamilleCombo.get(selectedFamille);
-		 
+		 listeCombo=new HashMap<String, Combobox>();
 		 while (iterator2.hasNext())
 		 {
 			 FicheEvaluationBean ficheEvaluation=(FicheEvaluationBean)iterator2.next();
@@ -681,10 +686,10 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 //sinon afficher un message comme quoi la validation n'a pas été prise en compte car
 		 // toutes les comptétences n'ont pas été évaluées
 		 //verifier que toutes les familles ont été selectionnées
-		 ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
+		// ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
 
 		 Set <String> famillesRemplies=mapFamilleCombo.keySet();
-		 if(listFamille.size()==famillesRemplies.size())
+		 if(listFamillePoste.size()==famillesRemplies.size())
 		 {
 			 // famille par famille que tous les combos sont remplies
 			 Iterator <String>itfamille=famillesRemplies.iterator();
@@ -731,7 +736,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 // famille par famille que tous les combos sont remplies
 				 famillesRemplies=mapFamilleCombo.keySet();
 				 itfamille=famillesRemplies.iterator();
-				
+				 String id_planning_evaluation="";
+				 String id_employe="";				
 				 while(itfamille.hasNext())
 				 {
 					 String clles=itfamille.next();
@@ -740,9 +746,11 @@ public class FicheEvaluationAction extends GenericForwardComposer{
  
 					 listclesCombo=listeComb.keySet();
 					 Iterator<String> iterator =listclesCombo.iterator();
-					 continuer=true;
-					 String id_planning_evaluation="";
-					 String id_employe="";
+					 //continuer=true;
+
+					 System.out.println("clles = "+clles+ " taille ="+ listclesCombo.size());
+					 
+
 					 while (iterator.hasNext())
 					 {
 						 String cles=(String)iterator.next();
@@ -753,12 +761,15 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 id_employe=val[1];
 						 id_planning_evaluation=val[2];
 						 String id_cotation=combo.getName();
+
 						 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
 					 }
 				 
 					 //validation de la fiche
-					 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
+					 
 				 }
+				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
+				 valider.setDisabled(true);
 			 }
 			 
 		 }
@@ -884,7 +895,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				
 				liste.add(listItem);
 			}
-			/*****************/
+			
 			currentListItemM=liste;
 		 
 		 /********************************************************************/
