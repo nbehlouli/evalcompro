@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -16,6 +17,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -112,7 +114,11 @@ public class MenuComposer extends GenericForwardComposer{
 		{
 			
 			MenuNode node = (MenuNode)data;
-			item.setImage("/image/fleche_droite_2.ico");
+			Image image=new Image("/WebContent/image/fleche_droite_2.jpg");
+			image.getSrc();
+
+			//System.out.println("current directory-->"+image.getSrc());
+			item.setImage("/image/fleche_droite_2.gif");
 			item.setLabel(node.getLabel());
 			item.setValue(node);
 			
