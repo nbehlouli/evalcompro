@@ -9,12 +9,19 @@ public class FicheEvaluationBean {
 	int id_employe;
 	int id_planning_evaluation;
 	String date_evaluation;
+	String compagne_type;
 	
 	String definition_competence;
 	String aptitude_observable;
 	
 	
 	
+	public String getCompagne_type() {
+		return compagne_type;
+	}
+	public void setCompagne_type(String compagne_type) {
+		this.compagne_type = compagne_type;
+	}
 	public String getDate_evaluation() {
 		return date_evaluation;
 	}
