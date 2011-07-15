@@ -10,6 +10,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Html;
@@ -42,6 +43,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	Tab FValide ;
+	Tabpanel fichevalide;
 	Tab FicheEvaluation;
 	Tab AEvaluer;
 	Tabpanel maFiche;
@@ -63,6 +66,15 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	Html htmlhelp1;
 	Component comp1;
 	
+	//objets graphiques de l'onglet des omployes deja evalués
+	Textbox posteTravailV;
+	Textbox nomEmployeV;
+	Button help1V;
+	Button help2V;
+	Combobox FamilleV;	
+	Combobox employeV; 
+	Combobox poste_travailV;
+	Listbox employelbV;
 	//objets graphique de l'onglet la fiche d'evaluation
 	
 	Textbox nomEmployeM;
@@ -70,32 +82,46 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	Combobox FamilleM;
 	Groupbox gb3;
 	Listbox employelbM;
+	Caption labelM;
 	//objets a utiliser
 	
 	HashMap<String, ArrayList<FicheEvaluationBean>> mapPosteTravailFiche;
+	HashMap<String, ArrayList<FicheEvaluationBean>> mapPosteTravailFicheV;
 	HashMap <String, String > mapintitule_codeposte;
 	HashMap <String, String > mapcode_intituleposte;
 	HashMap <String, ArrayList<Listitem>> mapItemsFamille =new HashMap<String, ArrayList<Listitem>>();
+	HashMap <String, ArrayList<Listitem>> mapItemsFamilleV =new HashMap<String, ArrayList<Listitem>>();
 	HashMap <String, String > mapcode_description_poste;
 	ArrayList <CotationBean> listCotation;
 	HashMap<String , Combobox>listeCombo=new HashMap<String, Combobox>();
 	
+	HashMap<String , Combobox>listeComboV=new HashMap<String, Combobox>();
+	
 	HashMap<String,HashMap<String , Combobox>> mapFamilleCombo=new HashMap<String, HashMap<String , Combobox>> ();
+	HashMap<String,HashMap<String , Combobox>> mapFamilleComboV=new HashMap<String, HashMap<String , Combobox>> ();
 	ArrayList<Listitem> currentListItem=null;
 	
 	ArrayList<Listitem> currentListItemM=null;
+	ArrayList<Listitem> currentListItemV=null;
 	
 	// objets de la selection en cours
 	String selectedEmploye;
 	MapEmployesAEvaluerBean mapEmployeAEvaluerBean;
+	MapEmployesAEvaluerBean mapEmployeEvalueBean;
 	String selectedFamille;
 	String selectednomposteTravail;
 
 	String selectedFamilleM;
 	
+	String selectedEmployeV;
+	String selectedFamilleV;
+	String selectednomposteTravailV;
+	
 	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationM;
+	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationV;
 	
 	ArrayList <String> listFamillePoste;
+	ArrayList <String> listFamillePosteV;
 	
 	//EmployesAEvaluerBean employerAEvaluerBean1;
 	
@@ -145,6 +171,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		{
 			
 			//construction et affichage du contenu de la page
+			
+			
 			//récupération du nom de la personne connecté
 			String retour=ficheEvaluationModel.getNomUtilisateur(id_employe);
 			String[] val=retour.split("#");
@@ -200,6 +228,12 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				{
 					FicheEvaluationBean ficheEvaluationBean=iteratorFiche.next();
 				
+					//mise à jour du titre
+					
+					
+					//labelM.setLabel("Fiche Employé : évaluation du "+  ficheEvaluationBean.getDate_evaluation() +" de la compagne "+ ficheEvaluationBean.getCompagne_type());
+					labelM.setLabel("Fiche Employé : Compagne  "+ ficheEvaluationBean.getCompagne_type() +" du "+ ficheEvaluationBean.getDate_evaluation() );
+					
 					//affichage des donnnées dans le tableau
 					Listitem listItem=new Listitem();
 					listItem.setParent(employelbM);
@@ -303,7 +337,51 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			//AEvaluer.setVisible(false);
 			AEvaluer.detach();
 			evaluations.detach();
+			
+			
 
+		}
+		
+		//si c'est un administrateur, il peut voir toutes les fiches d'evaluations ou evaluateur
+		if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
+		{
+			
+			 mapPosteTravailFicheV=ficheEvaluationModel.getInfosFicheEvaluationparPoste();
+			 
+			//remplissage du contenu de la combo associée aux postes de travail
+			 mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
+			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
+			Set <String>listePoste= Mapclesposte.keySet();
+			Iterator <String > iterator=listePoste.iterator();
+			poste_travailV.appendItem("Tous poste de travail");
+			while(iterator.hasNext())
+			{
+				String nomPoste=iterator.next();
+				poste_travailV.appendItem(nomPoste);
+			}
+			//selection du premier item (tous poste de travail)
+			poste_travailV.setSelectedIndex(0);
+			
+			//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+			HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeEvalueBean.getMapclesnomEmploye();
+			Set <String>listeEmploye=mapclesEmploye.keySet();
+			iterator=listeEmploye.iterator();
+			employeV.appendItem("sélectionner un employé");
+			while(iterator.hasNext())
+			{
+				String nomEmploye=iterator.next();
+				employeV.appendItem(nomEmploye);
+
+			}
+			//selection du premier item de la combobox employe
+			if(employeV.getItemCount()>0)
+				employeV.setSelectedIndex(0);
+		}
+		else
+		{
+			//rendre l'onglet invisible 
+			FValide.detach();
+			fichevalide.detach();
 		}
 		tb.setSelectedIndex(0);
 
@@ -659,6 +737,38 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 help1Pop.open(help2);
 	 }
 	 
+	 
+	 public void onClick$help1V()
+	 {
+		 //Affichage de la description du poste de travail selectionné
+		 
+		 String code=mapintitule_codeposte.get(selectednomposteTravailV);
+		 
+		 String descriptionPoste=mapcode_description_poste.get(code);
+		 if(descriptionPoste!=null)
+		 {
+			 //Html html=new Html();
+			 //htmlhelp1.setContent(content)
+			 String content=descriptionPoste;
+			 //htmlhelp1.setStyle("background-color: #1eadff");
+			 htmlhelp1.setContent(content);
+			 htmlhelp1.setParent(help1Pop);
+			 help1Pop.open(help1);
+		 }
+			
+
+	 }
+	 
+	 public void onClick$help2V()
+	 {
+		 String message=CreationMessageHelp2(listCotation);
+		 System.out.println(message);
+		 //htmlhelp1.setStyle("background-color: #1eadff");
+		 htmlhelp1.setContent(message);
+		 htmlhelp1.setParent(help1Pop);
+		 help1Pop.open(help2);
+	 }
+	 
 	 public void onClick$help3()
 	 {
 		 String message=CreationMessageHelp2(listCotation);
@@ -900,4 +1010,316 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 /********************************************************************/
 	 }
+	 
+	 
+	 /**
+		 * evenement a gerer lors de la selection d'un poste de travail dans l'onglet des fiche valide
+		 */
+	 public void onSelect$poste_travailV()
+	 {
+		 
+
+		 
+		 //vider le contenu de la grille associée à l'ancien employé selectionné
+		 if (currentListItemV!=null)
+		 {
+			 Iterator<Listitem> iterator=currentListItemV.iterator();
+			 while(iterator.hasNext())
+			 {
+				 Listitem item=iterator.next();
+				 item.detach();
+			 }
+			 selectedEmployeV="";
+			 nomEmployeV.setText(selectedEmployeV);
+			 selectednomposteTravailV="";
+			 posteTravailV.setText(selectednomposteTravailV);
+		 }
+		 //si un employé a déja été selectionner alors vider le contnu de la combobox
+		 if(FamilleV.getItemCount()>0)
+		 {
+			int nb= FamilleV.getItemCount();
+			for (int i=nb-1;i>=0;i--)
+			{
+				
+				FamilleV.removeItemAt(i);
+			}
+		 }
+		 //vider le contenu de la combo employe 
+		 if(employeV.getItemCount()>0)
+		 {
+			int nb= employeV.getItemCount();
+			for (int i=nb-1;i>=0;i--)
+			{
+				
+				employeV.removeItemAt(i);
+			}
+		 }
+		 employeV.appendItem("sélectionner un employé");
+		 
+		 //1. mise à jour de la liste des employes avec la selection de l'attribut selectionner un employe
+		 //avec toutes les conséquences qui doivent se découler de cette de cette selection
+		 
+		//remplissage du contenu de la combo associée aux postes de travail
+		 selectednomposteTravailV=poste_travailV.getSelectedItem().getLabel();
+		 if(!selectednomposteTravailV.equals("Tous poste de travail"))
+		 {
+			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
+			 HashMap<String, EmployesAEvaluerBean> mapEmploye=Mapclesposte.get(selectednomposteTravailV);
+			Set <String> listEmploye=mapEmploye.keySet();
+			Iterator<String> iterator =listEmploye.iterator();
+			while(iterator.hasNext())
+			{
+				String nomEmploye=iterator.next();
+				employeV.appendItem(nomEmploye);
+			}
+			employeV.setSelectedIndex(0);
+			 
+			 
+		 }
+	 }
+	 
+	 /**
+		 * evenement a gerer lors de la selection d'une famille dans l'onglet employe evalué
+		 */
+	 public void onSelect$FamilleV()
+	 {
+		 //récupération de la famille selectionnée
+		 selectedFamilleV=(String)FamilleV.getSelectedItem().getLabel();
+		 
+		 //lors de la selection d'une famille, il faut :
+		 //1. vider le contenu de la table
+		 //2. remplir la table avec le cntenu de la nouvelle cles code_poste, famille
+		 
+		 
+		//1. vider le contenu de la table
+		 if (currentListItemV!=null)
+		 {
+			 Iterator<Listitem> iterator=currentListItemV.iterator();
+			 while(iterator.hasNext())
+			 {
+				 Listitem item=iterator.next();
+				 item.detach();
+			 }
+		 }
+		 
+		 //recuperer les infos associé à l'employé selectionné
+		 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeEvalueBean.getMapclesnomEmploye().get(selectedEmployeV);
+		 
+		 System.out.println("selectedEmploye "+selectedEmployeV);
+		 System.out.println(employerAEvaluerBean.getId_employe());
+		//recuperation du code_poste associé à l'intitule
+		 //String code_poste=mapintitule_codeposte.get(selectednomposteTravailV);
+		 
+		 //String cles=code_poste+"#"+selectedFamilleV;
+		 
+		 //afficher le contenu de mapfamilleFicheEvaluationV
+		 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+		 
+		 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
+		 
+		 ArrayList<FicheEvaluationBean> listFiche=mapfamilleFicheEvaluationV.get(selectedFamilleV);
+		 
+		 
+		 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
+		 
+		 ArrayList<Listitem> liste=new ArrayList<Listitem>();
+		 
+		 //HashMap<String, Combobox> listeComboMAJ=mapFamilleCombo.get(selectedFamilleV);
+		 //listeComboV=new HashMap<String, Combobox>();
+		 while (iterator2.hasNext())
+		 {
+			 FicheEvaluationBean ficheEvaluation=(FicheEvaluationBean)iterator2.next();
+			 String libelleCompetence=ficheEvaluation.getLibelle_competence();
+			 String aptitudeObservable=ficheEvaluation.getAptitude_observable();
+			 String descriptionCompetence=ficheEvaluation.getDefinition_competence();
+			 
+			 //affichage des donnnées dans le tableau
+			 Listitem listItem=new Listitem();
+			 listItem.setParent(employelbV);
+			 	 
+				 
+			 //cellule competence
+			 Listcell cellulecompetence=new Listcell();
+			 cellulecompetence.setLabel(libelleCompetence);
+			 cellulecompetence.setTooltiptext(descriptionCompetence);
+			 cellulecompetence.setParent(listItem);
+				 
+			 //cellule aptitude observable
+			 Listcell celluleaptitude=new Listcell();
+			 celluleaptitude.setLabel(aptitudeObservable);
+			 celluleaptitude.setParent(listItem);
+				 
+				 
+			//cellule niveau de maitrise
+				Listcell cellulecotation=new Listcell();
+				Iterator<CotationBean> itcotationBean =listCotation.iterator();
+				boolean conti=true;
+				int valCotation=0;
+				while((itcotationBean.hasNext() && conti))
+				{
+					CotationBean cotationbean=itcotationBean.next();
+					int valeur=cotationbean.getId_cotation();
+					System.out.println("valeur " +valeur);
+					valCotation=cotationbean.getValeur_cotation();
+					if(valeur==ficheEvaluation.getNiveau_maitrise())
+
+					{
+						conti=false;
+						valCotation=ficheEvaluation.getNiveau_maitrise();
+					}
+				}
+						
+				
+				cellulecotation.setLabel(valCotation+"");
+			 
+				cellulecotation.setParent(listItem);
+				
+				liste.add(listItem);
+			}
+			
+			currentListItemV=liste;
+	 		 
+	 }
+	 
+		/**
+		 * evenement a gerer lors de la selection d'un employé de l'onglet employe evalué
+		 */
+		 public void onSelect$employeV()
+		 {
+			 
+			 //vider le contenu de la grille associée à l'ancien employé selectionné
+			 if (currentListItemV!=null)
+			 {
+				 Iterator<Listitem> iterator=currentListItemV.iterator();
+				 while(iterator.hasNext())
+				 {
+					 Listitem item=iterator.next();
+					 item.detach();
+				 }
+				 selectedEmployeV="";
+				 nomEmployeV.setText(selectedEmployeV);
+				 selectednomposteTravailV="";
+				 posteTravailV.setText(selectednomposteTravailV);
+			 }
+			 //si un employé a déja été selectionner alors vider le contnu de la combobox
+			 if(FamilleV.getItemCount()>0)
+			 {
+				int nb= FamilleV.getItemCount();
+				for (int i=nb-1;i>=0;i--)
+				{
+					
+					FamilleV.removeItemAt(i);
+				}
+			 }
+			
+			 mapItemsFamilleV=new 	HashMap<String, ArrayList<Listitem>>();	 
+			 employelbV.renderAll();
+			 //lors de la selection d'un employé, affichage de la fiche associé à cet employé si elle existe 
+			 //si la fiche n'existe pas , il faut la creer
+			 
+			 //1. affichage des informations relatifs à l'employé
+
+			 selectedEmployeV=employeV.getSelectedItem().getLabel();
+			 
+			 if(!selectedEmployeV.equals("sélectionner un employé"))
+			 {
+				 
+				 nomEmployeV.setText(selectedEmployeV);
+				 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeEvalueBean.getMapclesnomEmploye().get(selectedEmployeV);
+				 //employerAEvaluerBean1=employerAEvaluerBean;
+				 selectednomposteTravailV=employerAEvaluerBean.getPoste_travail();
+				 posteTravailV.setText(selectednomposteTravailV);
+				 
+				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+				 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
+				 
+				 String code_poste=mapintitule_codeposte.get(selectednomposteTravailV);
+				 
+				 listFamillePosteV=ficheEvaluationModel.getFamilleAssociePoste(code_poste);
+				 //ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
+				 Iterator<String> iterator=listFamillePosteV.iterator();
+			 	while(iterator.hasNext())
+			 	{
+			 		String famille=iterator.next();
+			 		FamilleV.appendItem(famille);
+			 	}
+			 	if(FamilleV.getItemCount()>0)
+			 		FamilleV.setSelectedIndex(0);
+			 
+			 	selectedFamilleV=listFamillePosteV.get(0);
+			 
+			 	//afficher toutes les données associées à ce poste de travail
+			 
+			 	//recuperation du code_poste associé à l'intitule
+			 	
+			 
+			 	//String cles=code_poste+"#"+selectedFamilleV;
+			 
+			 //System.out.println(cles);
+
+
+
+			 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
+			 
+			 ArrayList<FicheEvaluationBean> listFiche=mapfamilleFicheEvaluationV.get(selectedFamilleV);
+			 
+				 //System.out.println("cles="+cles);
+				 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
+				 System.out.println("taille="+listFiche.size());
+				 ArrayList<Listitem> liste=new ArrayList<Listitem>();
+				 listeComboV=new HashMap<String, Combobox>();
+				 while (iterator2.hasNext())
+				 {
+					 FicheEvaluationBean ficheEvaluation=(FicheEvaluationBean)iterator2.next();
+					 String libelleCompetence=ficheEvaluation.getLibelle_competence();
+					 String aptitudeObservable=ficheEvaluation.getAptitude_observable();
+					 String descriptionCompetence=ficheEvaluation.getDefinition_competence();
+					 
+					 //affichage des donnnées dans le tableau
+					 Listitem listItem=new Listitem();
+					 listItem.setParent(employelbV);
+					 	 
+						 
+					 //cellule competence
+					 Listcell cellulecompetence=new Listcell();
+					 cellulecompetence.setLabel(libelleCompetence);
+					 cellulecompetence.setTooltiptext(descriptionCompetence);
+					 cellulecompetence.setParent(listItem);
+						 
+					 //cellule aptitude observable
+					 Listcell celluleaptitude=new Listcell();
+					 celluleaptitude.setLabel(aptitudeObservable);
+					 celluleaptitude.setParent(listItem);
+						 
+						 
+					//cellule niveau de maitrise
+						Listcell cellulecotation=new Listcell();
+						Iterator<CotationBean> itcotationBean =listCotation.iterator();
+						boolean conti=true;
+						int valCotation=0;
+						while((itcotationBean.hasNext() && conti))
+						{
+							CotationBean cotationbean=itcotationBean.next();
+							int valeur=cotationbean.getId_cotation();
+							System.out.println("valeur " +valeur);
+							valCotation=cotationbean.getValeur_cotation();
+							if(valeur==ficheEvaluation.getNiveau_maitrise())
+
+							{
+								conti=false;
+								valCotation=ficheEvaluation.getNiveau_maitrise();
+							}
+						}
+								
+						
+						cellulecotation.setLabel(valCotation+"");
+					 
+						cellulecotation.setParent(listItem);
+						
+						liste.add(listItem);
+					}
+					
+					currentListItemV=liste;
+			 }		 
+		 }
 }
