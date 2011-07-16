@@ -32,6 +32,7 @@ import org.zkoss.zul.Timebox;
 
 import compagne.bean.PlanningCompagneListBean;
 import compagne.model.CompagneCreationModel;
+import compagne.model.GestionEmployesModel;
 import compagne.model.PlanningCompagneModel;
 
 import administration.bean.AdministrationLoginBean;
@@ -540,7 +541,23 @@ public void setLbl_poste(String lbl_poste) {
 		 evalue.setSelectedIndex(0);
   }
 
-  
+  public void onSelect$code_structure() throws SQLException, InterruptedException {
+	  PlanningCompagneModel init =new PlanningCompagneModel();
+	   Map map_sorted;
+	   String structure =  (String) map_structure.get((String)code_structure.getSelectedItem().getLabel());
+	  map_sorted= init.setlectedStructure(structure);
+	  Set set = (map_sorted).entrySet(); 
+	  Iterator i = set.iterator();
+	  	
+		// Display elements
+		while(i.hasNext()) {
+		  Map.Entry me = (Map.Entry)i.next();
+		   code_structure.setTooltiptext((String) me.getKey());
+		 }
+	 
+		
+  }
+
   
   
 }
