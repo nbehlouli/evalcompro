@@ -649,6 +649,37 @@ private ListModel strset =null;
 		}
 		return sortedMap;
 	   }	
+	 
+	 public HashMap setlectedStructure(String code_structure) throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			HashMap map = new HashMap();
+
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String sql_query="select concat_ws('-->',libelle_division,libelle_direction,libelle_unite,libelle_departement,libelle_service,libelle_section) as structure from structure_entreprise where code_structure=#code_structure";
+				sql_query = sql_query.replaceAll("#code_structure", "'"+code_structure+"'");
+				ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+				
+				
+				while(rs.next()){
+					map.put( rs.getString("structure"),rs.getString("structure"));
+		        }
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return map;
+			
+			
+		}
 
 
 
