@@ -1,7 +1,5 @@
-<window width="80%" title="Session Timeout" border="normal">
+<window width="80%" title="Déconnexion automatique" border="normal">
 	<vbox>
-The page or component you request is no longer available.
-This is normally caused by timeout, opening too many Web pages, or rebooting
-the server.
+<a href="/login/login.zul" sclass="edition-field" label="Cliquer ici pour vous reconnecter à l'application !" style="font-size:9pt;"/>
 	</vbox>
 </window>
