@@ -260,7 +260,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					{
 						CotationBean cotationbean=itcotationBean.next();
 						int valeur=cotationbean.getId_cotation();
-						System.out.println("valeur " +valeur);
+						
 						valCotation=cotationbean.getValeur_cotation();
 						if(valeur==ficheEvaluationBean.getNiveau_maitrise())
 
@@ -321,7 +321,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			{
 				String nomEmploye=iterator.next();
 				employe.appendItem(nomEmploye);
-				System.out.println("++++++++++++++"+nomEmploye);
+				
 			}
 			//selection du premier item de la combobox employe
 			if(employe.getItemCount()>0)
@@ -467,16 +467,16 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 	String cles=code_poste+"#"+selectedFamille;
 		 
-		 System.out.println(cles);
+		 
 
 
 
 			 //afficher le contenu de mapPosteTravailFiche
 			 ArrayList<FicheEvaluationBean> listFiche=mapPosteTravailFiche.get(cles);
 			 
-			 System.out.println("cles="+cles);
+			 
 			 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
-			 System.out.println("taille="+listFiche.size());
+			 
 			 ArrayList<Listitem> liste=new ArrayList<Listitem>();
 			 listeCombo=new HashMap<String, Combobox>();
 			 while (iterator2.hasNext())
@@ -739,7 +739,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 public void onClick$help2()
 	 {
 		 String message=CreationMessageHelp2(listCotation);
-		 System.out.println(message);
+		 
 		 //htmlhelp1.setStyle("background-color: #1eadff");
 		 htmlhelp1.setContent(message);
 		 htmlhelp1.setParent(help1Pop);
@@ -771,7 +771,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 public void onClick$help2V()
 	 {
 		 String message=CreationMessageHelp2(listCotation);
-		 System.out.println(message);
+		 
 		 //htmlhelp1.setStyle("background-color: #1eadff");
 		 htmlhelp1.setContent(message);
 		 htmlhelp1.setParent(help1Pop);
@@ -781,7 +781,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 public void onClick$help3()
 	 {
 		 String message=CreationMessageHelp2(listCotation);
-		 System.out.println(message);
+		 
 		 //htmlhelp1.setStyle("background-color: #1eadff");
 		 htmlhelp1.setContent(message);
 		 htmlhelp1.setParent(help1Pop);
@@ -847,6 +847,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 }
 			 else
 			 {
+				 //désactiver le bouton valider
+				 valider.setDisabled(true);
 				 //récupérer les modifications et enregistrer dans la base de donnée
 				 //valider la fiche dans la table appropriée
 				 
@@ -867,7 +869,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 Iterator<String> iterator =listclesCombo.iterator();
 					 //continuer=true;
 
-					 System.out.println("clles = "+clles+ " taille ="+ listclesCombo.size());
+					 
 					 
 
 					 while (iterator.hasNext())
@@ -888,7 +890,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 
 				 }
 				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
-				 valider.setDisabled(true);
+				 
 			 }
 			 
 		 }
@@ -897,7 +899,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 //afficher messagebox
 			 try 
 			 {
-				 System.out.println("pas la même taille");
+				 
 				Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			 } 
 			 catch (InterruptedException e) 
@@ -997,7 +999,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				{
 					CotationBean cotationbean=itcotationBean.next();
 					int valeur=cotationbean.getId_cotation();
-					System.out.println("valeur " +valeur);
+					
 					valCotation=cotationbean.getValeur_cotation();
 					if(valeur==ficheEvaluationBean.getNiveau_maitrise())
 
@@ -1114,8 +1116,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 //recuperer les infos associé à l'employé selectionné
 		 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeEvalueBean.getMapclesnomEmploye().get(selectedEmployeV);
 		 
-		 System.out.println("selectedEmploye "+selectedEmployeV);
-		 System.out.println(employerAEvaluerBean.getId_employe());
+		 
 		//recuperation du code_poste associé à l'intitule
 		 //String code_poste=mapintitule_codeposte.get(selectednomposteTravailV);
 		 
@@ -1168,7 +1169,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				{
 					CotationBean cotationbean=itcotationBean.next();
 					int valeur=cotationbean.getId_cotation();
-					System.out.println("valeur " +valeur);
+					
 					valCotation=cotationbean.getValeur_cotation();
 					if(valeur==ficheEvaluation.getNiveau_maitrise())
 
@@ -1274,7 +1275,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 				 //System.out.println("cles="+cles);
 				 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
-				 System.out.println("taille="+listFiche.size());
+				 
 				 ArrayList<Listitem> liste=new ArrayList<Listitem>();
 				 listeComboV=new HashMap<String, Combobox>();
 				 while (iterator2.hasNext())
@@ -1310,7 +1311,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						{
 							CotationBean cotationbean=itcotationBean.next();
 							int valeur=cotationbean.getId_cotation();
-							System.out.println("valeur " +valeur);
+							
 							valCotation=cotationbean.getValeur_cotation();
 							if(valeur==ficheEvaluation.getNiveau_maitrise())
 
