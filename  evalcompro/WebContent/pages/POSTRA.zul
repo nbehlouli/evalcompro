@@ -22,6 +22,7 @@
 			<listheader label="Poste hiearchique" width="120px" align="left" />
 			<listheader label="Structure" width="80px" align="center" />
 			<listheader label="Date Maj Poste" width="100px" align="center" />
+			<listheader label="Cadre" width="50px" align="center" />
 		
 	
 		</listhead>
@@ -38,6 +39,7 @@
 			<listcell label="@{listcomp.libelle_poste}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			<listcell label="@{listcomp.code_structure}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			<listcell label="@{listcomp.date_maj_poste}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcomp.is_cadre}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			
 			
 		</listitem>
@@ -93,6 +95,10 @@
 		                <textbox id="profile_poste" tabbable="true" width="300px" rows="5" value="@{winCtrl.selected.profile_poste,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 						<label id="environement_perspectif_lbl"  value=" Environement et  perspectifs: "  sclass="textboxdetail"/>
   	   		            <textbox id="environement_perspectif" tabbable="true" width="350px;" rows="5"  value="@{winCtrl.selected.environement_perspectif,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+  	   		            
+  	   		            <label id="cadre"  value="Cadre :"  sclass="textboxdetail"/>
+		                <listbox id="is_cadre" mold="select" selectedItem="@{winCtrl.selected.is_cadre,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+  	   		            
 			           	
 		     </hbox>
 		     
