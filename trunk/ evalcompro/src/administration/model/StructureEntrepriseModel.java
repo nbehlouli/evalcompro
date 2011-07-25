@@ -876,4 +876,114 @@ public class StructureEntrepriseModel {
 		}
 
 	}
+	
+	
+	  public String getMaxKeyCode() throws SQLException
+	    {
+	    	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	    	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	    	Statement stmt = null;
+	    	String result = null ;
+	    	int i=1;
+	    	
+	    	try 
+	    	{
+	    		stmt = (Statement) conn.createStatement();
+	    		String profile_list="select concat_ws('|', max(code_structure), max(code_division) ,max(code_direction),max(code_unite)," +
+	    				            " max(code_departement),max(code_service),max(code_section)) as max_code from structure_entreprise"; 
+	    		ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+	    		
+	    		
+	    		while(rs.next()){
+	    			result=rs.getString("max_code");
+	            }
+	    		stmt.close();conn.close();
+	    	} 
+	    	catch (SQLException e){
+	    			e.printStackTrace();
+	    			stmt.close();conn.close();
+	    	}
+	    	
+	    	return result;
+	    }
+	    
+	    public static String getNextCode(String charto,String code,int size) {
+
+	    	String nextvalue="XXXX";
+
+	    	if (code==null || code.length()==0){
+
+		    	nextvalue=charto+"001";
+		    	return nextvalue;
+        	}
+
+	    	String[]list=code.split(charto);
+	    	String chaine=String.valueOf(Integer.parseInt(list[1])+1);
+
+		    if (size==4)
+		    {
+		    	if (chaine.length() <4){
+	
+				    	if (chaine.length()==1){
+			
+				    	chaine=charto+"00"+chaine;
+			
+				    	}
+			
+				    	if (chaine.length()==2){
+			
+				    	chaine=charto+"0"+chaine;
+			
+				    	}
+			
+				    	if (chaine.length()==3){
+			
+				    	chaine=charto+chaine;
+			
+				    	}
+			
+				    	nextvalue=chaine;
+				   }
+	
+		    }
+		    
+		    
+		    if (size==5){
+		    	if (chaine.length() <5){
+	
+			    	if (chaine.length()==1){
+		
+			    	chaine=charto+"000"+chaine;
+		
+			    	}
+		
+			    	if (chaine.length()==2){
+		
+			    	chaine=charto+"00"+chaine;
+		
+			    	}
+		
+			    	if (chaine.length()==3){
+		
+			    		chaine=charto+"0"+chaine;
+		
+			    	}
+			    	
+			    	if (chaine.length()==4){
+			    		
+			    		chaine=charto+chaine;
+		
+			    	}
+		
+			    	nextvalue=chaine;
+			    	 
+		
+			   }
+		 
+		    }
+		    
+		   	return nextvalue;
 }
+
+}
+	   
