@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+import Statistique.bean.EmployeCadreBean;
+import Statistique.bean.EmployeFormationBean;
 import Statistique.bean.StatTrancheAgePosteBean;
 import administration.bean.AdministrationLoginBean;
 import administration.bean.FichePosteBean;
@@ -162,5 +164,152 @@ public class EmployeModel {
 		
 		
 	}
+	
+	public List getNombreEmployesCadre() throws SQLException
+	{
+			
+		ArrayList<EmployeCadreBean>   liststatbean = new ArrayList<EmployeCadreBean>();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select CASE WHEN p.is_cadre='N' THEN 2 ELSE 1 END as is_cadre,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
+					" from employe e,poste_travail_description p where p.code_poste=e.code_poste group by is_cadre ";
+			//System.out.println(select_structure);
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			while(rs.next()){
+				
+				EmployeCadreBean stat_bean=new EmployeCadreBean();
+				stat_bean.setIs_cadre(rs.getString("is_cadre"));
+				stat_bean.setPourcentage(rs.getInt("pourcentage"));
+						
+				liststatbean.add(stat_bean);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
 
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			try {
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			}
+		}
+		return liststatbean;
+		
+		
+	}
+	
+	public List getNombreEmployesEnciente() throws SQLException
+	{
+			
+		ArrayList<StatTrancheAgePosteBean>   liststatbean = new ArrayList<StatTrancheAgePosteBean>();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select p.intitule_poste, if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>1  and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<16 ,'1', if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>16 and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<31 ,'2','3')) as tranche," +
+					         " round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage from employe e ,poste_travail_description p" +
+					         " where p.code_poste=e.code_poste group by intitule_poste,tranche order by tranche" ;
+			
+			//System.out.println(select_structure);
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			while(rs.next()){
+				
+				StatTrancheAgePosteBean stat_bean=new StatTrancheAgePosteBean();
+				stat_bean.setIntitule_poste(rs.getString("intitule_poste"));
+				stat_bean.setTranche(rs.getString("tranche"));
+				stat_bean.setPourcentage(rs.getInt("pourcentage"));
+						
+				liststatbean.add(stat_bean);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			try {
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			}
+		}
+		return liststatbean;
+		
+		
+	}
+
+	public List getNombreEmployesNivForm() throws SQLException
+	{
+			
+		ArrayList<EmployeFormationBean>   liststatbean = new ArrayList<EmployeFormationBean>();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select f.libelle_formation,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
+					         " 	from employe e,formation f 	where f.code_formation=e.code_formation group by libelle_formation" ;
+			//System.out.println(select_structure);
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			while(rs.next()){
+				
+				EmployeFormationBean stat_bean=new EmployeFormationBean();
+				stat_bean.setNiveau(rs.getString("libelle_formation"));
+				stat_bean.setPourcentage(rs.getInt("pourcentage"));
+						
+				liststatbean.add(stat_bean);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			try {
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				stmt.close(); ((java.sql.Connection) dbcon).close();
+			}
+		}
+		return liststatbean;
+		
+		
+	}
+	
+
+	
+	
 }
