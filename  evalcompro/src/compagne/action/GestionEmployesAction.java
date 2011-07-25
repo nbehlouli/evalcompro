@@ -66,6 +66,7 @@ public class GestionEmployesAction extends GenericForwardComposer {
 	Textbox  email;
 	Label structure_lbl;
 
+
 	AnnotateDataBinder binder;
 	List<GestionEmployesBean> model = new ArrayList<GestionEmployesBean>();
 	GestionEmployesBean selected;
@@ -365,6 +366,8 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		add.setVisible(true);
 		update.setVisible(true);
 		delete.setVisible(true);
+		admincomptelb.setSelectedIndex(0);
+		binder.loadAll();
 		
 		
 	}

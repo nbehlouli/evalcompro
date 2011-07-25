@@ -357,6 +357,8 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 		add.setVisible(true);
 		update.setVisible(true);
 		delete.setVisible(true);
+		admincomptelb.setSelectedIndex(0);
+		binder.loadAll();
 		
 		
 	}
