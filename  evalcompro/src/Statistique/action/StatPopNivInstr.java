@@ -1,5 +1,8 @@
 package Statistique.action;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
@@ -9,6 +12,10 @@ import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
 import org.zkoss.zul.impl.ChartEngine;
+
+import Statistique.bean.EmployeCadreBean;
+import Statistique.bean.EmployeFormationBean;
+import Statistique.model.EmployeModel;
 
 public class StatPopNivInstr extends  GenericForwardComposer{
 
@@ -27,25 +34,23 @@ public class StatPopNivInstr extends  GenericForwardComposer{
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		
-//	   	PieModel model = new SimplePieModel();
-//
-//		
-//		model.setValue("c0", new Double(21.2));
-//		model.setValue("c1", new Double(10.2));
-//		model.setValue("c2", new Double(40.4));
-//		model.setValue("c3", new Double(28.2));
-//		mychart.setModel(model);
+		EmployeModel init=new EmployeModel();
+		EmployeFormationBean cpb;
+		String typetranche="";
 		
-		CategoryModel catmodel = new SimpleCategoryModel();
-        catmodel.setValue("Directeur de pôle", "Universitaire", new Integer(75));
-        catmodel.setValue("Directeur de pôle", "Moyen", new Integer(20));
-        catmodel.setValue("Directeur de pôle", "Sans niveau", new Integer(5));
-        catmodel.setValue("Comptable", "Universitaire", new Integer(66));
-        catmodel.setValue("Comptable", "Moyen", new Integer(33));
-        catmodel.setValue("Comptable", "Sans niveau", new Integer(1));
-        mychart.setModel(catmodel);
+		Iterator it;
+		List sect_items=init.getNombreEmployesNivForm();
+        it = sect_items.iterator();
+        PieModel piemodel = new SimplePieModel();
         
-        //ces instructions permettent de récuperer l'objet image pour l'export
+		while (it.hasNext()){
+	 		cpb  = (EmployeFormationBean) it.next();
+	 		
+	 		   piemodel.setValue(cpb.getNiveau(),cpb.getPourcentage());
+	 		  mychart.setModel(piemodel);
+			
+		}
+	    //ces instructions permettent de récuperer l'objet image pour l'export
         
         ChartEngine d=mychart.getEngine();
 		image=d.drawChart(mychart);
