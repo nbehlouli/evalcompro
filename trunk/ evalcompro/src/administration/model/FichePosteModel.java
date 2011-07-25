@@ -60,9 +60,10 @@ public List loadFichesPostes() throws SQLException{
 		try {
 			stmt = (Statement) conn.createStatement();
 			String sql_query="select p.code_poste ,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(libelle_formation,'-',libelle_diplome) as formation_general," +
-					         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste " +
+					         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste,CASE WHEN p.is_cadre='N' THEN 'NON' ELSE 'OUI' END as is_cadre " +
 					         " from poste_travail_description p,structure_entreprise s ,poste_travail_description t, formation f   where p.code_structure=s.code_structure  and t.code_poste=p.code_poste_hierarchie" +
 					         " and p.code_formation=f.code_formation";
+			//System.out.println(sql_query);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 						
@@ -81,6 +82,7 @@ public List loadFichesPostes() throws SQLException{
 				bean.setLibelle_poste(rs.getString("libelle_poste"));
 				bean.setCode_structure(rs.getString("code_structure"));
 				bean.setDate_maj_poste(rs.getDate("date_maj_poste"));
+				bean.setIs_cadre(rs.getString("is_cadre"));
 				
 				    listcomp.add(bean);
 				   
@@ -120,8 +122,8 @@ public boolean addPosteTravail(FichePosteBean addedData) throws ParseException
 	{
 		                                                
 		stmt = (Statement) conn.createStatement();
-		String select_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, date_maj_poste)" +
-	 		          " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#date_maj_poste)";
+		String select_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, date_maj_poste,is_cadre)" +
+	 		          " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#date_maj_poste,#is_cadre)";
 	 
 
 		
@@ -137,6 +139,7 @@ public boolean addPosteTravail(FichePosteBean addedData) throws ParseException
 		select_structure = select_structure.replaceAll("#hierarchie", "'"+addedData.getPoste_hierarchie()+"'");
 		select_structure = select_structure.replaceAll("#code_structure", "'"+addedData.getCode_structure()+"'");
 		select_structure = select_structure.replaceAll("#date_maj_poste", "'"+formatter.format(addedData.getDate_maj_poste())+"'");
+		select_structure = select_structure.replaceAll("#is_cadre","'"+addedData.getIs_cadre()+"'");
 		
 		
 						
@@ -192,7 +195,7 @@ public Boolean majPosteTravail(FichePosteBean addedData)
 		
 		stmt = (Statement) conn.createStatement();
 		String select_structure="UPDATE poste_travail_description set intitule_poste=#intitule_poste, sommaire_poste=#sommaire_poste, tache_responsabilite=#tache_responsabilite, environement_perspectif=#environement_perspectif, code_formation=#code_formation, formation_professionnelle=#formation_professionnelle, experience=#experience, profile_poste=#profile_poste" +
-        "  , code_poste_hierarchie=#hierarchie, code_structure=#code_structure, date_maj_poste=#date_maj_poste where code_poste=#code_poste";
+        "  , code_poste_hierarchie=#hierarchie, code_structure=#code_structure, date_maj_poste=#date_maj_poste,is_cadre=#is_cadre where code_poste=#code_poste";
 
 		select_structure = select_structure.replaceAll("#code_poste", "'"+addedData.getCode_poste()+"'");
 		select_structure = select_structure.replaceAll("#intitule_poste", "'"+addedData.getIntitule_poste()+"'");
@@ -206,7 +209,8 @@ public Boolean majPosteTravail(FichePosteBean addedData)
 		select_structure = select_structure.replaceAll("#hierarchie", "'"+addedData.getPoste_hierarchie()+"'");
 		select_structure = select_structure.replaceAll("#code_structure", "'"+addedData.getCode_structure()+"'");
 		select_structure = select_structure.replaceAll("#date_maj_poste", "'"+formatter.format(addedData.getDate_maj_poste())+"'");
-		
+		select_structure = select_structure.replaceAll("#is_cadre","'"+addedData.getIs_cadre()+"'");
+
 	   //System.out.println(update_structure);
 		
 		 stmt.executeUpdate(select_structure);
@@ -993,6 +997,15 @@ public static String getNextCode(String charto,String code) {
 	return nextvalue;
 
 	}
+public HashMap isCadre() 
+{
+	
+	HashMap map = new HashMap();
+	
+	map.put("OUI", "Y");
+	map.put("NON", "N");
+	return map;
+}
 
 
 }
