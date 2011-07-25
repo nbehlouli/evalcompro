@@ -302,7 +302,7 @@ public class FicheEvaluationModel {
 			stmt = (Statement) conn.createStatement();
 			String select_structure="select distinct r.famille,  p.code_poste, r.id_repertoire_competence, r.code_competence, r.libelle_competence , r.definition_competence, r.aptitude_observable from repertoire_competence r , poste_travail_competence p where r.code_competence=p.code_competence and p.code_poste in(select distinct code_poste from planning_evaluation) ";
 			
-			System.out.println(select_structure);
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
@@ -486,7 +486,7 @@ public class FicheEvaluationModel {
 			
 			
 			 stmt.execute(insert_structure);
-			 System.out.println("requete "+insert_structure);
+			 
 			 conn.close();
 		} 
 		catch (SQLException e) 
@@ -525,7 +525,7 @@ public class FicheEvaluationModel {
 			
 			
 			 stmt.execute(insert_structure);
-			 System.out.println("requete "+insert_structure);
+			 
 			 conn.close();
 		} 
 		catch (SQLException e) 
@@ -565,7 +565,7 @@ public class FicheEvaluationModel {
 			String select_structure="SELECT e.nom, e.prenom , p.intitule_poste FROM employe e, poste_travail_description p where e.id_employe=#id_employe and e.code_poste=p.code_poste";
 			
 			select_structure = select_structure.replaceAll("#id_employe", ""+id_employe);
-			System.out.println(select_structure);
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
