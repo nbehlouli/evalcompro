@@ -425,6 +425,8 @@ public class CompagneAction
         add.setVisible( true );
         update.setVisible( true );
         delete.setVisible( true );
+    	compagnelb.setSelectedIndex(0);
+		binder.loadAll();
 
     }
 
