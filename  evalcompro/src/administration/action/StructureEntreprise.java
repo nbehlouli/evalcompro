@@ -1,6 +1,8 @@
 package administration.action;
 
 
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import org.zkoss.zul.Window;
 
 
 import administration.bean.StructureEntrepriseBean;
+import administration.model.FichePosteModel;
 import administration.model.StructureEntrepriseModel;
 
 
@@ -63,6 +66,12 @@ public class StructureEntreprise extends GenericForwardComposer {
 	Div divupdown;
 	
 	List<StructureEntrepriseBean> model = new ArrayList<StructureEntrepriseBean>();
+	Button add;
+	Button okAdd;
+	Button update;
+	Button delete;
+	Button download;
+	Button effacer;
 	
 	
 	
@@ -81,7 +90,16 @@ public class StructureEntreprise extends GenericForwardComposer {
 		// création de la structure de l'entreprise bean
 		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
 		model=structureEntrepriseModel.checkStructureEntreprise();
+		effacer.setVisible(false);
 		
+		codeStructure.setDisabled(true);
+		codeDivision.setDisabled(true);
+		codeDirection.setDisabled(true);
+		codeUnite.setDisabled(true);
+		codeDepartement.setDisabled(true);
+		codeService.setDisabled(true);
+		codeSection.setDisabled(true);
+	
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 
 		binder = new AnnotateDataBinder(comp);
@@ -91,6 +109,9 @@ public class StructureEntreprise extends GenericForwardComposer {
 		if(structureEntrepriselb.getItemCount()!=0)
 			structureEntrepriselb.setSelectedIndex(0);
 		binder.loadAll();
+		
+		
+		
 	}
 
 	public List<StructureEntrepriseBean> getModel() {
@@ -106,13 +127,41 @@ public class StructureEntreprise extends GenericForwardComposer {
 	public void setSelected(StructureEntrepriseBean selected) {
 		this.selected = selected;
 	}
-
-	public void onClick$add() {
+	
+	public void onClick$add() throws WrongValueException, ParseException, SQLException {
 		
+		clearFields();
+		StructureEntrepriseModel admini_model =new StructureEntrepriseModel();
+		okAdd.setVisible(true);
+		effacer.setVisible(true);
+		add.setVisible(false);
+		update.setVisible(false);
+		delete.setVisible(false);
+		String [] chaine = new String [8];
+		int i=1;
+		java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(admini_model.getMaxKeyCode(), "|");
+		while ( tokenizer.hasMoreTokens() ) {
+		    //System.out.println(tokenizer.nextToken());
+			chaine[i]=tokenizer.nextToken();
+		    i++;
+		}
+				
+			codeStructure.setValue(admini_model.getNextCode("S",chaine[1],5));
+			codeDivision.setValue(admini_model.getNextCode("V",chaine[2],4));
+			codeDirection.setValue(admini_model.getNextCode("D",chaine[3],4));
+			codeUnite.setValue(admini_model.getNextCode("U",chaine[4],4));
+			codeDepartement.setValue(admini_model.getNextCode("T",chaine[5],4));
+			codeService.setValue(admini_model.getNextCode("R",chaine[6],4));;
+			codeSection.setValue(admini_model.getNextCode("C",chaine[7],4));;
+		
+		//code_poste.setValue(admini_model.getNextCode("P",admini_model.getMaxKeyCode()));
+		//code_poste.setDisabled(true);
+		
+	}
+
+	public void onClick$okAdd() {
 		
 		StructureEntrepriseBean addedData = new StructureEntrepriseBean();
-		
-		
 		addedData.setCodestructure(getSelectedcodeStructure());
 		addedData.setCodeDivision(getSelectedcodeDivision());
 		addedData.setLibelleDivision(getSelectednomDivision());
@@ -144,10 +193,17 @@ public class StructureEntreprise extends GenericForwardComposer {
 				binder.loadAll();
 			}
 		}
+		
+		okAdd.setVisible(false);
+		effacer.setVisible(false);
+		add.setVisible(true);
+		update.setVisible(true);
+		delete.setVisible(true);
+		
 				
 	}
 
-	public void onClick$update() {
+	public void onClick$update() throws InterruptedException {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
@@ -173,47 +229,42 @@ public class StructureEntreprise extends GenericForwardComposer {
 		Boolean donneeValide=structureEntrepriseModel.controleIntegrite(selected);
 		if (donneeValide)
 		{
-			//insertion de la donnée ajoutée dans la base de donnée
+			if (Messagebox.show("Voulez vous appliquer les modifications?", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) { //insertion de la donnée ajoutée dans la base de donnée
 			boolean donneeAjoute=structureEntrepriseModel.majStructureEntrepriseBean(selected,codeStructureselectione);
 			// raffrechissemet de l'affichage
-			if (donneeAjoute )
-			{
 				binder.loadAll();
+				return;
+			}
+			else{
+				return;
 			}
 		}
 	}
 
-	public void onClick$delete() {
+	public void onClick$delete() throws InterruptedException {
 		if (selected == null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		
+		if (Messagebox.show("Voulez vous supprimer cette structure?", "Prompt", Messagebox.YES|Messagebox.NO,
+			    Messagebox.QUESTION) == Messagebox.YES) {
+			
 		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
 		//suppression de la donnée supprimée de la base de donnée
 		structureEntrepriseModel.supprimerStructureEntrepriseBean(selected.getCodestructure());
 		model.remove(selected);
 		selected = null;
-
-
-		
 		binder.loadAll();
+		return;
+		}
+		else{
+			return;
+		}
 	}
 
-	public void onClick$effacer() {
-		codeStructure.setText("");
-		codeDivision.setText("");
-		nomDivision.setText("");
-		codeDirection.setText("");
-		nomDirection.setText("");
-		codeUnite.setText("");
-		nomUnite.setText("");
-		codeDepartement.setText("");
-		nomdepatrement.setText("");
-		codeService.setText("");
-		NomService.setText("");
-		codeSection.setText("");
-		nomSection.setText("");
-	}
+
 
 	public void affichermessage()
 	{
@@ -555,7 +606,39 @@ public class StructureEntreprise extends GenericForwardComposer {
 
     
 
-
+    public void clearFields(){
+		
+ 
+		
+    	codeStructure.setText("");
+    	codeDivision.setText("");
+    	nomDivision.setText("");
+    	codeDirection.setText("");
+    	nomDirection.setText("");
+    	codeUnite.setText("");
+    	nomUnite.setText("");
+    	codeDepartement.setText("");
+    	nomdepatrement.setText("");
+    	codeService.setText("");
+    	NomService.setText("");
+    	codeSection.setText("");
+    	nomSection.setText("");
+	   
+		
+  }
+    public void onClick$effacer()  {
+		
+    	
+		clearFields();
+		okAdd.setVisible(false);
+		add.setVisible(true);
+		update.setVisible(true);
+		delete.setVisible(true);
+		structureEntrepriselb.setSelectedIndex(0);
+		binder.loadAll();
+		
+		
+	}
 
 
 }

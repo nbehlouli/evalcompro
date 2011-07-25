@@ -3,6 +3,7 @@
  */
 package administration.action;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +92,7 @@ public class FormationAction
         comp.setVariable( comp.getId() + "Ctrl", this, true );
         okAdd.setVisible( false );
         effacer.setVisible( false );
+        codeFormationtb.setDisabled(true);
 
         binder = new AnnotateDataBinder( comp );
 
@@ -348,16 +350,19 @@ public class FormationAction
     }
 
     public void onClick$add()
-        throws WrongValueException, ParseException
+        throws WrongValueException, ParseException, SQLException
     {
 
         clearFields();
+        FormationModel admini_model=new FormationModel();
 
         okAdd.setVisible( true );
         effacer.setVisible( true );
         add.setVisible( false );
         update.setVisible( false );
         delete.setVisible( false );
+        codeFormationtb.setValue(admini_model.getNextCode("F",admini_model.getMaxKeyCode()));
+        codeFormationtb.setDisabled(true);
 
     }
 
