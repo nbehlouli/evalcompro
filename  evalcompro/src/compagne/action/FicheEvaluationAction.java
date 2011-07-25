@@ -43,6 +43,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	boolean autorise=false;
 	Tab FValide ;
 	Tabpanel fichevalide;
 	Tab FicheEvaluation;
@@ -123,6 +124,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	ArrayList <String> listFamillePoste;
 	ArrayList <String> listFamillePosteV;
 	
+	int id_employe;
+	
 	//EmployesAEvaluerBean employerAEvaluerBean1;
 	
 	@SuppressWarnings("deprecation")
@@ -132,12 +135,14 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		comp1=comp;
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		
+		valider.setDisabled(true);
+		
 		//recupération du profil de l'utilisateur
 		CompteBean compteUtilisateur=ApplicationFacade.getInstance().getCompteUtilisateur();
 		
 		//récupération de l'id_employé associé à l'id_compte
 		FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
-		int id_employe=ficheEvaluationModel.getIdEmploye(compteUtilisateur.getId_compte());
+		id_employe=ficheEvaluationModel.getIdEmploye(compteUtilisateur.getId_compte());
 		compteUtilisateur.setId_employe(id_employe);
 		
 		
@@ -161,8 +166,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		//onglet Ma Fiche d'évaluation
 		
 		evaluations.setStyle("overflow:auto");
-		posteTravail.setDisabled(true);
-		nomEmploye.setDisabled(true);
+//		posteTravail.setDisabled(true);
+//		nomEmploye.setDisabled(true);
 		
 		//remplissage de la combobox famille
 		
@@ -170,7 +175,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		if(ficheValide)
 		{
 			
-			//construction et affichage du contenu de la page
+			//construction et affichage du contenu de la page d'evaluation de la personne connecté
 			
 			
 			//récupération du nom de la personne connecté
@@ -403,6 +408,10 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 {
 		 
 		 //vider le contenu de la grille associée à l'ancien employé selectionné
+		 autorise=true;
+		 
+		 mapFamilleCombo=new HashMap<String, HashMap<String , Combobox>> (); 
+		 valider.setDisabled(false);
 		 if (currentListItem!=null)
 		 {
 			 Iterator<Listitem> iterator=currentListItem.iterator();
@@ -556,7 +565,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 selectednomposteTravail="";
 			 posteTravail.setText(selectednomposteTravail);
 		 }
-		 //si un employé a déja été selectionner alors vider le contnu de la combobox
+		 //si un employé a déja été selectionné alors vider le contnu de la combobox
 		 if(Famille.getItemCount()>0)
 		 {
 			int nb= Famille.getItemCount();
@@ -596,6 +605,26 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			}
 			employe.setSelectedIndex(0);
 			 
+			 
+		 }
+		 else
+		 {
+			 //afficher tous les employe (tous poste de travail confondu)
+			 
+			//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+				HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeAEvaluerBean.getMapclesnomEmploye();
+				Set <String>listeEmploye=mapclesEmploye.keySet();
+				Iterator<String> iterator=listeEmploye.iterator();
+				//employe.appendItem("sélectionner un employé");
+				while(iterator.hasNext())
+				{
+					String nomEmploye=iterator.next();
+					employe.appendItem(nomEmploye);
+					
+				}
+				//selection du premier item de la combobox employe
+				if(employe.getItemCount()>0)
+					employe.setSelectedIndex(0);
 			 
 		 }
 
@@ -689,24 +718,34 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 {
 					 
 					 cotation=listeComboMAJ.get(valeur);
+					 System.out.println("dans deja visite");
 				 }
 				 else
 				 {
+					 System.out.println("pas encore visite");
 					 cotation.appendItem(cotationBean.getValeur_cotation()+"");
 					 cotation.setContext(valeur);
-					 
+					
 					 cotation.setName("-1");
 					 
 				 }
-				 cotation.setReadonly(true);
-				 cotation.setParent(cellulecotation);
+				 if(cotation!=null)
+				 {
+					 cotation.setReadonly(true);
+					 cotation.setParent(cellulecotation);
+				 }
+				 
 				 cellulecotation.setParent(listItem);
 				 
 				 
 			 }
 
-			 cotation.addForward("onSelect", comp1, "onSelectEvaluation");
-			 listeCombo.put(valeur,cotation );
+			 if(cotation!=null)
+			 {
+				 cotation.addForward("onSelect", comp1, "onSelectEvaluation");
+				 listeCombo.put(valeur,cotation );
+			 }
+
 			 liste.add(listItem);
 				 
 		 }
@@ -806,7 +845,12 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 // toutes les comptétences n'ont pas été évaluées
 		 //verifier que toutes les familles ont été selectionnées
 		// ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
-
+		 if(autorise)
+		 {
+			 autorise=false;
+		 valider.setVisible(false);
+		 valider.setDisabled(true);
+		 
 		 Set <String> famillesRemplies=mapFamilleCombo.keySet();
 		 if(listFamillePoste.size()==famillesRemplies.size())
 		 {
@@ -820,7 +864,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 Set <String >listclesCombo=listeComb.keySet();
 				 Iterator<String> iterator =listclesCombo.iterator();
 				 
-				 while (iterator.hasNext()&& continuer)
+				 while (iterator.hasNext()/*&& continuer*/)
 				 {
 					 String cles=iterator.next();
 					 Combobox combo=listeComb.get(cles);
@@ -828,6 +872,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 {
 
 						 continuer=false;
+						 combo.setStyle("background:red;");
+						 //System.out.println("couleur");
 					 }
 					 
 				 }
@@ -835,6 +881,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 if(continuer==false)
 			 {
+				 valider.setVisible(true);
+				 valider.setDisabled(false);
+				 autorise=true;
 				 try 
 				 {
 					Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
@@ -890,12 +939,18 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 
 				 }
 				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
+				
+				 //vider le contenu du tableau 
+				 //effacer le nom de l'evaluer de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
 				 
+				 rafraichirAffichage();
 			 }
 			 
 		 }
 		 else
 		 {
+			 valider.setDisabled(false);
+			 autorise=true;
 			 //afficher messagebox
 			 try 
 			 {
@@ -909,8 +964,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			}
 		 }
 		 
-		 
-	
+		 valider.setVisible(true);
+		 }
 	 }
 	 
 	 public void onSelectEvaluation(ForwardEvent event)
@@ -1086,6 +1141,23 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			employeV.setSelectedIndex(0);
 			 
 			 
+		 }
+		 else
+		 {
+			//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+				HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeEvalueBean.getMapclesnomEmploye();
+				Set <String>listeEmploye=mapclesEmploye.keySet();
+				Iterator <String >iterator=listeEmploye.iterator();
+				//employeV.appendItem("sélectionner un employé");
+				while(iterator.hasNext())
+				{
+					String nomEmploye=iterator.next();
+					employeV.appendItem(nomEmploye);
+
+				}
+				//selection du premier item de la combobox employe
+				if(employeV.getItemCount()>0)
+					employeV.setSelectedIndex(0);
 		 }
 	 }
 	 
@@ -1332,4 +1404,221 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					currentListItemV=liste;
 			 }		 
 		 }
+		 
+		 public void rafraichirAffichage()
+		 {
+//				super.doAfterCompose(comp);
+//				comp1=comp;
+//				comp.setVariable(comp.getId() + "Ctrl", this, true);
+//				
+			 
+			 	valider.setDisabled(true);
+				//recupération du profil de l'utilisateur
+				CompteBean compteUtilisateur=ApplicationFacade.getInstance().getCompteUtilisateur();
+				
+				//récupération de l'id_employé associé à l'id_compte
+				FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+//				int id_employe=ficheEvaluationModel.getIdEmploye(compteUtilisateur.getId_compte());
+				compteUtilisateur.setId_employe(id_employe);
+//				
+//				
+//				//récuperation de la description des poste pour le bouton help
+//				
+//				mapcode_description_poste=ficheEvaluationModel.getPosteTravailDescription();
+//				
+//				//récupération de la cotation
+//				listCotation=ficheEvaluationModel.getCotations();
+				
+				
+				//récupération de l'information sur la validité de la fiche de l'employé connecté
+//				boolean ficheValide=ficheEvaluationModel.getValiditeFiche(id_employe);
+				
+				//récupération des informations associées à une fiche d'evaluation à remplir;
+				
+				 mapPosteTravailFiche=ficheEvaluationModel.getInfosFicheEvaluationparPoste();
+				 CompetencePosteTravailModel compt=new CompetencePosteTravailModel();
+				 mapintitule_codeposte=compt.getlistepostesCode_postes();
+				 mapcode_intituleposte=compt.getlisteCode_postes_intituleposte();
+				//onglet Ma Fiche d'évaluation
+				
+				//evaluations.setStyle("overflow:auto");
+//				posteTravail.setDisabled(true);
+//				nomEmploye.setDisabled(true);
+				
+				//remplissage de la combobox famille
+				
+
+				//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
+				if(compteUtilisateur.getId_profile()==3)
+				{
+					
+					//remplissage du contenu de la combo associée aux postes de travail
+					 mapEmployeAEvaluerBean=ficheEvaluationModel.getListEmployesAEvaluer(id_employe);
+					 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeAEvaluerBean.getMapclesposte();
+					Set <String>listePoste= Mapclesposte.keySet();
+					Iterator <String > iterator=listePoste.iterator();
+					//vider l'encien contenu de poste de travail 
+					
+					
+					 if(poste_travail.getItemCount()>0)
+					 {
+						int nb= poste_travail.getItemCount();
+						for (int i=nb-1;i>=0;i--)
+						{
+							
+							poste_travail.removeItemAt(i);
+						}
+					 }
+					
+					poste_travail.appendItem("Tous poste de travail");
+					while(iterator.hasNext())
+					{
+						String nomPoste=iterator.next();
+						poste_travail.appendItem(nomPoste);
+					}
+					//selection du premier item (tous poste de travail)
+					poste_travail.setSelectedIndex(0);
+					
+					//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+					HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeAEvaluerBean.getMapclesnomEmploye();
+					Set <String>listeEmploye=mapclesEmploye.keySet();
+					iterator=listeEmploye.iterator();
+					
+					//vider l'encien contenu de  la combo employe
+					
+					 if(employe.getItemCount()>0)
+					 {
+						int nb= employe.getItemCount();
+						for (int i=nb-1;i>=0;i--)
+						{
+							
+							employe.removeItemAt(i);
+						}
+					 }
+					 
+					employe.appendItem("sélectionner un employé");
+					while(iterator.hasNext())
+					{
+						String nomEmploye=iterator.next();
+						employe.appendItem(nomEmploye);
+						
+					}
+					//selection du premier item de la combobox employe
+					if(employe.getItemCount()>0)
+						employe.setSelectedIndex(0);
+					
+					
+					 if (currentListItem!=null)
+					 {
+						 Iterator<Listitem> iterator1=currentListItem.iterator();
+						 while(iterator1.hasNext())
+						 {
+							 Listitem item=iterator1.next();
+							 item.detach();
+						 }
+						 selectedEmploye="";
+						 nomEmploye.setText(selectedEmploye);
+						 selectednomposteTravail="";
+						 posteTravail.setText(selectednomposteTravail);
+					 }
+					
+				}
+				else //ne pas afficher cet onglet
+				{
+					
+					/**
+					 * TODO ne rendre cette page invisible que sur certaines conditions
+					 */
+					//AEvaluer.setVisible(false);
+					AEvaluer.detach();
+					evaluations.detach();
+					
+					
+
+				}
+				
+				//si c'est un administrateur, il peut voir toutes les fiches d'evaluations ou evaluateur
+				if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
+				{
+					
+					
+					mapPosteTravailFicheV=ficheEvaluationModel.getInfosFicheEvaluationparPoste();
+					 
+					 
+					 
+					//remplissage du contenu de la combo associée aux postes de travail
+					//si c'est un evaluateur lancer cette methode
+					if (compteUtilisateur.getId_profile()==3)
+						mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
+					 
+					//sinon (administrateur ) lancer un eautre méthode qui récupère tous ceux qui ont été évaluées
+					if (compteUtilisateur.getId_profile()==2)
+						mapEmployeEvalueBean=ficheEvaluationModel.getListTousEmployesvalue();
+					 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
+					Set <String>listePoste= Mapclesposte.keySet();
+					Iterator <String > iterator=listePoste.iterator();
+					
+					
+					//vider l'encien contenu de  la combo poste_travail
+					
+					 if(poste_travailV.getItemCount()>0)
+					 {
+						int nb= poste_travailV.getItemCount();
+						for (int i=nb-1;i>=0;i--)
+						{
+							
+							poste_travailV.removeItemAt(i);
+						}
+					 }
+					poste_travailV.appendItem("Tous poste de travail");
+					while(iterator.hasNext())
+					{
+						String nomPoste=iterator.next();
+						poste_travailV.appendItem(nomPoste);
+					}
+					//selection du premier item (tous poste de travail)
+					poste_travailV.setSelectedIndex(0);
+					
+					//remplissage de la comboBox avec tous les nom des employes quelque soit leur type de poste
+					HashMap<String, EmployesAEvaluerBean> mapclesEmploye=mapEmployeEvalueBean.getMapclesnomEmploye();
+					Set <String>listeEmploye=mapclesEmploye.keySet();
+					iterator=listeEmploye.iterator();
+					
+					
+					//vider l'encien contenu de  la combo poste_travail
+					
+					 if(employeV.getItemCount()>0)
+					 {
+						int nb= employeV.getItemCount();
+						for (int i=nb-1;i>=0;i--)
+						{
+							
+							employeV.removeItemAt(i);
+						}
+					 }
+					 
+					employeV.appendItem("sélectionner un employé");
+					while(iterator.hasNext())
+					{
+						String nomEmploye=iterator.next();
+						employeV.appendItem(nomEmploye);
+
+					}
+					//selection du premier item de la combobox employe
+					if(employeV.getItemCount()>0)
+						employeV.setSelectedIndex(0);
+					
+					
+					
+				}
+				else
+				{
+					//rendre l'onglet invisible 
+					FValide.detach();
+					fichevalide.detach();
+				}
+				tb.setSelectedIndex(0);
+				 valider.setDisabled(false);
+		 }
+		
 }
