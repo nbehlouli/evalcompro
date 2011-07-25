@@ -1,5 +1,9 @@
 package Statistique.action;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
@@ -9,6 +13,10 @@ import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
 import org.zkoss.zul.impl.ChartEngine;
+
+import Statistique.bean.EmployeCadreBean;
+import Statistique.bean.StatTrancheAgePosteBean;
+import Statistique.model.EmployeModel;
 
 public class StatPopPosteTravail extends  GenericForwardComposer{
 
@@ -27,14 +35,31 @@ public class StatPopPosteTravail extends  GenericForwardComposer{
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 
-
+		EmployeModel init=new EmployeModel();
+		EmployeCadreBean cpb;
+		String typetranche="";
 		
-		PieModel piemodel = new SimplePieModel();
-		piemodel.setValue("Cadre", new Double(20));
-		piemodel.setValue("non cadre", new Double(80));
-		
-        mychart.setModel(piemodel);
+		Iterator it;
+		List sect_items=init.getNombreEmployesCadre();
+        it = sect_items.iterator();
+        PieModel piemodel = new SimplePieModel();
         
+		while (it.hasNext()){
+	 		cpb  = (EmployeCadreBean) it.next();
+	 		if (cpb.getIs_cadre().equalsIgnoreCase("2")){
+	 			typetranche="Non cadre";
+	 		}
+	 		
+	 		else{
+	 			typetranche="Cadre";
+	 		}
+	 	
+	 		 
+	 		piemodel.setValue(typetranche,cpb.getPourcentage());
+	 		  mychart.setModel(piemodel);
+			
+		}
+		        
         //ces instructions permettent de récuperer l'objet image pour l'export
         
         ChartEngine d=mychart.getEngine();
