@@ -549,4 +549,79 @@ public class FormationModel
         }
 
     }
+    
+    
+    public String getMaxKeyCode() throws SQLException
+    {
+    	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+    	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+    	Statement stmt = null;
+    	String result ="";
+    	
+    	try 
+    	{
+    		stmt = (Statement) conn.createStatement();
+    		String profile_list="select max(code_formation) as max_code from formation"; 
+    		ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+    		
+    		
+    		while(rs.next()){
+    			result=rs.getString("max_code");
+    			//list_profile.add(rs.getString("libelle_profile"));
+            }
+    		stmt.close();conn.close();
+    	} 
+    	catch (SQLException e){
+    			e.printStackTrace();
+    			stmt.close();conn.close();
+    	}
+    	
+    	return result;
+    }
+    
+    public static String getNextCode(String charto,String code) {
+
+    	String nextvalue=
+    	"XXXX";
+
+    	if (code==null || code.length()==0){
+
+    	nextvalue=charto+
+    	"001";
+
+    	return nextvalue;
+
+    	}
+
+    	String[]list=code.split(charto);
+
+    	String chaine=String.valueOf(Integer.parseInt(list[1])+1);
+
+    	if (chaine.length() <4){
+
+    	if (chaine.length()==1){
+
+    	chaine=charto+"00"+chaine;
+
+    	}
+
+    	if (chaine.length()==2){
+
+    	chaine=charto+"0"+chaine;
+
+    	}
+
+    	if (chaine.length()==3){
+
+    	chaine=charto+chaine;
+
+    	}
+
+    	nextvalue=chaine;
+
+    	}
+
+    	return nextvalue;
+
+    	}
 }
