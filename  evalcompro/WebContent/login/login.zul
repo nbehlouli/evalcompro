@@ -3,7 +3,7 @@
 <style>
     body { padding: 0 0; /* 0 padding on top and bottom and 0 padding on right and left */
            <!-- background image -->
-           background: #084B8A;
+           background: #7A6A46;
            background-repeat:repeat-x; 
           }		
           
@@ -19,7 +19,7 @@
 
 	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
 		<div height="50px" >
-             <image src="/image/logo_rsmanagement.PNG" width="380px" height="50px"/>
+             <image src="/image/Logo.gif" width="380px" height="100px"/>
    </div>
 
 		<div id="loginDiv"  visible="${empty user}">
@@ -27,12 +27,12 @@
 				<rows>
 					<row>
 						Utilisateur :
-						<textbox id="usertb" width="200px" value="" />
+						<textbox id="usertb" width="200px" value="rsaichi" />
 					</row>
 					<row>
 						 Mot de passe   :
 						<textbox id="pwdtb" width="200px"
-							type="password" />
+							type="password"  value="12345678"/>
 					</row>
 				</rows>
 				
