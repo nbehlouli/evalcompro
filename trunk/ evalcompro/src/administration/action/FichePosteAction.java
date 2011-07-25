@@ -70,6 +70,7 @@ public class FichePosteAction extends GenericForwardComposer {
 	Textbox sommaire_poste;
 	Textbox  tache_responsabilite;
 	Textbox  environement_perspectif;
+	Listbox  is_cadre;
 	
 	Div divupdown;
 		
@@ -87,7 +88,7 @@ public class FichePosteAction extends GenericForwardComposer {
 	
 	Map map_formation=null;
 	Map map_poste= new HashMap();
-    Map map_evaluateur=null;
+    Map map_cadre=null;
 	Map map_resRH=null;
 	Map map_structure=null;
 	Map map_compte=null;
@@ -139,6 +140,14 @@ public class FichePosteAction extends GenericForwardComposer {
 			  code_structure.appendItem((String) me.getKey(),(String) me.getKey());
 		   }
 			
+			map_cadre=init.isCadre();
+	  		set = (map_cadre).entrySet(); 
+			i = set.iterator();
+			// Display elements
+			while(i.hasNext()) {
+			Map.Entry me = (Map.Entry)i.next();
+			is_cadre.appendItem((String) me.getKey(),(String) me.getKey());
+			}
 			
 		
 		model=init.loadFichesPostes();
@@ -201,6 +210,7 @@ public class FichePosteAction extends GenericForwardComposer {
 		addedData.setEnvironement_perspectif(getSelectedenvironement_perspectif());
 		addedData.setLibelle_formation(getLbl_formation());
 		addedData.setLibelle_poste(getLbl_poste());
+		addedData.setIs_cadre(getSelectIsCadre());
 	
 		//controle d'intégrité 
 		
@@ -256,6 +266,7 @@ public class FichePosteAction extends GenericForwardComposer {
 		selected.setEnvironement_perspectif(getSelectedenvironement_perspectif());
 		selected.setLibelle_formation(getLbl_formation());
 		selected.setLibelle_poste(getLbl_poste());
+		selected.setIs_cadre(getSelectIsCadre());
 		
 		//controle d'intégrité 
 		FichePosteModel admin_model =new FichePosteModel();
@@ -312,6 +323,8 @@ public class FichePosteAction extends GenericForwardComposer {
 		add.setVisible(true);
 		update.setVisible(true);
 		delete.setVisible(true);
+		admincomptelb.setSelectedIndex(0);
+		binder.loadAll();
 		
 		
 	}
@@ -323,7 +336,7 @@ public class FichePosteAction extends GenericForwardComposer {
 	public void onSelect$admincomptelb() {
 		closeErrorBox(new Component[] { code_poste, intitule_poste,formation_general,formation_professionnelle, 
 				experience,profile_poste, code_poste_hierarchie, code_structure,date_maj_poste,sommaire_poste,
-				tache_responsabilite,environement_perspectif});
+				tache_responsabilite,environement_perspectif,is_cadre});
 	}
 	
 	
@@ -445,7 +458,15 @@ public class FichePosteAction extends GenericForwardComposer {
 		return name;
 	}
 	
-   
+	private String getSelectIsCadre() throws WrongValueException {
+		String name = (String) map_cadre.get((String)is_cadre.getSelectedItem().getLabel());
+		
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(is_cadre, "Merci de preciser si l'employe est un evaluateur !");
+		}
+		return name;
+	}
+
  
 
    /*
@@ -656,6 +677,7 @@ public void processMedia(Media med) throws BiffException, InvalidFormatException
 			    formation_general.setSelectedIndex(0);
 			    code_poste_hierarchie.setSelectedIndex(0);
 			    code_structure.setSelectedIndex(0);
+			    is_cadre.setSelectedIndex(0);
 			   
 				
 		  }
