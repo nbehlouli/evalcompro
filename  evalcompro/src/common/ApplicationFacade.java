@@ -37,9 +37,18 @@ public class ApplicationFacade {
     private CompteBean compteUtilisateur=new CompteBean();
     
     
+    private int TimerValue;
     
     
     
+	public int getTimerValue() {
+		return TimerValue;
+	}
+
+	public void setTimerValue(int timerValue) {
+		TimerValue = timerValue;
+	}
+
 	public CompteBean getCompteUtilisateur() {
 		return compteUtilisateur;
 	}
