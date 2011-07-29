@@ -1,5 +1,5 @@
 <window  id="win" title="Fiche d'evaluation" apply="compagne.action.FicheEvaluationAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto" closable="true"  onClose="self.visible = false; event.stopPropagation();">
-
+	<style>.count { font-weight: bold; font-size: 16px; } </style>
 	<tabbox id="tb" width="100%" height="100%"  >
 		<tabs id="tbtabs" >
 			<tab id="AEvaluer" label="Fiches des employés à évaluer" />
@@ -8,32 +8,45 @@
     	</tabs>
 		<tabpanels id="tbpanels" height="100%">
            	<tabpanel id="evaluations" >
-				<grid span="true" sizedByContent="true" width="100%" height="500">        
+				<grid span="true" sizedByContent="true" width="100%" height="500"  zclass="none">        
                		<rows>
             			<row>
                 			<!-- Selected contributor's title value is same as title model's data-->
-                			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="90%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+                			<combobox id="poste_travail" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
                 			<button id="help1" image="/image/help.gif" tooltiptext="Description du poste de travail sélectionné"/>
-                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true" width="90%" readonly="true" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+                			<combobox id="employe" autodrop="true" mold="rounded" buttonVisible="true" width="100%" readonly="true" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
                 			<button id="help2"  image="/image/W95MBX04.gif" tooltiptext="Informations sur les niveaux de maitrise des aptitudes observables"/>                
             			</row>
         			</rows>
     			</grid>
     			
     			<groupbox id="gb2" mold="3d" width="100%" height="500">
-        			<caption label="Fiche Employé" />    
+        			<caption label="Fiche Employé" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>    
         			<vlayout spacing="20px">    
        					<hlayout spacing="20px" >
-       						<label value="Nom de l'employé"> </label>
+       						<label value="Nom de l'employé" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        						<hlayout spacing="70px" >
        							<textbox id="nomEmploye" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        							<hlayout spacing="20px" >
-       								<label value="Poste de travail"> </label>
+       								<label value="Poste de travail" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        								<hlayout spacing="70px" >
        									<textbox id="posteTravail" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
-       									<hlayout spacing="20px" >
-       									<label value="Famille"> </label>
+       									<hlayout spacing="30px" >
+       									<label value="Famille" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        									<combobox id="Famille" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+       									
+       									<hlayout spacing="30px" >
+       									<button id="start" label="Start" onClick="timer.start()"/>
+       									<hlayout spacing="10px" >
+       									<label id="count" sclass="count" />
+       									
+       								</hlayout>
+       								</hlayout>
+       									
+       								<timer id="timer" delay="1000" repeats="false" >
+        
+    								</timer>	
+       									
        								</hlayout>
        								</hlayout>
        							</hlayout>
@@ -41,11 +54,11 @@
        					</hlayout>
        					 
        					<div>
- 							<listbox id="employelb"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
+ 							<listbox id="employelb"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="350px" >
  								<listhead sizable="true">
-									<listheader label="Compétence" width="250px" sort="auto" align="left" />
-									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" />
-									<listheader label="Niveau de maitrise" width="180px" align="center" />
+									<listheader label="Compétence" width="250px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Niveau de maitrise"    align="center" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
 								</listhead>	
 								
 							</listbox> 
@@ -65,27 +78,27 @@
                		<rows>
             			<row>
                 			<!-- Selected contributor's title value is same as title model's data-->
-                			<combobox id="poste_travailV" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="90%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+                			<combobox id="poste_travailV" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
                 			<button id="help1V" image="/image/help.gif" tooltiptext="Description du poste de travail sélectionné"/>
-                			<combobox id="employeV" autodrop="true" mold="rounded" buttonVisible="true"  readonly="true" width="90%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+                			<combobox id="employeV" autodrop="true" mold="rounded" buttonVisible="true"  readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
                 			<button id="help2V"  image="/image/W95MBX04.gif" tooltiptext="Informations sur les niveaux de maitrise des aptitudes observables"/>                
             			</row>
         			</rows>
     			</grid>
     			
     			<groupbox id="gb1" mold="3d" width="100%" height="500">
-        			<caption label="Fiche Employé" />    
+        			<caption label="Fiche Employé" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>    
         			<vlayout spacing="20px">    
        					<hlayout spacing="20px" >
-       						<label value="Nom de l'employé"> </label>
+       						<label value="Nom de l'employé" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        						<hlayout spacing="70px" >
        							<textbox id="nomEmployeV" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        							<hlayout spacing="20px" >
-       								<label value="Poste de travail"> </label>
+       								<label value="Poste de travail" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        								<hlayout spacing="70px" >
        									<textbox id="posteTravailV" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        									<hlayout spacing="20px" >
-       									<label value="Famille"> </label>
+       									<label value="Famille" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        									<combobox id="FamilleV" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        								</hlayout>
        								</hlayout>
@@ -96,9 +109,9 @@
        					<div>
  							<listbox id="employelbV"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="270px" >
  								<listhead sizable="true">
-									<listheader label="Compétence" width="250px" sort="auto" align="left" />
-									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" />
-									<listheader label="Niveau de maitrise" width="180px" align="center" />
+									<listheader label="Compétence" width="250px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Niveau de maitrise" width="180px" align="center" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
 								</listhead>	
 								
 							</listbox> 
@@ -117,15 +130,15 @@
         			<caption id="labelM" label="Fiche Employé" />    
         			<vlayout spacing="20px">    
        					<hlayout spacing="20px" >
-       						<label value="Nom de l'employé"> </label>
+       						<label value="Nom de l'employé" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        						<hlayout spacing="70px" >
        							<textbox id="nomEmployeM" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        							<hlayout spacing="20px" >
-       								<label value="Poste de travail"> </label>
+       								<label value="Poste de travail" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        								<hlayout spacing="70px" >
        									<textbox id="posteTravailM" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        									<hlayout spacing="20px" >
-       									<label value="Famille"> </label>
+       									<label value="Famille" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"> </label>
        									<hlayout spacing="70px" >
        									<combobox id="FamilleM" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>       									
        										<button id="help3"  image="/image/W95MBX04.gif" tooltiptext="Informations sur les niveaux de maitrise des aptitudes observables"/>
@@ -139,9 +152,9 @@
        					<div>
  							<listbox id="employelbM"  mold="paging" model="@{winCtrl.model}" multiple="true"  width="100%" height="320px" >
  								<listhead sizable="true">
-									<listheader label="Compétence" width="250px" sort="auto" align="left" />
-									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" />
-									<listheader label="Niveau de maitrise" width="180px" align="center" />
+									<listheader label="Compétence" width="250px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Aptitude observable" width="500px" sort="auto" align="left" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+									<listheader label="Niveau de maitrise" width="180px" align="center" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
 								</listhead>	
 								
 							</listbox> 
