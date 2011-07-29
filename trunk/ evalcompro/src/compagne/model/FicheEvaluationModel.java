@@ -1027,4 +1027,94 @@ public class FicheEvaluationModel {
 		
 		return listEmployesAEvaluerBean;
 	}
+	
+	public String getIdCompagne_Codefamille(String id_planning_evaluation,String nomFamille)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		String id_compagne_famille="";
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select distinct p.id_compagne, r.code_famille from repertoire_competence r, planning_evaluation p where p.id_planning_evaluation=#id_planning_evaluation and r.famille=#famille";
+			
+			select_structure = select_structure.replaceAll("#id_planning_evaluation", "'"+id_planning_evaluation+"'");
+			select_structure = select_structure.replaceAll("#famille", "'"+nomFamille+"'");
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					String id_compagne=rs.getString("id_compagne");
+					String code_famille=rs.getString("code_famille");
+					id_compagne_famille=id_compagne+"#"	+code_famille;
+				}
+				else {
+					return id_compagne_famille;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return id_compagne_famille;
+	}
+	
+	public void enregistrerIMiStat(String id_compagne,String id_employ,double INiFamille,String code_famille,double statIMI)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String insert_structure="INSERT INTO imi_stats (id_compagne,id_employe,moy_par_famille,code_famille, imi) VALUES (#id_compagne,#id_employe,#moy_par_famille,#code_famille, #imi)";
+			insert_structure = insert_structure.replaceAll("#id_compagne", id_compagne);
+			insert_structure = insert_structure.replaceAll("#id_employe", id_employ);
+			insert_structure = insert_structure.replaceAll("#moy_par_famille", INiFamille+"");
+			insert_structure = insert_structure.replaceAll("#code_famille", "'"+code_famille+"'");
+			insert_structure = insert_structure.replaceAll("#imi", statIMI+"");
+			
+			System.out.println(insert_structure);
+			 stmt.execute(insert_structure);
+			 
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+	}
 }
