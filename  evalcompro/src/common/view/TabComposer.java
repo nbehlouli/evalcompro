@@ -24,6 +24,7 @@ import org.zkoss.zul.Tabs;
 import org.zkoss.zul.Window;
 
 import common.ApplicationFacade;
+import common.InitContext;
 import common.bean.ArborescenceMenu;
 import common.bean.EcranBean;
 
@@ -59,7 +60,12 @@ public class TabComposer extends GenericForwardComposer{
 			tbtabs.appendChild(newTab0);			
 			newTab0.close();
 			
+			//enregistrement des informations associée à la durée d'une evaluation
 			
+			InitContext contexte=new InitContext();
+			contexte.loadProperties();
+			Integer valeurTimer=new Integer(contexte.getTimerValue());
+			ApplicationFacade.getInstance().setTimerValue(valeurTimer);
 			//recuperation de l astructure du menu et sa construction
 			ArborescenceMenu arborescenceMenuBean=ApplicationFacade.getInstance().getArborescenceMenubean();
 			
