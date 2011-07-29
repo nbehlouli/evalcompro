@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -14,11 +17,13 @@ import org.zkoss.zul.Caption;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Timer;
 
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -43,6 +48,18 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	
+	//variales pour la gestion du timer
+	Timer timer;
+	int countNum = 60;
+	Label count;
+	int secondes=0;
+	int minutes=60;
+	boolean first=true;
+	Button start;
+	
+	
+	boolean validationtente=false;
 	boolean autorise=false;
 	Tab FValide ;
 	Tabpanel fichevalide;
@@ -198,6 +215,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					String[] val1=cles.split("#");
 					FamilleM.appendItem(val1[1]);
 					listeFamilleM.add(val1[1]);
+					
 				}
 			}
 			if(listeFamilleM.size()==0)
@@ -208,7 +226,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				//affichage d'un message disant que la fiche ne peut être visible
 				gb3.detach();
 				html=new Html();
-				String content="Vous n'avez été convoqué à aucune compagne d'avaluation ";
+				String content="Vous n'avez été convoqué à aucune compagne d'évaluation ";
 				html.setStyle("color:red;margin-left:15px");
 				html.setContent(content);
 				html.setParent(maFiche);
@@ -299,6 +317,11 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			html.setContent(content);
 			html.setParent(maFiche);
 		}
+		if (compteUtilisateur.getId_profile()==1)
+		{
+			FicheEvaluation.detach();
+			maFiche.detach();
+		}
 		//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
 		if(compteUtilisateur.getId_profile()==3)
 		{
@@ -348,7 +371,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		}
 		
 		//si c'est un administrateur, il peut voir toutes les fiches d'evaluations ou evaluateur
-		if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
+		if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2) ||(compteUtilisateur.getId_profile()==1))
 		{
 			
 			
@@ -362,7 +385,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
 			 
 			//sinon (administrateur ) lancer un eautre méthode qui récupère tous ceux qui ont été évaluées
-			if (compteUtilisateur.getId_profile()==2)
+			if ((compteUtilisateur.getId_profile()==2)||(compteUtilisateur.getId_profile()==1))
 				mapEmployeEvalueBean=ficheEvaluationModel.getListTousEmployesvalue();
 			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
 			Set <String>listePoste= Mapclesposte.keySet();
@@ -398,7 +421,55 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			fichevalide.detach();
 		}
 		tb.setSelectedIndex(0);
+		 timer.addEventListener(Events.ON_TIMER, new EventListener() {
+				public void onEvent(Event evt) {
+					
+					timer.setRepeats(true);
+					
+					//afficher le timer chaque minute
+					if(first)
+					{
+						count.setValue(  minutes  + ":00" );
+						first=false;
+					}
+					else
+					{
+						if(secondes<=10)
+						{	
+							if(secondes==0)
+							{
+								secondes=60;
+								if(minutes<=10)
+									count.setValue( "0" + --minutes  + ":" + --secondes);
+								else
+									count.setValue( --minutes  + ":" + --secondes);
+							}
+							else
+							{
+								if(minutes<=9)
+									count.setValue( "0" + minutes  + ":0" + --secondes);
+								else
+									count.setValue( minutes  + ":0" + --secondes);
+							}
 
+							
+						}
+						else
+						{
+							if(minutes<=9)
+								count.setValue( "0" + minutes  + ":" + --secondes);
+							else
+								count.setValue( minutes  + ":" + --secondes);
+						}
+					}
+				 	if (countNum <= 0) {
+					timer.stop();
+					return;
+				 	}
+				}
+				});
+		 count.setVisible(false);
+		 start.setDisabled(true);
 	}
 	
 	/**
@@ -406,7 +477,20 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 */
 	 public void onSelect$employe()
 	 {
+		 //rinitialisation du timer
 		 
+		 	count.setVisible(true);
+		 	start.setDisabled(false);
+		 	timer.stop();
+			countNum = 60;
+			
+			secondes=0;
+			minutes=60;
+			first=true;
+			count.setValue("60:00");
+		//fin reinitialisation du timer	
+			
+		 validationtente=false;
 		 //vider le contenu de la grille associée à l'ancien employé selectionné
 		 autorise=true;
 		 
@@ -437,7 +521,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 }
 		
 		 mapItemsFamille=new 	HashMap<String, ArrayList<Listitem>>();	 
-		 employelb.renderAll();
+		 //employelb.renderAll();
 		 //lors de la selection d'un employé, affichage d ela fiche associé à cet employé si elle existe 
 		 //si la fiche n'existe pas , il faut la creer
 		 
@@ -515,7 +599,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 //cellule niveau de maitrise
 				 Listcell cellulecotation=new Listcell();
 				 Combobox cotation=new Combobox();
-				 
+				 //cotation.setWidth("50%");
 				 Iterator <CotationBean> iterator4=listCotation.iterator();
 				 String valeur="";
 				 while(iterator4.hasNext())
@@ -540,6 +624,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 mapItemsFamille.put(cles, liste);
 			 currentListItem=liste;
 			 mapFamilleCombo.put(selectedFamille, listeCombo);
+			 
+			 // affichage du timer
+
 		 }		 
 	 }
 	 
@@ -699,10 +786,16 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 //cellule niveau de maitrise
 			 Listcell cellulecotation=new Listcell();
 			 Combobox cotation=new Combobox();
-			 
+			 //cotation.setWidth("50%");
 			 Iterator <CotationBean> iterator4=listCotation.iterator();
 			 String valeur="";
 			 boolean dejaVisite=false;
+			 
+			 if (validationtente)
+			 {
+				 cotation.setStyle("background:red;");
+				 //cotation.setWidth("50%");
+			 }
 			 
 			 if(listeComboMAJ!=null)
 				 dejaVisite=true;
@@ -718,11 +811,11 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 {
 					 
 					 cotation=listeComboMAJ.get(valeur);
-					 System.out.println("dans deja visite");
+					 //System.out.println("dans deja visite");
 				 }
 				 else
 				 {
-					 System.out.println("pas encore visite");
+					 //System.out.println("pas encore visite");
 					 cotation.appendItem(cotationBean.getValeur_cotation()+"");
 					 cotation.setContext(valeur);
 					
@@ -742,6 +835,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 
 			 if(cotation!=null)
 			 {
+				
+				
 				 cotation.addForward("onSelect", comp1, "onSelectEvaluation");
 				 listeCombo.put(valeur,cotation );
 			 }
@@ -840,44 +935,50 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	 
 	 public void onClick$valider()
 	 {
+		 
+		
+		 	
 		 //verifier que toutes les cotations ont été remplies 
 		 //sinon afficher un message comme quoi la validation n'a pas été prise en compte car
 		 // toutes les comptétences n'ont pas été évaluées
 		 //verifier que toutes les familles ont été selectionnées
 		// ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
+		 validationtente=true;
 		 if(autorise)
 		 {
 			 autorise=false;
-		 valider.setVisible(false);
-		 valider.setDisabled(true);
+			 valider.setVisible(false);
+			 valider.setDisabled(true);
 		 
-		 Set <String> famillesRemplies=mapFamilleCombo.keySet();
-		 if(listFamillePoste.size()==famillesRemplies.size())
-		 {
-			 // famille par famille que tous les combos sont remplies
-			 Iterator <String>itfamille=famillesRemplies.iterator();
-			 boolean continuer=true;
-			 while(itfamille.hasNext())
+			 Set <String> famillesRemplies=mapFamilleCombo.keySet();
+			 if(listFamillePoste.size()==famillesRemplies.size())
 			 {
-				 String clles=itfamille.next();
-				 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
-				 Set <String >listclesCombo=listeComb.keySet();
-				 Iterator<String> iterator =listclesCombo.iterator();
-				 
-				 while (iterator.hasNext()/*&& continuer*/)
+				 // famille par famille que tous les combos sont remplies
+				 Iterator <String>itfamille=famillesRemplies.iterator();
+				 boolean continuer=true;
+				 while(itfamille.hasNext())
 				 {
-					 String cles=iterator.next();
-					 Combobox combo=listeComb.get(cles);
-					 if(combo.getName().equals("-1"))
+					 String clles=itfamille.next();
+					 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+					 Set <String >listclesCombo=listeComb.keySet();
+					 Iterator<String> iterator =listclesCombo.iterator();
+				 
+					 while (iterator.hasNext()/*&& continuer*/)
 					 {
+						 String cles=iterator.next();
+						 Combobox combo=listeComb.get(cles);
+						 //combo.setWidth("50%");
+						 if(combo.getName().equals("-1"))
+						 {
 
-						 continuer=false;
-						 combo.setStyle("background:red;");
-						 //System.out.println("couleur");
+							 continuer=false;							 
+							 combo.setStyle("background:red;");
+							 //combo.setWidth("50%");
+
+						 }
+						 //combo.setWidth("50%");
 					 }
-					 
 				 }
-			 }
 			 
 			 if(continuer==false)
 			 {
@@ -886,6 +987,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 autorise=true;
 				 try 
 				 {
+					 
 					Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 				 } 
 				 catch (InterruptedException e) 
@@ -896,6 +998,13 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 }
 			 else
 			 {
+				 
+				//rinitialisation du timer
+				 
+				 	count.setVisible(false);
+				 	start.setDisabled(true);
+				 	timer.stop();
+				 	
 				 //désactiver le bouton valider
 				 valider.setDisabled(true);
 				 //récupérer les modifications et enregistrer dans la base de donnée
@@ -907,7 +1016,11 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 famillesRemplies=mapFamilleCombo.keySet();
 				 itfamille=famillesRemplies.iterator();
 				 String id_planning_evaluation="";
-				 String id_employe="";				
+				 String id_employe="";	
+				 
+				 HashMap <String, Double> FamilleIMI=new HashMap<String, Double>();
+				 double statIMI=0;
+				 int nbimi=0; 
 				 while(itfamille.hasNext())
 				 {
 					 String clles=itfamille.next();
@@ -919,7 +1032,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 //continuer=true;
 
 					 
-					 
+					 double statINIFamille=0;
+					 int nbvaleur=0;
 
 					 while (iterator.hasNext())
 					 {
@@ -931,17 +1045,35 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 id_employe=val[1];
 						 id_planning_evaluation=val[2];
 						 String id_cotation=combo.getName();
-
+						 
+						 
+						 int valeurCotation=getValeurCotation(id_cotation);
+						 statINIFamille=statINIFamille+valeurCotation;
+						 
+						 nbvaleur++;
+						 nbimi++;
+						 statIMI=statIMI+valeurCotation;
+						 
 						 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
 					 }
+					 
+					 String clesIMI =id_planning_evaluation+"#"+id_employe+"#"+clles;
+					 statINIFamille=statINIFamille/nbvaleur;
+					 FamilleIMI.put(clesIMI, statINIFamille);
 				 
 					 //validation de la fiche
 					 
 				 }
+				 statIMI=statIMI/nbimi;
+				 //validation de la fiche d'evaluation
 				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
 				
+				 
+				//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
+				 enregistrerIMIStat(FamilleIMI,statIMI);
+				 
 				 //vider le contenu du tableau 
-				 //effacer le nom de l'evaluer de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
+				 //effacer le nom de l'evalué de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
 				 
 				 rafraichirAffichage();
 			 }
@@ -951,10 +1083,37 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 {
 			 valider.setDisabled(false);
 			 autorise=true;
+			 
+			 Iterator <String>itfamille=famillesRemplies.iterator();
+			 
+			 while(itfamille.hasNext())
+			 {
+				 String clles=itfamille.next();
+				 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+				 Set <String >listclesCombo=listeComb.keySet();
+				 Iterator<String> iterator =listclesCombo.iterator();
+				 
+				 while (iterator.hasNext()/*&& continuer*/)
+				 {
+					 String cles=iterator.next();
+					 Combobox combo=listeComb.get(cles);
+					 //combo.setWidth("50%");
+					 if(combo.getName().equals("-1"))
+					 {
+
+						 
+						 combo.setStyle("background:red;");
+						 //combo.setWidth("50%");
+						// employelb.renderAll();
+						 //System.out.println("couleur");
+					 }
+					 //combo.setWidth("50px");
+				 }
+			 }
 			 //afficher messagebox
 			 try 
 			 {
-				 
+
 				Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 			 } 
 			 catch (InterruptedException e) 
@@ -966,13 +1125,14 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 valider.setVisible(true);
 		 }
+		 //employelb.renderAll()
 	 }
 	 
 	 public void onSelectEvaluation(ForwardEvent event)
 	 {
 		 Combobox combo = (Combobox) event.getOrigin().getTarget();	
 
-		 
+		 //System.out.println("taille "+combo.getWidth());
 		 //mettre id evaluations
 		 String valeurCotation=(String)combo.getSelectedItem().getLabel();
 		 //recherche de l'id_cotation
@@ -990,8 +1150,14 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 id=cotationBean.getId_cotation();
 			 }
 		 }
+		
 		 combo.setName(id+"");
-
+		 if( validationtente)
+		 {
+			 combo.setStyle("background:##ECEAE4;");
+			 //combo.setWidth("50%");
+		 }
+		// employelb.renderAll();
 	 }
 	 
 	 public void onSelect$FamilleM()
@@ -1269,6 +1435,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 public void onSelect$employeV()
 		 {
 			 
+			
 			 //vider le contenu de la grille associée à l'ancien employé selectionné
 			 if (currentListItemV!=null)
 			 {
@@ -1551,7 +1718,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					if (compteUtilisateur.getId_profile()==3)
 						mapEmployeEvalueBean=ficheEvaluationModel.getListEmployesvalue(id_employe);
 					 
-					//sinon (administrateur ) lancer un eautre méthode qui récupère tous ceux qui ont été évaluées
+					//sinon (administrateur ) lancer une autre méthode qui récupère tous ceux qui ont été évaluées
 					if (compteUtilisateur.getId_profile()==2)
 						mapEmployeEvalueBean=ficheEvaluationModel.getListTousEmployesvalue();
 					 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
@@ -1619,6 +1786,56 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				}
 				tb.setSelectedIndex(0);
 				 valider.setDisabled(false);
+		 }
+		 public int getValeurCotation(String idCotation)
+		 {
+			 
+			 //recherche de l'id_cotation
+			 Iterator <CotationBean> iterator4=listCotation.iterator();
+			 String valeur="";
+			 int id=0;
+			 boolean trouver=false;
+			 while((iterator4.hasNext()&& !trouver))
+			 {
+				 CotationBean cotationBean=iterator4.next();
+				 valeur=cotationBean.getId_cotation()+"";
+				 if(valeur.equals(idCotation))
+				 {
+					 trouver=true;
+					 id=cotationBean.getValeur_cotation();
+				 }
+			 }
+			 
+			 return id;
+		 }
+		 
+		 public void enregistrerIMIStat(HashMap <String, Double> FamilleIMI,double statIMI)
+		 {
+			
+			 Set <String >listclesIMIStat=FamilleIMI.keySet();
+			 Iterator<String> iterator =listclesIMIStat.iterator();
+			 while(iterator.hasNext())
+			 {
+				
+				 String cles=iterator.next();
+				 
+				 String val[]=cles.split("#");
+				 String id_planning_evaluation=val[0];
+				 String id_employ=val[1];
+				 String nomFamille=val[2];
+				 
+				 double INiFamille=FamilleIMI.get(cles);
+				 
+				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+				 String valeur=ficheEvaluationModel.getIdCompagne_Codefamille(id_planning_evaluation,nomFamille);
+				 
+				 String v[]=valeur.split("#");
+				 String id_compagne=v[0];
+				 String code_famille=v[1];
+				 
+				 ficheEvaluationModel.enregistrerIMiStat(id_compagne,id_employ,INiFamille,code_famille,statIMI);
+				 
+			 }
 		 }
 		
 }
