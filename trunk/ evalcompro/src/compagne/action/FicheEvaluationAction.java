@@ -51,10 +51,10 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	
 	//variales pour la gestion du timer
 	Timer timer;
-	int countNum = 60;
+	
 	Label count;
 	int secondes=0;
-	int minutes=60;
+	int minutes=ApplicationFacade.getInstance().getTimerValue();
 	boolean first=true;
 	Button start;
 	
@@ -462,7 +462,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 								count.setValue( minutes  + ":" + --secondes);
 						}
 					}
-				 	if (countNum <= 0) {
+				 	if (minutes <= 0) {
 					timer.stop();
 					return;
 				 	}
@@ -482,7 +482,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 	count.setVisible(true);
 		 	start.setDisabled(false);
 		 	timer.stop();
-			countNum = 60;
+			
 			
 			secondes=0;
 			minutes=60;
