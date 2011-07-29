@@ -20,6 +20,8 @@ public class InitContext
     public Properties props;
     public String smtpsubject_alert;
     public static final String DIRECTORY_CONNECTION_PARAMETERS = "resources.properties";
+    
+    public String timerValue ;
 
     public InitContext()
     {
@@ -45,6 +47,9 @@ public class InitContext
             setJdbcusername(props.getProperty("jdbc.username"));
             setJdbcurl(props.getProperty("jdbc.url"));
             setSmtpsubject_alert(props.getProperty("alert.subject"));
+            
+            //information sur la durée d'une evaluation en minutes
+            setTimerValue(props.getProperty("timer.value"));
                         
         }
         catch(IOException e)
@@ -184,6 +189,14 @@ public class InitContext
 
 	public void setSmtpsubject_alert(String smtpsubject_alert) {
 		this.smtpsubject_alert = smtpsubject_alert;
+	}
+
+	public String getTimerValue() {
+		return timerValue;
+	}
+
+	public void setTimerValue(String timerValue) {
+		this.timerValue = timerValue;
 	}
     
    /* public static void main(String arg[]){
