@@ -209,7 +209,8 @@ public void onClick$valider() throws SQLException, InterruptedException, ParseEx
 				if (Messagebox.show("Voulez vous valider la compagne  "+comp_list.getSelectedItem().getLabel(), "Prompt", Messagebox.YES|Messagebox.NO,
 					    Messagebox.QUESTION) == Messagebox.YES) {
 					    //System.out.println("pressyes");
-					    if (init.validerCompagne(compagne) ){
+					    if (init.validerCompagne(compagne)  ){
+					    	init.calculerIMG(compagne);
 					    	Messagebox.show("Compagne validée avec succès", "Information",Messagebox.OK, Messagebox.INFORMATION); 
 					    }
 					
