@@ -48,16 +48,16 @@
         <columns sizable="true">
         
             <column label="id planing" width="180px" sort="auto" align="center"  visible="false"  />
-			<column label="Nom compagne" width="180px" sort="auto" align="center" />
-			<column label="Nom évaluateur" width="180px" sort="auto" align="center" />
-			<column label="Poste de travail" width="150px" sort="auto" align="center" />
-			<column label="Nom évalué" width="180px" sort="auto" align="center" />
+			<column label="Nom compagne" width="200px" sort="auto" align="center" />
+			<column label="Nom évaluateur" width="200px" sort="auto" align="center" />
+			<column label="Poste de travail" width="300px" sort="auto" align="center" />
+			<column label="Nom évalué" width="200px" sort="auto" align="center" />
 			<column label="Structure " width="80px" sort="auto" align="center" />
 			<column label="Date de l'évaluation" width="180px" align="center" />
 			<column label="Heure début" width="80px" align="center"   />
 			<column label="Heure fin" width="80px" align="center"  />
 			<column label="Lieu" width="100px" align="center"  />
-			<column label="Personne ressource" width="150px" align="center"  />
+			<column label="Personne ressource" width="200px" align="center"  />
                    
            
         </columns>
