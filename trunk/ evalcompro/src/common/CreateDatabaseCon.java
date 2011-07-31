@@ -2,6 +2,7 @@ package common;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
@@ -96,6 +97,43 @@ public class CreateDatabaseCon
             e.printStackTrace();
         }
     }
+    
+    
+    public Connection connectToEntrepriseDBMulti()
+    {
+        try
+        {
+        	
+           	Class.forName("com.mysql.jdbc.Driver");
+            CompteEntrepriseDatabaseBean compteEntrepriseDataBaseBean=ApplicationFacade.getInstance().getCompteEntrepriseDatabasebean();
+            compteEntrepriseDataBaseBean.setDBParams();
+             Properties properties = new Properties(); // Create Properties object
+            properties.put("user", compteEntrepriseDataBaseBean.getJdbcusername());         // Set user ID for connection
+            properties.put("password", compteEntrepriseDataBaseBean.getJdbcpassword());     // Set password for connection
+            properties.put("allowMultiQueries", "true");
+            connection = (Connection) DriverManager.getConnection(compteEntrepriseDataBaseBean.getJdbcurl(), properties );
+            
+            connection.setAutoCommit(true);
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+            if(connection != null)
+            {
+                try
+                {
+                    connection.close();
+                }
+                catch(Exception e1)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return connection;
+    }
+
+  
     
   /* public static void main(String[] args){
     	
