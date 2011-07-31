@@ -421,17 +421,74 @@ public boolean isCompagneValidated(Integer id_compagne) throws SQLException
 
 }
 
+public boolean calculerIMG(int id_compagne) throws ParseException
+{
 	
-	/*select concat (nom ,' ',prenom) as nom_evaluateur , round(sum(nbfichevalide)*100/ sum(totalemploye)) as progress 
-from (	select id_evaluateur as evaluateur ,count(r.id_employe) as nbfichevalide,0 as totalemploye 
-from planning_evaluation t ,fiche_validation r 
-where t.id_planning_evaluation=r.id_planning_evaluation 
-and t.id_employe=r.id_employe  and fiche_valide=1  and  t.id_compagne=2 
---and t.id_employe in (select id_employe from employe where code_structure='S0003' ) 
-group by id_evaluateur   
-union select id_evaluateur as evaluateur ,0 as nbfichevalide ,count(t.id_employe)as totalemploye
- from planning_evaluation t where   t.id_compagne=2
---and t.id_employe in (select id_employe from employe where code_structure='S0003' ) 
-group by id_evaluateur ) as t2,employe where id_employe=evaluateur group by 1*/
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+	Statement stmt;
+	
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query="insert into img_stats (id_compagne,code_poste,img) select  id_compagne,code_poste,sum(moy_par_famille1)/count(code_famille) from(" +
+		" select s.id_compagne,e.code_poste,code_famille,sum(moy_par_famille)/count(s.id_employe) as moy_par_famille1" +
+        " from imi_stats s ,employe e, fiche_validation f where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
+        " and fiche_valide=1  and s.id_compagne=#id_compagne group by e.code_poste,code_famille) as t2  group by code_poste ";
+		
+		String sql_query1="insert into moy_poste_famille_stats (id_compagne,code_poste,code_famille,moy_par_famille)" +
+				          " select s.id_compagne,e.code_poste,code_famille,sum(moy_par_famille)/count(s.id_employe) as moy_par_famille1" +
+				          " from imi_stats s ,employe e, fiche_validation f where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
+				          " and fiche_valide=1 and s.id_compagne=#id_compagne group by e.code_poste,code_famille ";
+				          
+		String sql_query_total = sql_query +"; "+sql_query1+" ;";
+		sql_query_total = sql_query_total.replaceAll("#id_compagne", String.valueOf(id_compagne));
+	
+		
+		 stmt.execute(sql_query_total);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La compagne  n'a pas été validée", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		// TODO Auto-generated catch block
+		try {
+			conn.close();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			//return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		conn.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return true;
+}
+
+	
+	/*
+select  code_poste,sum(moy_par_famille1)/count(code_famille) from(
+select e.code_poste,code_famille,sum(moy_par_famille)/count(s.id_employe) as moy_par_famille1
+ from imi_stats s ,employe e
+ where s.id_employe=e.id_employe
+and s.id_employe in (6,7)
+group by e.code_poste,code_famille) as t2 
+*/
 
 }
