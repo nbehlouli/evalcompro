@@ -208,7 +208,7 @@ private ListModel strset =null;
 		try 
 		{
 		    stmt = (Statement) conn.createStatement();
-            String select_structure="Update compagne_evaluation set date_debut=#date_debut, date_fin=date_fin,libelle_compagne=#libelle_compagne ,id_compagne_type=id_compagne_type where id_compagne=#id_compagne";
+            String select_structure="Update compagne_evaluation set date_debut=#date_debut, date_fin=#date_fin,libelle_compagne=#libelle_compagne ,id_compagne_type=#id_compagne_type where id_compagne=#id_compagne";
 			select_structure = select_structure.replaceAll("#date_debut", "'"+ formatter.format(addedData.getDate_deb_comp())+"'");
 			select_structure = select_structure.replaceAll("#date_fin", "'"+formatter.format(addedData.getDate_fin_comp())+"'");
 			select_structure = select_structure.replaceAll("#libelle_compagne", "'"+addedData.getNom_compagne()+"'");
@@ -224,7 +224,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La modification n'a pas été prise en compte car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La modification n'a pas été prise en compte", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
