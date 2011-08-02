@@ -1,8 +1,11 @@
 package Statistique.action;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
@@ -12,11 +15,14 @@ import org.zkoss.zul.Chart;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.impl.ChartEngine;
 
+import Statistique.bean.EmployeMoyFamBean;
 import Statistique.bean.StatCotationEmployeBean;
+import Statistique.bean.StatTrancheAgePosteBean;
 import Statistique.model.StatCotationEmployeModel;
 
 public class StatCotationEmploye extends  GenericForwardComposer{
@@ -33,6 +39,11 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 	String selectedEmploye;
 	String selectedCompagne;
 	StatCotationEmployeBean selectedBean;
+	
+	Map map_compte=null;
+	Map map_compagne=null;
+
+	
 	public StatCotationEmploye()
 	{
 		
@@ -43,50 +54,28 @@ public class StatCotationEmploye extends  GenericForwardComposer{
         
 		super.doAfterCompose(comp);
 		StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-		ListeCotationEmploye=cotationMoel.InitialiserStatCotationEmploye();
+		//ListeCotationEmploye=cotationMoel.InitialiserStatCotationEmploye();
 		
 		
-		//initialisation de la combobox nom employe
-		Iterator index=ListeCotationEmploye.iterator();
-		int i=0;
-		while(index.hasNext())
-		{
-			
-			StatCotationEmployeBean cotationEmploye=(StatCotationEmployeBean)index.next();
-			String nom_Employe=cotationEmploye.getNomEmploye();
-			if (i==0)
-				selectedEmploye=nom_Employe;
-			nom_employe.appendItem(nom_Employe);
-			i++;
-		}
 		
-//		ListModel dictModel= new SimpleListModel(getDirectory());
-//		nom_employe.setModel(dictModel);	
 		
+		map_compagne=cotationMoel.getListCompagneValid();
+		
+	  	Set set = (map_compagne).entrySet(); 
+	  	Iterator i = set.iterator();
+		// Display elements
+		while(i.hasNext()) {
+		  Map.Entry me = (Map.Entry)i.next();
+		  compagne.appendItem((String) me.getKey());
+	   }
 		// forcer la selection de la permiere ligne
-		nom_employe.setSelectedIndex(0);
+		nom_employe.setVisible(false);
+		compagne.setSelectedIndex(0);
 		
-		//selection des données associées à la premiere ligne (compagnes)
-		selectedBean=ListeCotationEmploye.get(0);
-		
-		HashMap <String, HashMap<String , Double>> compagnes=selectedBean.getCompagne_listCotation();
-		Set <String> listeCompagne=compagnes.keySet();
-		Iterator indexcompagne=listeCompagne.iterator();
-
-		selectedCompagne="";
-		while(indexcompagne.hasNext())
-		{
-			String nomCompagne=(String)indexcompagne.next();
-			selectedCompagne=nomCompagne;
-			compagne.appendItem(nomCompagne);
-		}
-		
-		//selection de la dernière compagne
-		compagne.setSelectedIndex(listeCompagne.size()-1);
 		
 		//selection des données associées à la dernière compagne
 		// et affichage du graphe
-		CategoryModel catmodel = new SimpleCategoryModel();
+		/*CategoryModel catmodel = new SimpleCategoryModel();
 		HashMap<String , Double> listeStat=compagnes.get(selectedCompagne);
 		Set<String> listekey=listeStat.keySet();
 		Iterator indexkey=listekey.iterator();
@@ -110,7 +99,7 @@ public class StatCotationEmploye extends  GenericForwardComposer{
         
         ChartEngine d=mychart.getEngine();
 		image=d.drawChart(mychart);		
-
+*/
 	}
 	
 	 @SuppressWarnings("static-access")
@@ -124,71 +113,56 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 	 
 
 	 
-	 public void onSelect$nom_employe()
-	 {
-		 selectedEmploye=nom_employe.getSelectedItem().getLabel();
-		 
-		 //mise à jour de la combo compagne et selection de la dernière compagne
-		 
-		 Iterator index=ListeCotationEmploye.iterator();
-		 boolean continuer=true;
-		 while((index.hasNext())||(continuer))
-		 {
-			 StatCotationEmployeBean contationbean=(StatCotationEmployeBean)index.next();
-			 if(selectedEmploye.equals(contationbean.getNomEmploye()))
-			 {
-				 selectedBean=contationbean;
-				 continuer=false;
-				 //affichage de la liste compagne
-				  //vider le contenu de la combo asocié à compagne
-				 int i=compagne.getItemCount();
-				 for (int j=i-1;j>=0;j--)
-				 {
-					 compagne.removeItemAt(j);
-				 }
-				 
-				 //ajout des nouvelles données a como associé à compagne
-				 Set <String> listeCompagne=contationbean.getCompagne_listCotation().keySet();
-				Iterator indexcompagne=listeCompagne.iterator();
-				while(indexcompagne.hasNext())
-				{
-					String nomCompagne=(String)indexcompagne.next();
-					selectedCompagne=nomCompagne;
-					compagne.appendItem(nomCompagne);
-				}
-				compagne.setSelectedIndex(listeCompagne.size()-1);
-				//mise à jour du graphe avec les données de la plus recente compagne
-				// et affichage du graphe
-				CategoryModel catmodel = new SimpleCategoryModel();
-				HashMap<String , Double> listeStat=contationbean.getCompagne_listCotation().get(selectedCompagne);
-				Set<String> listekey=listeStat.keySet();
-				Iterator indexkey=listekey.iterator();
+	public void onSelect$nom_employe() throws SQLException	 {
+		
+		     String employe_id= (String) map_compte.get((String)nom_employe.getSelectedItem().getLabel());
+		     
+		     CategoryModel catmodel = new SimpleCategoryModel();
+		     List charts=new ArrayList<CategoryModel>();
+		     EmployeMoyFamBean cpb;
+			 Iterator it;
+			 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
+			 List sect_items=cotationMoel.getListEmployesMoyFam(employe_id);
+	         it = sect_items.iterator();
+	         float imi=0;
+			while (it.hasNext()){
+		 		cpb  = (EmployeMoyFamBean) it.next();
+		 		imi=(float) cpb.getImi();
+		 		 catmodel.setValue(cpb.getCode_famille(),"Familles de compétence",cpb.getMoy_famille());
+		 		//catmodel.setValue("IMI","indice de maitrise individuel",3);
+		 		mychart.setModel(catmodel);
+		 		
+		 		
 				
-				while(indexkey.hasNext())
-				{
-					String valeurcles=(String)indexkey.next();
-					Double valeurStat=listeStat.get(valeurcles);
-					catmodel.removeValue("IMI", valeurcles);
-					catmodel.setValue("IMI", valeurcles, valeurStat);
-					
-				}
-				mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
-				mychart.setModel(catmodel);
-		        
-		        //ces instructions permettent de récuperer l'objet image pour l'export
-		        
-		        ChartEngine d=mychart.getEngine();
-				image=d.drawChart(mychart);	
-			 }
-		 }
-				 
+			}
+			
+			catmodel.setValue("IMI","Indice de maitrise individuel",imi);
+	 		mychart.setModel(catmodel);
+			
+			ChartEngine d=mychart.getEngine();
+			image=d.drawChart(mychart);
+		
 	 }
 	 
-	 public void onSelect$compagne()
+	 public void onSelect$compagne() throws SQLException
 	 {
-		 selectedCompagne=compagne.getSelectedItem().getLabel();
+	
+		 nom_employe.getItems().clear();
+		 String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
+		 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
+		    map_compte=cotationMoel.getListEmployesFichValid(compagne_id);
+			Set set = (map_compte).entrySet(); 
+			Iterator i = set.iterator();
+			
+			while(i.hasNext()) {
+				Map.Entry me = (Map.Entry)i.next();
+				nom_employe.appendItem((String) me.getKey());
+				}
+			
+			nom_employe.setVisible(true);
+			nom_employe.setSelectedIndex(0);
 		 
-		 HashMap<String , Double> listeStat=selectedBean.getCompagne_listCotation().get(selectedCompagne);
+		 /*HashMap<String , Double> listeStat=selectedBean.getCompagne_listCotation().get(selectedCompagne);
 		 Set<String> listekey=listeStat.keySet();
 			Iterator indexkey=listekey.iterator();
 			CategoryModel catmodel = new SimpleCategoryModel();
@@ -206,6 +180,6 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 	        //ces instructions permettent de récuperer l'objet image pour l'export
 	        
 	        ChartEngine d=mychart.getEngine();
-			image=d.drawChart(mychart);
+			image=d.drawChart(mychart);*/
 	 }
 }
