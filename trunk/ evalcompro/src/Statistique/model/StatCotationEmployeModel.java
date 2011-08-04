@@ -8,6 +8,8 @@ import java.util.List;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
+
+import common.ApplicationFacade;
 import common.CreateDatabaseCon;
 
 import Statistique.bean.EmployeCadreBean;
@@ -93,14 +95,28 @@ public class StatCotationEmployeModel {
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
 		HashMap map = new HashMap();
+		String sql_query="";
+		int id_profile=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
+		int id_evaluateur=ApplicationFacade.getInstance().getCompteUtilisateur().getId_compte();
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
+			if (id_profile==1 || id_profile==2 ){
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
 					         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation where id_compagne=#id_compagne)";
-			
 			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			}
+			
+			else{
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
+		         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation " +
+		          " where id_compagne=#id_compagne  and id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))";
+				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
+				sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			}
+			
+		   //System.out.println(sql_query);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
