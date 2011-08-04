@@ -12,6 +12,7 @@ import common.CreateDatabaseCon;
 
 import Statistique.bean.EmployeCadreBean;
 import Statistique.bean.EmployeMoyFamBean;
+import Statistique.bean.StatEvolIMIEmployeBean;
 import Statistique.bean.StatMoyFamillePosteBean;
 
 import Statistique.bean.StatCotationEmployeBean;
@@ -181,6 +182,43 @@ public class StatCotationEmployeModel {
 		}
 		
 		return listmoyfam;
+	}
+	
+	
+	public List getEvolIMIEmploye(String id_employe) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		List listbean = new ArrayList<StatEvolIMIEmployeBean>();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select DATE_FORMAT(c.date_fin ,' %b %Y ')as date_eval, round(imi,2) imi from imi_stats s  ,compagne_evaluation c" +
+					         " where s.id_compagne=c.id_compagne  and id_employe=#id_employe group by 1,id_employe";
+
+			
+			sql_query = sql_query.replaceAll("#id_employe", "'"+id_employe+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+            while(rs.next()){
+				
+            	StatEvolIMIEmployeBean bean=new StatEvolIMIEmployeBean();
+				bean.setDate_evol((rs.getString("date_eval")));	
+				bean.setImi((rs.getFloat("imi")));
+				listbean.add(bean);
+				
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return listbean;
 	}
 	
 	public HashMap getListPostTravailValid(String id_compagne) throws SQLException
