@@ -151,35 +151,26 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 		 String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
 		 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
 		    map_compte=cotationMoel.getListEmployesFichValid(compagne_id);
-			Set set = (map_compte).entrySet(); 
-			Iterator i = set.iterator();
-			
-			while(i.hasNext()) {
-				Map.Entry me = (Map.Entry)i.next();
-				nom_employe.appendItem((String) me.getKey());
-				}
-			
-			nom_employe.setVisible(true);
-			nom_employe.setSelectedIndex(0);
-		 
-		 /*HashMap<String , Double> listeStat=selectedBean.getCompagne_listCotation().get(selectedCompagne);
-		 Set<String> listekey=listeStat.keySet();
-			Iterator indexkey=listekey.iterator();
-			CategoryModel catmodel = new SimpleCategoryModel();
-			while(indexkey.hasNext())
-			{
-				String valeurcles=(String)indexkey.next();
-				Double valeurStat=listeStat.get(valeurcles);
-				catmodel.removeValue("IMI", valeurcles);
-				catmodel.setValue("IMI", valeurcles, valeurStat);
+		    
+		    if (map_compte.size()!=0){
+		    	Set set = (map_compte).entrySet(); 
+				Iterator i = set.iterator();
 				
-			}
-			mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
-			mychart.setModel(catmodel);
-	        
-	        //ces instructions permettent de récuperer l'objet image pour l'export
-	        
-	        ChartEngine d=mychart.getEngine();
-			image=d.drawChart(mychart);*/
+				while(i.hasNext()) {
+					Map.Entry me = (Map.Entry)i.next();
+					nom_employe.appendItem((String) me.getKey());
+					}
+				
+				nom_employe.setVisible(true);
+				nom_employe.setSelectedIndex(0);
+		    	
+		    }
+		    
+		    else {
+		    	nom_employe.setVisible(false);
+		    }
+			
+		 
+		 
 	 }
 }
