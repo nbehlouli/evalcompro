@@ -166,7 +166,7 @@ public class FicheEvaluationModel {
 			                    "from compagne_evaluation "+   
 			                    "where  date_fin>=now() and date_debut<=now()))  "+  
 			"and e.code_poste=t.code_poste  and e.code_poste =k.code_poste and e.id_employe=k.id_employe "+
-			"and e.id_employe not in (select i.id_employe from fiche_validation i where i.fiche_valide='1')";
+			"and e.id_employe not in (select i.id_employe from fiche_validation i where i.fiche_valide='1')  and k.id_planning_evaluation in (select distinct  w.id_planning_evaluation from planning_evaluation w , compagne_evaluation h where  h.date_fin>=now() and h.date_debut<=now() and w.id_compagne=h.id_compagne)";
 			
 			//la dernière ligne permet la selection des employé ayant une fiche d'evaluation non encore valide
 			
@@ -908,7 +908,7 @@ public class FicheEvaluationModel {
 			                    "from compagne_evaluation "+   
 			                    "where  date_fin>=now() and date_debut<=now()))  "+  
 			"and e.code_poste=t.code_poste  and e.code_poste =k.code_poste and e.id_employe=k.id_employe "+
-			"and e.id_employe  in (select i.id_employe from fiche_validation i where i.fiche_valide='1')";
+			"and e.id_employe  in (select i.id_employe from fiche_validation i where i.fiche_valide='1')  and k.id_planning_evaluation in (select distinct  w.id_planning_evaluation from planning_evaluation w , compagne_evaluation h where  h.date_fin>=now() and h.date_debut<=now() and w.id_compagne=h.id_compagne)";
 			
 			//la dernière ligne permet la selection des employé ayant une fiche d'evaluation valide
 			
@@ -1096,6 +1096,88 @@ public class FicheEvaluationModel {
 			
 			System.out.println(insert_structure);
 			 stmt.execute(insert_structure);
+			 
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+	}
+	public HashMap<String, String> getmaprepCompetenceCodeCompetence()
+	{
+		HashMap<String, String> mapRepCompetenceCompetence=new HashMap<String, String>();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select distinct r.id_repertoire_competence, r.code_competence from repertoire_competence r , poste_travail_competence p where r.code_competence=p.code_competence and p.code_poste in(select distinct code_poste from planning_evaluation) ";
+			
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					String id_repertoire_competence=rs.getString("id_repertoire_competence");
+					String code_competence=rs.getString("code_competence");
+					mapRepCompetenceCompetence.put(id_repertoire_competence, code_competence);
+	
+				}
+				else {
+					return mapRepCompetenceCompetence;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return mapRepCompetenceCompetence;
+	}
+	
+	public void insertImiCompetenceStat(String requete)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();						
+			 stmt.execute(requete);
 			 
 			 conn.close();
 		} 
