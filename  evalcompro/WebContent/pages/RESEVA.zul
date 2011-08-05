@@ -1,6 +1,30 @@
-<?page title="page under construction" contentType="text/html;charset=UTF-8"?>
-<zk>
-<window title="page under construction" border="normal">
-New Content Here!
+<window  id="win" title="Résultat des compagnes d'évaluations" apply="compagne.action.ResultatEvaluationAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto" closable="true"  onClose="self.visible = false; event.stopPropagation();">
+	<style>.count { font-weight: bold; font-size: 16px; } </style>
+	
+	<groupbox id="gb1" mold="3d" width="100%" height="500">
+        			<caption label="Sélection d'une compagne d'evaluation" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>    
+        			<hlayout spacing="20px"> 
+        			 	<combobox id="anneeCompagne" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+        			 	<combobox id="nomCompagne" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+        			</hlayout>	   
+     </groupbox>  
+     
+     	<tabbox id="tb" width="100%" height="100%"  >
+		<tabs id="tbtabs" >
+	
+    	</tabs>
+		<tabpanels id="tbpanels" height="100%">
+   	 	
+   		</tabpanels>
+   	</tabbox>
+     
+
+	<hbox pack="center" width="100%" spacing="40">
+		<div>
+			<button id="exporter"  label= "Exporter" tooltiptext="Exporter le rapport d'evaluation dans un fichier excel"/>			
+		</div>
+		
+
+	</hbox>      			
+
 </window>
-</zk>
