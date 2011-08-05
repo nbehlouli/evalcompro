@@ -1011,6 +1011,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 //valider la fiche dans la table appropriée
 				 
 				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+				 
+				 HashMap<String, String> maprepCompComp= ficheEvaluationModel.getmaprepCompetenceCodeCompetence();
 				/**********************************/
 				 // famille par famille que tous les combos sont remplies
 				 famillesRemplies=mapFamilleCombo.keySet();
@@ -1018,6 +1020,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 String id_planning_evaluation="";
 				 String id_employe="";	
 				 
+				 
+				 HashMap<String, HashMap<String, ArrayList<Double>>> mapFamilleCompetence=new HashMap<String, HashMap<String, ArrayList<Double>>>();
 				 HashMap <String, Double> FamilleIMI=new HashMap<String, Double>();
 				 double statIMI=0;
 				 int nbimi=0; 
@@ -1044,8 +1048,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 String id_repertoire_competence=val[0];
 						 id_employe=val[1];
 						 id_planning_evaluation=val[2];
-						 String id_cotation=combo.getName();
-						 
+						 String id_cotation=combo.getName();						 
 						 
 						 int valeurCotation=getValeurCotation(id_cotation);
 						 statINIFamille=statINIFamille+valeurCotation;
@@ -1055,6 +1058,37 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 statIMI=statIMI+valeurCotation;
 						 
 						 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
+						 
+						 
+						 //remplissage des informations moyenne competence
+						 System.out.println("famille clles" +clles);
+						 String code_competence=maprepCompComp.get(id_repertoire_competence);
+						 if(mapFamilleCompetence.containsKey(clles))
+						 {
+							 
+							 
+							 if(mapFamilleCompetence.get(clles).containsKey(code_competence))
+							 {
+								 ArrayList<Double> liste=mapFamilleCompetence.get(clles).get(code_competence);
+								 liste.add(new Double(valeurCotation));
+								 mapFamilleCompetence.get(clles).put(code_competence, liste);
+							 }
+							 else
+							 {
+								 ArrayList<Double> liste=new ArrayList<Double>(); 
+								 liste.add(new Double(valeurCotation));
+								 mapFamilleCompetence.get(clles).put(code_competence, liste);
+							 }
+						 }
+						 else
+						 {
+							 
+							 ArrayList<Double> liste=new ArrayList<Double>(); 
+							 liste.add(new Double(valeurCotation));
+							 HashMap<String, ArrayList<Double>> map=new HashMap<String, ArrayList<Double>>();
+							 map.put(code_competence, liste);
+							 mapFamilleCompetence.put(clles, map);
+						 }
 					 }
 					 
 					 String clesIMI =id_planning_evaluation+"#"+id_employe+"#"+clles;
@@ -1071,6 +1105,10 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 
 				//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
 				 enregistrerIMIStat(FamilleIMI,statIMI);
+				 
+				 //enregistrement dans la base les stats IMI par competence
+				 
+				 enregistrerIMIStatParCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
 				 
 				 //vider le contenu du tableau 
 				 //effacer le nom de l'evalué de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
@@ -1836,6 +1874,57 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 ficheEvaluationModel.enregistrerIMiStat(id_compagne,id_employ,INiFamille,code_famille,statIMI);
 				 
 			 }
+		 }
+		 public void enregistrerIMIStatParCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
+		 {
+			 
+			 Set <String >listFamille= mapFamilleCompetence.keySet();
+			 
+			 
+			 Iterator<String> iteratorFamille=listFamille.iterator();
+			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+			 String requete="";
+			 while (iteratorFamille.hasNext())
+			 {
+				 String famille=iteratorFamille.next();
+				 
+				 String valeur=ficheEvaluationModel.getIdCompagne_Codefamille(id_planning_evaluation,famille);
+				 
+				 String v[]=valeur.split("#");
+				 String id_compagne=v[0];
+				 String code_famille=v[1];
+				 
+				 HashMap<String , ArrayList<Double>> mapcodeCompetence=mapFamilleCompetence.get(famille);
+				 Set <String> listCompetence=mapcodeCompetence.keySet();
+				 Iterator<String> iteratorCodeCompetence=listCompetence.iterator();
+				 while(iteratorCodeCompetence.hasNext())
+				 {
+					 String code_competence=iteratorCodeCompetence.next();
+					 
+					 //calcul d ela moyenne par competence
+					 ArrayList<Double> listeCompetence=mapcodeCompetence.get(code_competence);
+					 
+					 int nbCompetence=listeCompetence.size();
+					 Double moyenne=new Double(0);
+					 for(int i=0;i<nbCompetence;i++)
+					 {
+						 moyenne=moyenne+listeCompetence.get(i);
+					 }
+					 moyenne=moyenne/nbCompetence;
+					 requete=requete+"  INSERT INTO IMI_COMPETENCE_STAT  (id_compagne,id_employe,code_famille,code_competence,moy_competence) VALUES (#id_compagne,#id_employe,#code_famille,#code_competence,#moy_competence) ; ";
+					 
+					 requete = requete.replaceAll("#id_compagne", id_compagne);
+					 requete = requete.replaceAll("#id_employe", id_employe);
+					 requete = requete.replaceAll("#code_famille", "'"+code_famille+ "'");
+					 requete = requete.replaceAll("#code_competence", "'"+code_competence+ "'");
+					 requete = requete.replaceAll("#moy_competence", moyenne+"");
+				 }
+				 
+				 
+			 }
+			 
+			 
+			 ficheEvaluationModel.insertImiCompetenceStat(requete);
 		 }
 		
 }
