@@ -93,7 +93,7 @@ public List uploadListEvaluateur() throws SQLException{
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String db_list="select id_compagne,libelle_compagne from compagne_evaluation"; 
+			String db_list="select id_compagne,libelle_compagne from compagne_evaluation where now()>= date_debut and now()<=date_fin"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
 			
 			
@@ -199,7 +199,7 @@ public List filtrerListEvaluateur(int id_compagne) throws SQLException{
 		sqlquery = sqlquery.replaceAll("#compgane", Integer.toString(id_compagne));
 		//sqlquery = sqlquery.replaceAll("#structure","'"+ structure+"'");
 		
-         //System.out.println(sqlquery);
+        // System.out.println(sqlquery);
 		
 		try {
 			stmt = (Statement) conn.createStatement();
@@ -433,17 +433,23 @@ public boolean calculerIMG(int id_compagne) throws ParseException
 	{
 		                                                
 		stmt = (Statement) conn.createStatement();
-		String sql_query="insert into img_stats (id_compagne,code_poste,img) select  id_compagne,code_poste,sum(moy_par_famille1)/count(code_famille) from(" +
+		String sql_query="insert into img_stats (id_compagne,code_poste,img) select  id_compagne,code_poste,round(sum(moy_par_famille1)/count(code_famille),2) from(" +
 		" select s.id_compagne,e.code_poste,code_famille,sum(moy_par_famille)/count(s.id_employe) as moy_par_famille1" +
         " from imi_stats s ,employe e, fiche_validation f where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
         " and fiche_valide=1  and s.id_compagne=#id_compagne group by e.code_poste,code_famille) as t2  group by code_poste ";
 		
 		String sql_query1="insert into moy_poste_famille_stats (id_compagne,code_poste,code_famille,moy_par_famille)" +
-				          " select s.id_compagne,e.code_poste,code_famille,sum(moy_par_famille)/count(s.id_employe) as moy_par_famille1" +
+				          " select s.id_compagne,e.code_poste,code_famille,round(sum(moy_par_famille)/count(s.id_employe),2) as moy_par_famille1" +
 				          " from imi_stats s ,employe e, fiche_validation f where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
 				          " and fiche_valide=1 and s.id_compagne=#id_compagne group by e.code_poste,code_famille ";
+		
+		String sql_query2="insert into  moy_poste_competence_stats (id_compagne,code_poste,code_competence,code_famille,moy_par_competence)" +
+				          " select P.id_compagne,e.code_poste,code_famille,r.code_competence,round (avg( id_cotation),2) " +
+				          " from fiche_evaluation f ,repertoire_competence r,employe e ,planning_evaluation p" +
+				          " where f.id_repertoire_competence =r.id_repertoire_competence and    f.id_employe=e.id_employe" +
+				          " and f.id_planning_evaluation=p.id_planning_evaluation and p.id_compagne=#id_compagne group by P.id_compagne,e.code_poste,code_famille,r.code_competence";
 				          
-		String sql_query_total = sql_query +"; "+sql_query1+" ;";
+		String sql_query_total = sql_query +"; "+sql_query1+" ;"+sql_query2+" ;";
 		sql_query_total = sql_query_total.replaceAll("#id_compagne", String.valueOf(id_compagne));
 	
 		
