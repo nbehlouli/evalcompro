@@ -1025,6 +1025,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 HashMap <String, Double> FamilleIMI=new HashMap<String, Double>();
 				 double statIMI=0;
 				 int nbimi=0; 
+				 String requeteUpdateFicheEvalution="";
 				 while(itfamille.hasNext())
 				 {
 					 String clles=itfamille.next();
@@ -1038,7 +1039,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 
 					 double statINIFamille=0;
 					 int nbvaleur=0;
-
+					 
 					 while (iterator.hasNext())
 					 {
 						 String cles=(String)iterator.next();
@@ -1057,7 +1058,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 nbimi++;
 						 statIMI=statIMI+valeurCotation;
 						 
-						 ficheEvaluationModel.updateFicheEvalution(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation);
+						 //construction de la requete de la mise à jour de l afiche d'evaluation
+						 requeteUpdateFicheEvalution=ficheEvaluationModel.updateFicheEvalutionConstructionRequete(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation,requeteUpdateFicheEvalution);
 						 
 						 
 						 //remplissage des informations moyenne competence
@@ -1098,14 +1100,20 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 //validation de la fiche
 					 
 				 }
+				 
+				 //mise à jour de la fiche d'evaluation (exécution de la requete)
+				 ficheEvaluationModel.updateMultiQuery(requeteUpdateFicheEvalution);
+				 
+				 
 				 statIMI=statIMI/nbimi;
+				 
 				 //validation de la fiche d'evaluation
 				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
 				
 				 
 				//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
 				 enregistrerIMIStat(FamilleIMI,statIMI);
-				 
+
 				 //enregistrement dans la base les stats IMI par competence
 				 
 				 enregistrerIMIStatParCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
@@ -1852,6 +1860,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			
 			 Set <String >listclesIMIStat=FamilleIMI.keySet();
 			 Iterator<String> iterator =listclesIMIStat.iterator();
+			 String requete="";
+			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
 			 while(iterator.hasNext())
 			 {
 				
@@ -1864,16 +1874,18 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 
 				 double INiFamille=FamilleIMI.get(cles);
 				 
-				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+				 
 				 String valeur=ficheEvaluationModel.getIdCompagne_Codefamille(id_planning_evaluation,nomFamille);
 				 
 				 String v[]=valeur.split("#");
 				 String id_compagne=v[0];
 				 String code_famille=v[1];
-				 
-				 ficheEvaluationModel.enregistrerIMiStat(id_compagne,id_employ,INiFamille,code_famille,statIMI);
+				 //contruction de la requete
+				 requete=ficheEvaluationModel.enregistrerIMiStatConstructionRequete(id_compagne,id_employ,INiFamille,code_famille,statIMI, requete);
 				 
 			 }
+			 
+			 ficheEvaluationModel.updateMultiQuery(requete);
 		 }
 		 public void enregistrerIMIStatParCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
 		 {
