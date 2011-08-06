@@ -150,7 +150,7 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, c.moy_competence "+
+			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, round (c.moy_competence,2) as moy_competence  "+
 			" from poste_travail_description f, imi_competence_stat c, employe e, repertoire_competence r "+
 			" where c.id_employe=e.id_employe "+
 			" and c.id_compagne=#id_compagne "+
@@ -266,11 +266,11 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct e.nom, e.prenom, r.famille, i.moy_par_famille,i.imi "
+			String select_structure="select distinct e.nom, e.prenom, r.famille, round(i.moy_par_famille, 2) as moy_par_famille , round (i.imi, 2) as imi "
 				+" from employe e, repertoire_competence r, imi_stats i "
 				+" where i.id_employe=e.id_employe  "
 				+" and r.code_famille=i.code_famille "
-				+" and id_compagne=id_compagne ";
+				+" and id_compagne=id_compagne ORDER BY imi DESC";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -351,7 +351,7 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct p.intitule_poste, i.img from poste_travail_description p, img_stats i where p.code_poste=i.code_poste and i.id_compagne=#id_compagne";
+			String select_structure="select distinct p.intitule_poste, round(i.img, 2) as img from poste_travail_description p, img_stats i where p.code_poste=i.code_poste and i.id_compagne=#id_compagne";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -398,7 +398,7 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct p.intitule_poste, r.famille, i.moy_par_famille"
+			String select_structure="select distinct p.intitule_poste, r.famille, round(i.moy_par_famille,2) as moy_par_famille"
 				+" from poste_travail_description p, repertoire_competence r, moy_poste_famille_stats i"
 				+" where p.code_poste=i.code_poste "
 				+" and r.code_famille=i.code_famille"
@@ -460,6 +460,101 @@ public class ResultatEvaluationModel {
 		}
 		return mapIMGPosteFamille;
 		
+	}
+	
+	public HashMap<String, HashMap<String, HashMap< String, Double>>> getmoyPosteCompetenceStats(String id_compagne)
+	{
+		HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats=new HashMap<String, HashMap<String, HashMap< String, Double>>>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,   r.libelle_competence, round(c.moy_par_competence,2) as moy_par_competence   " 
+				+" from poste_travail_description f, moy_poste_competence_stats c, employe e, repertoire_competence r "  
+				+" where c.id_compagne=#id_compagne " 
+				+" and c.code_famille=r.code_famille  " 
+				+"  and c.code_competence=r.code_competence " 
+				+" and e.code_poste=f.code_poste";
+			
+			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
+			System.out.println(select_structure);
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					String intitule_poste=rs.getString("intitule_poste");
+					String code_famille=rs.getString("code_famille");
+					String famille=rs.getString("famille");
+					
+					String libelle_competence=rs.getString("libelle_competence");
+					Double moy_par_competence=rs.getDouble("moy_par_competence");
+					
+					if(mapPostFamilleCompetenceStats.containsKey(intitule_poste))
+					{
+						HashMap<String, HashMap< String, Double>>mapFamilleCompetence=mapPostFamilleCompetenceStats.get(intitule_poste);
+						if(mapFamilleCompetence.containsKey(famille))
+						{
+							HashMap<String, Double> mapCompetence=mapFamilleCompetence.get(famille);
+							if(mapCompetence.containsKey(libelle_competence))
+							{
+								mapCompetence.put(libelle_competence, moy_par_competence);
+								mapFamilleCompetence.put(famille, mapCompetence);
+								mapPostFamilleCompetenceStats.put(intitule_poste, mapFamilleCompetence);
+							}
+							else
+							{
+								mapCompetence.put(libelle_competence, moy_par_competence);
+								mapFamilleCompetence.put(famille, mapCompetence);
+								mapPostFamilleCompetenceStats.put(intitule_poste, mapFamilleCompetence);
+							}
+
+						}
+						else
+						{
+							HashMap< String, Double>mapCompetence=new  HashMap< String, Double>();
+							mapCompetence.put(libelle_competence,  moy_par_competence);
+							mapFamilleCompetence.put(famille, mapCompetence);
+							mapPostFamilleCompetenceStats.put(intitule_poste, mapFamilleCompetence);
+						}
+					}
+					else
+					{
+						HashMap<String, Double> mapCompetence=new HashMap<String, Double>();
+						mapCompetence.put(libelle_competence, moy_par_competence);
+						HashMap<String,HashMap<String, Double> > mapFamilleCompetence=new HashMap<String,HashMap<String, Double> >();
+						mapFamilleCompetence.put(famille, mapCompetence);
+						
+						mapPostFamilleCompetenceStats.put(intitule_poste, mapFamilleCompetence);
+					}
+	
+				}
+				else {
+					return mapPostFamilleCompetenceStats;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return mapPostFamilleCompetenceStats;
 	}
 
 }
