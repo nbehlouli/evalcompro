@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +19,16 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hssf.util.Region;
+
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Filedownload;
 
-import administration.bean.StructureEntrepriseBean;
+import Statistique.model.StatCotationEmployeModel;
+
+
 
 import compagne.model.ResultatEvaluationModel;
 
@@ -34,7 +39,11 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	
+	Combobox nomCompagne;
 	String selected_id_compagne="1";
+	
+	HashMap<String, String> map_compagne_idCompagne;
 	
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
@@ -44,6 +53,25 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		
 		//récupération de la liste des compagnes
+		
+		
+		StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
+		map_compagne_idCompagne=cotationMoel.getListCompagneValid();
+		
+		Set<String> listCompagne=map_compagne_idCompagne.keySet();
+		Iterator<String> iteratorCompagne=listCompagne.iterator();
+		while (iteratorCompagne.hasNext())
+		{
+			String nom_compagne=iteratorCompagne.next();
+			nomCompagne.appendItem(nom_compagne);
+		}
+		if(nomCompagne.getItemCount()>0)
+		{
+			nomCompagne.setSelectedIndex(0);
+		
+			String selectedNomCompagne=nomCompagne.getItemAtIndex(0).getLabel();
+			selected_id_compagne=map_compagne_idCompagne.get(selectedNomCompagne);
+		}
 	}
 	
 	
@@ -52,6 +80,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 	@SuppressWarnings("deprecation")
 	public void onClick$exporter()
 	 {
+		if(nomCompagne.getItemCount()!=0)
+		{
 		//récupération des informations d'entête du fichier excel
 		ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
 		
@@ -62,6 +92,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		HashMap<String, HashMap<String, String>> mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
 		HashMap<String, HashMap<String, Double>> mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
 		HashMap<String, Double> mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
+		
+		HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
 //		try 
 //		{
 		
@@ -73,6 +105,13 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			//creation d'un document excel 
 			HSSFWorkbook workBook = new HSSFWorkbook();
 			
+			//creation du style de texte
+			
+			HSSFFont font1 = workBook.createFont();
+		    font1.setFontHeightInPoints((short)8);
+		    font1.setFontName("Arial");
+
+		    
 			//creation d'une feuille excel associé à un poste de travail
 			
 			//créatoin du squelette du fichier 
@@ -100,9 +139,9 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				HSSFCell cell = row.createCell((short)0);
 				
 				
-				//sheet.addMergedRegion(new Region(0,(short)0,2,(short)0));
+
 				sheet.addMergedRegion(new CellRangeAddress(0,(short)2,0,0));
-				sheet.autoSizeColumn(0); //adjust width of the first column
+				
 			    
 				
 				
@@ -121,8 +160,12 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		        cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		        cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
 		        
-		        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		        cellStyle.setWrapText(true);
+		        cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		        cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		        
+		        //cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		        //cellStyle.setWrapText(true);
+		        //cellStyle.setFont(font1);
 		        cell.setCellValue("Nom et Prénom de l'évalué");
 			 	cell.setCellStyle(cellStyle);
 			 	
@@ -133,10 +176,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 	HSSFCell cell1 = row.createCell((short)1);
 			 	cell1.setCellValue("Critères d'évaluation");
 			 	cell1.setCellStyle(cellStyle);
-			 	for (int i=1;i<nbToutesComp+1;i++)
-			 	{
-			 		sheet.autoSizeColumn(i);
-			 	}			 	
+			 			 	
 			 
 			 	//cellule IMI 
 			 	sheet.addMergedRegion(new CellRangeAddress(0,(short)2,nbToutesComp+1,(short)nbToutesComp+1));
@@ -191,7 +231,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 	iteratorFamilleCompetence=setFamilleCompetence.iterator();
 			 	
 			 	HSSFRow row2 = sheet.createRow(2);
-			 	short longueur=20*256;
+			 	short longueur=18*256;
 			 	row2.setHeight(longueur);
 			 	indexColonne=1;
 			 	while(iteratorFamilleCompetence.hasNext())
@@ -208,7 +248,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 			HSSFCellStyle cellStyle1 = null;
 						cellStyle1 = workBook.createCellStyle();
 			 			cellStyle1.setFillForegroundColor(couleur);
-						
+			 			cellStyle1.setAlignment(CellStyle.ALIGN_CENTER);
 						cellStyle1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 //				        cellStyle1.setAlignment(HSSFCellStyle.ALIGN_LEFT);
 //				        cellStyle1.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
@@ -222,7 +262,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				        cellStyle1.setRightBorderColor(HSSFColor.BLACK.index);
 				        cellStyle1.setBorderTop(HSSFCellStyle.BORDER_THIN);
 				        cellStyle1.setTopBorderColor(HSSFColor.BLACK.index);
-
+				        cellStyle1.setFont(font1);
 				        short io=90;
 				        cellStyle1.setRotation(io);
 				 		sheet.addMergedRegion(new CellRangeAddress(2,(short)2,indexColonne,(short)indexColonne));
@@ -260,6 +300,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 					cellStyle0 = workBook.createCellStyle();
 					cellStyle0.setFillForegroundColor(HSSFColor.WHITE.index);
 					cellStyle0.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+					cellStyle0.setFont(font1);
+					
 					
 					cellStyle0.setBorderBottom(HSSFCellStyle.BORDER_THIN);
 			        cellStyle0.setBottomBorderColor(HSSFColor.BLACK.index);
@@ -271,7 +313,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			        cellStyle0.setTopBorderColor(HSSFColor.BLACK.index);
 			        
 			        cellStyle0.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-			        cellStyle0.setWrapText(true);
+			        //cellStyle0.setWrapText(true);
 			        HSSFCell cell0 = row3.createCell((short)0);
 			        cell0.setCellValue(nomEmploye);
 				 	cell0.setCellStyle(cellStyle0);
@@ -312,9 +354,11 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				 			cellStyle1.setFillForegroundColor(HSSFColor.WHITE.index);
 				 			HSSFFont font = workBook.createFont();
 				 		    font.setColor(couleurCellule);
-				 		   cellStyle1.setFont(font);
+						    font.setFontHeightInPoints((short)8);
+						    font.setFontName("Arial");
+				 		    cellStyle1.setFont(font);
 							cellStyle1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-
+							cellStyle1.setAlignment(CellStyle.ALIGN_CENTER);
 					        
 					        //specification des bordures des cellules
 					        cellStyle1.setBorderBottom(HSSFCellStyle.BORDER_THIN);
@@ -344,6 +388,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 					cellStyle1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 					HSSFFont font = workBook.createFont();
 		 		    font.setColor(HSSFColor.BLACK.index);
+				    font.setFontHeightInPoints((short)8);
+				    font.setFontName("Arial");
 		 		   cellStyle1.setFont(font);
 			        //specification des bordures des cellules
 			        cellStyle1.setBorderBottom(HSSFCellStyle.BORDER_THIN);
@@ -354,7 +400,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			        cellStyle1.setRightBorderColor(HSSFColor.BLACK.index);
 			        cellStyle1.setBorderTop(HSSFCellStyle.BORDER_THIN);
 			        cellStyle1.setTopBorderColor(HSSFColor.BLACK.index);
-			       
+			        cellStyle1.setAlignment(CellStyle.ALIGN_CENTER);
+			        
 			        HSSFCell cellCompetence = row3.createCell((short)indexColonne);
 				 	
 				 	cellCompetence.setCellStyle(cellStyle1);
@@ -391,7 +438,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				 		cellStyle3.setRightBorderColor(HSSFColor.BLACK.index);
 				 		cellStyle3.setBorderTop(HSSFCellStyle.BORDER_THIN);
 				 		cellStyle3.setTopBorderColor(HSSFColor.BLACK.index);
-			        
+				 		cellStyle3.setFont(font1);
 				 		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 				 		
 				 		ArrayList<String> listeCompetence=mapFamilleCompetence.get(nomFamille);
@@ -436,7 +483,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 		cellStyle3.setRightBorderColor(HSSFColor.BLACK.index);
 		 		cellStyle3.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		 		cellStyle3.setTopBorderColor(HSSFColor.BLACK.index);
-	        
+		 		cellStyle3.setFont(font1);
 		 		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		 		HSSFCell cell3 = row5.createCell((short)indexColonne);
 		 		
@@ -447,7 +494,67 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 	indexColonne=indexColonne+1;
 			 	//ajouter ici la boucle qui permet d'afficher le reste des lignes
 				 	
-				 	
+/////////////**********************************************************************************
+			 			
+			 	
+			 	
+			 	//remplissage des moyennes par competence
+		 		HashMap< String, HashMap<String, Double>>  mapFamilleCompetence1=mapPostFamilleCompetenceStats.get(nomOnglet);
+		 		setFamilleCompetence=mapFamilleCompetence.keySet();
+			 	iteratorFamilleCompetence=setFamilleCompetence.iterator();
+
+			 	indexColonne=1;
+			 	while(iteratorFamilleCompetence.hasNext())
+			 	{
+			 		String nomFamille=iteratorFamilleCompetence.next();
+
+			 		
+			 		HashMap<String, Double> mapCompetence=mapFamilleCompetence1.get(nomFamille);
+			 		ArrayList<String> listeCompetence=mapFamilleCompetence.get(nomFamille);
+			 		int nbComp=listeCompetence.size();
+			 		
+			 		for(int i=0;i<nbComp;i++)
+			 		{
+			 			String competence=listeCompetence.get(i);
+			 			
+			 			Double valeurStat=mapCompetence.get(competence);
+			 			
+			 			short couleurCellule=familleColor.get(nomFamille);
+			 			
+			 			
+			 			
+			 			
+			 			HSSFCellStyle cellStyle1 = null;
+						cellStyle1 = workBook.createCellStyle();
+			 			cellStyle1.setFillForegroundColor(HSSFColor.WHITE.index);
+			 			HSSFFont font = workBook.createFont();
+			 		    font.setColor(couleurCellule);
+			 		   font.setFontHeightInPoints((short)8);
+					    font.setFontName("Arial");
+			 		   cellStyle1.setFont(font);
+						cellStyle1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+				        
+				        //specification des bordures des cellules
+				        cellStyle1.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+				        cellStyle1.setBottomBorderColor(HSSFColor.BLACK.index);
+				        cellStyle1.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+				        cellStyle1.setLeftBorderColor(HSSFColor.BLACK.index);
+				        cellStyle1.setBorderRight(HSSFCellStyle.BORDER_THIN);
+				        cellStyle1.setRightBorderColor(HSSFColor.BLACK.index);
+				        cellStyle1.setBorderTop(HSSFCellStyle.BORDER_THIN);
+				        cellStyle1.setTopBorderColor(HSSFColor.BLACK.index);
+				        cellStyle1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+				        HSSFCell cellCompetence = row5.createCell((short)indexColonne);
+					 	
+					 	cellCompetence.setCellStyle(cellStyle1);
+					 	cellCompetence.setCellValue(valeurStat);
+					 	
+					 	indexColonne++;
+			 		}
+			 	}
+			 	
+////////////////////////////////*************************************************************
 				 	
 				 	
 				 	
@@ -468,7 +575,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 		cellStyle6.setRightBorderColor(HSSFColor.BLACK.index);
 		 		cellStyle6.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		 		cellStyle6.setTopBorderColor(HSSFColor.BLACK.index);
-		        
+		 		cellStyle6.setFont(font1);
 		 		cellStyle6.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		 		HSSFCell cell6 = row6.createCell((short)0);
 			 		
@@ -500,7 +607,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 		cellStyle7.setRightBorderColor(HSSFColor.BLACK.index);
 			 		cellStyle7.setBorderTop(HSSFCellStyle.BORDER_THIN);
 			 		cellStyle7.setTopBorderColor(HSSFColor.BLACK.index);
-		        
+			 		cellStyle7.setFont(font1);
 			 		cellStyle7.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 			 		
 			 		ArrayList<String> listeCompetence=mapFamilleCompetence.get(nomFamille);
@@ -540,7 +647,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 		cellStyle8.setRightBorderColor(HSSFColor.BLACK.index);
 		 		cellStyle8.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		 		cellStyle8.setTopBorderColor(HSSFColor.BLACK.index);
-	        
+		 		cellStyle8.setFont(font1);
 		 		cellStyle8.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		 		HSSFCell cell8 = row8.createCell((short)0);
 		 		
@@ -568,7 +675,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 		cellStyle9.setRightBorderColor(HSSFColor.BLACK.index);
 		 		cellStyle9.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		 		cellStyle9.setTopBorderColor(HSSFColor.BLACK.index);
-	        
+		 		cellStyle9.setFont(font1);
 		 		cellStyle9.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		 		
 		 		//calculer le nombre de cellules qui doivent être mergés
@@ -580,13 +687,21 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 			ArrayList <String > liste=mapFamilleCompetence.get(cles);
 			 			nbcomp=nbcomp+liste.size();
 			 	}
-		 		sheet.addMergedRegion(new CellRangeAddress(numLigne,(short)numLigne,1,(short)indexColonne+nbcomp-1));
+			 	
+			 	
+		 		sheet.addMergedRegion(new CellRangeAddress(numLigne,(short)numLigne,1,(short)nbcomp));
 		 		HSSFCell cell9 = row8.createCell((short)1);
 		 		
 		 		Double IMG=mapPosteIMG.get(nomOnglet);
 			 	cell9.setCellValue(IMG); 
 			 	cell9.setCellStyle(cellStyle9);	
 			 	
+			 		 	
+			 	for (int i=0;i<nbToutesComp+1;i++)
+			 	{
+			 		sheet.autoSizeColumn(i);
+			 		
+			 	}	
 			}
 //			 	while (index.hasNext())
 //			 	{
@@ -630,7 +745,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}	
-	
+		}
 		
 	 }
 	
@@ -651,4 +766,17 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		return nbCompetence;
 		
 	}
+	
+	public void onSelect$compagne() throws SQLException
+	 {
+		if(nomCompagne.getItemCount()!=0)
+		{
+			String selectedNomCompagne=nomCompagne.getSelectedItem().getLabel();
+			
+			System.out.println("compagne selectionné " +selectedNomCompagne);
+			selected_id_compagne=map_compagne_idCompagne.get(selectedNomCompagne);
+			
+			System.out.println("selected_id_compagne selectionné " +selected_id_compagne);
+		}
+	 }
 }
