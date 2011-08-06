@@ -18,9 +18,9 @@
 
 
 	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
-		<div height="50px" >
-             <image src="/image/Logo.gif" width="380px" height="100px"/>
-   </div>
+		<div height="100px" >
+             <image src="/image/Logo.gif" width="500px" height="100px" align="top"/>
+        </div>
 
 		<div id="loginDiv"  visible="${empty user}">
 			<grid>
