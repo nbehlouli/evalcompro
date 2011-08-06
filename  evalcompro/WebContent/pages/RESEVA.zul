@@ -4,7 +4,7 @@
 	<groupbox id="gb1" mold="3d" width="100%" height="500">
         			<caption label="Sélection d'une compagne d'evaluation" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>    
         			<hlayout spacing="20px"> 
-        			 	<combobox id="anneeCompagne" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
+        			 	<label  value="Compagnes" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
         			 	<combobox id="nomCompagne" autodrop="true" mold="rounded" buttonVisible="true" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
         			</hlayout>	   
      </groupbox>  
