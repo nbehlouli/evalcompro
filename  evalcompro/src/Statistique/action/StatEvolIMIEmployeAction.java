@@ -26,6 +26,7 @@ import Statistique.bean.EmployeMoyFamBean;
 import Statistique.bean.StatCotationEmployeBean;
 import Statistique.bean.StatEvolIMIEmployeBean;
 import Statistique.bean.StatTrancheAgePosteBean;
+import Statistique.model.LineChartEngine;
 import Statistique.model.StatCotationEmployeModel;
 
 public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
@@ -113,7 +114,6 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 			
 			mychart.setModel(catmodel);
 			mychart.setYAxis("IMI"); 
-			//mychart.setThreeD(true);
 			
 			ChartEngine d=mychart.getEngine();
 			image=d.drawChart(mychart);
