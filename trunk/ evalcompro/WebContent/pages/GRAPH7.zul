@@ -31,7 +31,7 @@
    
     
 	<vbox>
-		<chart id="mychart"  width="800" height="400" type="line" fgAlpha="128"/>
+		<chart id="mychart"  width="800" height="400" type="line" fgAlpha="128" threeD="false" paneColor="#FFFFFF"/>
 			
 		<menupopup id="editPopup">      
         	<menuitem id= "downloadimage" label="Enregistrer l'image..." />
