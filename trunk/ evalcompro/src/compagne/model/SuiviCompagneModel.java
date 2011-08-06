@@ -444,7 +444,7 @@ public boolean calculerIMG(int id_compagne) throws ParseException
 				          " and fiche_valide=1 and s.id_compagne=#id_compagne group by e.code_poste,code_famille ";
 		
 		String sql_query2="insert into  moy_poste_competence_stats (id_compagne,code_poste,code_competence,code_famille,moy_par_competence)" +
-				          " select P.id_compagne,e.code_poste,code_famille,r.code_competence,round (avg( id_cotation),2) " +
+				          " select P.id_compagne,e.code_poste,r.code_competence,²code_famille,round (avg( id_cotation),2) " +
 				          " from fiche_evaluation f ,repertoire_competence r,employe e ,planning_evaluation p" +
 				          " where f.id_repertoire_competence =r.id_repertoire_competence and    f.id_employe=e.id_employe" +
 				          " and f.id_planning_evaluation=p.id_planning_evaluation and p.id_compagne=#id_compagne group by P.id_compagne,e.code_poste,code_famille,r.code_competence";
