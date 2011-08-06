@@ -54,9 +54,13 @@
 		                 <label id="famille_lbl"  value="Famille:"  sclass="textboxdetail"/>
 		                 <textbox id="famille" value="@{winCtrl.selected.famille,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		          </hlayout>
+		          <hlayout spacing ="35px">
 		                 <label id="cdegroupe_lbl"  value="Code groupe :"  sclass="textboxdetail"/>
+		          
 		                <textbox id="code_groupe" value="@{winCtrl.selected.code_groupe,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+		               </hlayout>
 		                <label id="groupe_lbl"  value="Groupe :"  sclass="textboxdetail"/>
+		          
 		                <textbox id="groupe" value="@{winCtrl.selected.groupe,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		              
 	                 </hbox>
