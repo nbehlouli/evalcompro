@@ -74,25 +74,21 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		// Display elements
 		while(i.hasNext()) {
 		Map.Entry me = (Map.Entry)i.next();
+		
 		comp_list.appendItem((String) me.getKey(),(String) me.getKey());
+		
 		//profilemodel.add((String) me.getKey());
 		}
-		// Display elements
-		/*while(i1.hasNext()) {
-		Map.Entry me = (Map.Entry)i1.next();
-		struct_list.appendItem((String) me.getKey(),(String) me.getKey());
-		//basedonneemodel.add((String) me.getKey());
-		 * 
-		}*/
+		 comp_list.setSelectedIndex (1);
 				
-		progressbar.setStyle("background:#FF0000;");
+		 progressbar.setStyle("background:#FF0000;");
 		// création de la structure de l'entreprise bean
 		//AdministrationLoginModel admin_compte =new AdministrationLoginModel();
 		
 		
 		
 		model=init.uploadListEvaluateur();
-		comp_list.setSelectedIndex(0);
+		
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
 		
@@ -237,17 +233,22 @@ SuiviCompagneModel init= new SuiviCompagneModel();
     //map_struct=init.getStructEntrepriseList();
     Integer compagne=(Integer) map.get(comp_list.getSelectedItem().getLabel());
     //String structure=struct_list.getSelectedItem().getLabel();
-    if (compagne==-1) {
-    	model=init.uploadListEvaluateur();
-    }
+    if (init.isCompagneValidated(compagne)){
+			msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
+			msg.setVisible(true);
+			valider.setDisabled(true);
+	}
     else {
-    	model=init.filtrerListEvaluateur(compagne);
-    	if (init.isCompagneValidated(compagne)){
-    		msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
-    		msg.setVisible(true);
-    		valider.setDisabled(true);
-    	}
+	    	if (compagne==-1) {
+	        	model=init.uploadListEvaluateur();
+	        }
+	        else {
+	        	model=init.filtrerListEvaluateur(compagne);
+	        	valider.setDisabled(false);
+	        	
+	        }
     }
+    
 	
 	//binder = new AnnotateDataBinder(comp);
 	binder.loadAll();
