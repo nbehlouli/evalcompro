@@ -469,23 +469,17 @@ public class FicheEvaluationModel {
 		
 		return listCotation;
 	}
-	public void updateFicheEvalution(String id_repertoire_competence,String id_employe,String id_planning_evaluation,String id_cotation)
+	public void updateMultiQuery(String requete)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
 		Statement stmt;
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String insert_structure="INSERT INTO fiche_evaluation (id_planning_evaluation,id_repertoire_competence,id_cotation,id_employe) VALUES (#id_planning_evaluation,#id_repertoire_competence,#id_cotation,#id_employe)";
-			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
-			insert_structure = insert_structure.replaceAll("#id_repertoire_competence", id_repertoire_competence);
-			insert_structure = insert_structure.replaceAll("#id_cotation", id_cotation);
-			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
 			
-			
-			 stmt.execute(insert_structure);
+			 stmt.execute(requete);
 			 
 			 conn.close();
 		} 
@@ -507,6 +501,22 @@ public class FicheEvaluationModel {
 			
 		}
 
+	
+	}
+	
+	public String updateFicheEvalutionConstructionRequete(String id_repertoire_competence,String id_employe,String id_planning_evaluation,String id_cotation, String requete)
+	{
+
+			
+			String insert_structure="INSERT INTO fiche_evaluation (id_planning_evaluation,id_repertoire_competence,id_cotation,id_employe) VALUES (#id_planning_evaluation,#id_repertoire_competence,#id_cotation,#id_employe)";
+			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+			insert_structure = insert_structure.replaceAll("#id_repertoire_competence", id_repertoire_competence);
+			insert_structure = insert_structure.replaceAll("#id_cotation", id_cotation);
+			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
+			
+			requete=requete+ insert_structure+ " ; ";
+			System.out.println(requete);
+			return requete;
 	
 	}
 	public void validerFicheEvaluation(String id_planning_evaluation, String id_employe)
@@ -1078,44 +1088,22 @@ public class FicheEvaluationModel {
 		return id_compagne_famille;
 	}
 	
-	public void enregistrerIMiStat(String id_compagne,String id_employ,double INiFamille,String code_famille,double statIMI)
+	public String enregistrerIMiStatConstructionRequete(String id_compagne,String id_employ,double INiFamille,String code_famille,double statIMI, String requete)
 	{
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
-		Statement stmt;
-		
-		try 
-		{
-			stmt = (Statement) conn.createStatement();
-			String insert_structure="INSERT INTO imi_stats (id_compagne,id_employe,moy_par_famille,code_famille, imi) VALUES (#id_compagne,#id_employe,#moy_par_famille,#code_famille, #imi)";
-			insert_structure = insert_structure.replaceAll("#id_compagne", id_compagne);
-			insert_structure = insert_structure.replaceAll("#id_employe", id_employ);
-			insert_structure = insert_structure.replaceAll("#moy_par_famille", INiFamille+"");
-			insert_structure = insert_structure.replaceAll("#code_famille", "'"+code_famille+"'");
-			insert_structure = insert_structure.replaceAll("#imi", statIMI+"");
-			
-			System.out.println(insert_structure);
-			 stmt.execute(insert_structure);
-			 
-			 conn.close();
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
 
-			// TODO Auto-generated catch block
-			try {
-				conn.close();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				
-				e1.printStackTrace();
-				//return false;
-			}
-			
-			
-			
-		}
+		String insert_structure="INSERT INTO imi_stats (id_compagne,id_employe,moy_par_famille,code_famille, imi) VALUES (#id_compagne,#id_employe,#moy_par_famille,#code_famille, #imi)";
+		insert_structure = insert_structure.replaceAll("#id_compagne", id_compagne);
+		insert_structure = insert_structure.replaceAll("#id_employe", id_employ);
+		insert_structure = insert_structure.replaceAll("#moy_par_famille", INiFamille+"");
+		insert_structure = insert_structure.replaceAll("#code_famille", "'"+code_famille+"'");
+		insert_structure = insert_structure.replaceAll("#imi", statIMI+"");
+		
+		
+		
+		requete=requete+insert_structure+ " ; ";
+		
+		System.out.println(requete);
+		return requete;
 	}
 	public HashMap<String, String> getmaprepCompetenceCodeCompetence()
 	{
