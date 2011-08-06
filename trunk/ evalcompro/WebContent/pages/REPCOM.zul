@@ -46,27 +46,36 @@
         
           <hbox spacing ="100">
                 <!-- Selected contributor's title value is same as title model's data-->
-                 
+                 <hlayout spacing ="60px">
                          <label id="code_famille_lbl"  value="Code famille:"  sclass="textboxdetail"/>
 		                 <textbox id="code_famille" value="@{winCtrl.selected.code_famille,save-when=none}" sclass="textboxdetail" />
+		          </hlayout> 
+		          <hlayout spacing ="90px">
 		                 <label id="famille_lbl"  value="Famille:"  sclass="textboxdetail"/>
 		                 <textbox id="famille" value="@{winCtrl.selected.famille,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+		          </hlayout>
 		                 <label id="cdegroupe_lbl"  value="Code groupe :"  sclass="textboxdetail"/>
 		                <textbox id="code_groupe" value="@{winCtrl.selected.code_groupe,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                <label id="groupe_lbl"  value="Groupe :"  sclass="textboxdetail"/>
 		                <textbox id="groupe" value="@{winCtrl.selected.groupe,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-		                
+		              
 	                 </hbox>
 	                  <hbox>
+	                  <hlayout spacing ="30px">
 	                   <label id="codecomp_lbl"  value=" Code compétence:"  sclass="textboxdetail"/>
 			          <textbox id="code_competence" value="@{winCtrl.selected.code_competence,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			         </hlayout>
 			           <label id="aff_lbl"  value=" Compétence affichable:"  sclass="textboxdetail"/>
+			          <hlayout spacing ="85px">
 		                 <listbox id="affichable" mold="select" selectedItem="@{winCtrl.selected.affichable,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                 <label id="comp_lbl"  value=" Libellé compétence:"  sclass="textboxdetail"/>
+		              </hlayout>
 				       <textbox id="libelle_competence"  width="200px"  value="@{winCtrl.selected.libelle_competence,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+				        
 				      </hbox>
 				      
 				      <hbox>
+				      <hlayout spacing ="5px">
 				       <label id="defcomp_lbl"  value=" Définition  compétence:"  sclass="textboxdetail"/>
 			            <hbox> 
 			            <textbox id="definition_competence" tabbable="true" width="400px" rows="6"  value="@{winCtrl.selected.definition_competence,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
@@ -75,7 +84,7 @@
 			          <textbox id="aptitude_observable" width="400px;" rows="5" cols="40"  value="@{winCtrl.selected.aptitude_observable,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			                        
 			            <textbox id="id_repertoire_competence" value="@{winCtrl.selected.id_repertoire_competence,save-when=none}" visible="false" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-			         
+			         </hlayout>
 		              </hbox>
 		          
          
