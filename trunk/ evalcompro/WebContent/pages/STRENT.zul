@@ -95,10 +95,7 @@
 				<button id="upload" image="/image/upload1616.gif" height="25px" width="50px" tooltiptext="Charger les données en base de données" />			
 				<button id="download" image="/image/download1616.gif" height="25px" width="50px" tooltiptext="Télécharger les données de la base de données"  />
 			
-		</div>
-			
-
- 
+		</div> 
 	</hbox>
 	
 	
