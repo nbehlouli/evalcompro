@@ -233,12 +233,8 @@ SuiviCompagneModel init= new SuiviCompagneModel();
     //map_struct=init.getStructEntrepriseList();
     Integer compagne=(Integer) map.get(comp_list.getSelectedItem().getLabel());
     //String structure=struct_list.getSelectedItem().getLabel();
-    if (init.isCompagneValidated(compagne)){
-			msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
-			msg.setVisible(true);
-			valider.setDisabled(true);
-	}
-    else {
+    
+ 
 	    	if (compagne==-1) {
 	        	model=init.uploadListEvaluateur();
 	        }
@@ -246,11 +242,13 @@ SuiviCompagneModel init= new SuiviCompagneModel();
 	        	model=init.filtrerListEvaluateur(compagne);
 	        	valider.setDisabled(false);
 	        	
-	        }
-    }
-    
-	
-	//binder = new AnnotateDataBinder(comp);
+	        	if (init.isCompagneValidated(compagne)){
+	    			msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
+	    			msg.setVisible(true);
+	    			valider.setDisabled(true);
+	    	}
+        }
+ 	//binder = new AnnotateDataBinder(comp);
 	binder.loadAll();
 }
 
