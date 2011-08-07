@@ -38,7 +38,7 @@
 		</listitem>
 	</listbox>
 	
- <groupbox id="gb" mold="3d" width="100%">
+ <groupbox id="gb" mold="3d" width="100%" contentStyle="overflow:auto">
         <caption label="Edition des données" />
         
         <vbox spacing ="100">
