@@ -23,13 +23,28 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Foot;
+import org.zkoss.zul.Footer;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Textbox;
 
 import Statistique.model.StatCotationEmployeModel;
 
 
 
+import common.view.MenuComposer;
 import compagne.model.ResultatEvaluationModel;
 
 public class ResultatEvaluationAction extends GenericForwardComposer {
@@ -39,11 +54,24 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	
+	Tabs tbtabs;
+	Tabpanels tbpanels;
 	Combobox nomCompagne;
 	String selected_id_compagne="1";
 	
 	HashMap<String, String> map_compagne_idCompagne;
+	
+	
+	
+	HashMap <String, HashMap<String, ArrayList<String>>> mapPosteFamilleCompetence;
+	
+	HashMap<String, HashMap<String, HashMap< String, HashMap<String, Double>> >> mapPosteEmployeFamilleCompetence;
+	
+	HashMap<String, HashMap<String, String>> mapEmployeFamilleIMI;
+	HashMap<String, HashMap<String, Double>> mapFamilleIMG;
+	HashMap<String, Double> mapPosteIMG;
+	
+	HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats;
 	
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
@@ -71,6 +99,20 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		
 			String selectedNomCompagne=nomCompagne.getItemAtIndex(0).getLabel();
 			selected_id_compagne=map_compagne_idCompagne.get(selectedNomCompagne);
+			
+			ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
+			
+			mapPosteFamilleCompetence=resultatEvaluationModel.getInfosFamillesCompetence(selected_id_compagne);
+			
+			 mapPosteEmployeFamilleCompetence=resultatEvaluationModel.getAllIMICompetence(selected_id_compagne);
+			
+			 mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
+			mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
+			 mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
+			
+			 mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
+			 
+			 AfficherInfosCompagne();
 		}
 	}
 	
@@ -83,18 +125,18 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		if(nomCompagne.getItemCount()!=0)
 		{
 		//récupération des informations d'entête du fichier excel
-		ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
-		
-		HashMap <String, HashMap<String, ArrayList<String>>> mapPosteFamilleCompetence=resultatEvaluationModel.getInfosFamillesCompetence(selected_id_compagne);
-		
-		HashMap<String, HashMap<String, HashMap< String, HashMap<String, Double>> >> mapPosteEmployeFamilleCompetence=resultatEvaluationModel.getAllIMICompetence(selected_id_compagne);
-		
-		HashMap<String, HashMap<String, String>> mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
-		HashMap<String, HashMap<String, Double>> mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
-		HashMap<String, Double> mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
-		
-		HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
-//		try 
+//		ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
+//		
+//		mapPosteFamilleCompetence=resultatEvaluationModel.getInfosFamillesCompetence(selected_id_compagne);
+//		
+//		 mapPosteEmployeFamilleCompetence=resultatEvaluationModel.getAllIMICompetence(selected_id_compagne);
+//		
+//		HashMap<String, HashMap<String, String>> mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
+//		HashMap<String, HashMap<String, Double>> mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
+//		HashMap<String, Double> mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
+//		
+//		HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
+////		try 
 //		{
 		
 			//récupération du nombre de compétence toute famille confondu
@@ -703,19 +745,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 		
 			 	}	
 			}
-//			 	while (index.hasNext())
-//			 	{
-//				
-//			 		StructureEntrepriseBean donnee=(StructureEntrepriseBean)index.next();
-//				
-//			 		HSSFRow row1 = sheet.createRow(i);
-//			 		HSSFCell cel = row1.createCell((short)0);
-//			 		cel.setCellValue(donnee.getCodestructure());
-//				 
-//			 		cel = row1.createCell((short)1);
-//			 		cel.setCellValue(donnee.getCodeDivision());
-//			 		i++;
-//			 	}
+
 			
 			 	FileOutputStream fOut;
 			 	try 
@@ -739,12 +769,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 		e.printStackTrace();
 			 	}
 								
-//		}
-//		catch (SQLException e) 
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}	
+	
 		}
 		
 	 }
@@ -777,6 +802,219 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			selected_id_compagne=map_compagne_idCompagne.get(selectedNomCompagne);
 			
 			System.out.println("selected_id_compagne selectionné " +selected_id_compagne);
+			
+			ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
+			
+			mapPosteFamilleCompetence=resultatEvaluationModel.getInfosFamillesCompetence(selected_id_compagne);
+			
+			 mapPosteEmployeFamilleCompetence=resultatEvaluationModel.getAllIMICompetence(selected_id_compagne);
+			
+			 mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
+			mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
+			 mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
+			
+			 mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
+			 
+			 AfficherInfosCompagne();
+			
 		}
 	 }
+	
+	public void AfficherInfosCompagne()
+	{
+		Set <String> SetPoste=mapPosteEmployeFamilleCompetence.keySet();
+		Iterator<String> iteratorPoste=SetPoste.iterator();
+		while(iteratorPoste.hasNext())
+		{
+			//creation de tab0 et sa fermeture pour qu'i n'y ait pas de décalage lors de l'ajout des listboxs
+			Tab newTab0 = new Tab(); 
+			newTab0.isClosable();	
+			tbtabs.appendChild(newTab0);			
+			newTab0.close();
+			
+			String nomOnglet=iteratorPoste.next();
+			//creation du tab
+			Tab newTab = new Tab();
+
+			newTab.setLabel(nomOnglet);
+			
+			
+			Tabpanel newPanel = new Tabpanel();
+			newPanel.setStyle("overflow:auto");
+			
+			Label newLabel = new Label();
+			newLabel.setValue("");
+			
+			newPanel.appendChild(newLabel);
+			
+			Grid grid=creationtTableau(newPanel,nomOnglet);
+			
+			//creation du contenu de l'onglet
+			
+			newPanel.appendChild(grid);
+			
+			tbpanels.appendChild(newPanel);
+			
+			tbtabs.appendChild(newTab);	
+			
+		}
+		
+	}
+	
+	public Grid creationtTableau(Tabpanel newPanel,String nomOnglet)
+	{
+		Grid grid=new Grid();
+		
+		
+		//specification des caracteristiques du tableau
+		grid.setSpan(true);
+		grid.setSizedByContent(true);
+		grid.setWidth("100%");
+		grid.setHeight("500px");
+		
+		
+		Columns colonneTitre=new Columns();
+		
+		grid.appendChild(colonneTitre);
+		colonneTitre.setSizable(true);
+		
+		//creation de la colonne nomEmploye
+		Column colonneNomEmploye=new Column();
+		colonneTitre.appendChild(colonneNomEmploye);
+		//<column label="Code structure" align="center" width="100px" />
+		colonneNomEmploye.setLabel("Nom et Prénom de l'évalué");
+		colonneNomEmploye.setAlign("center");
+		colonneNomEmploye.setWidth("100px");
+		
+		HashMap<String, ArrayList<String>> mapFamilleCompetence=mapPosteFamilleCompetence.get(nomOnglet);
+		 HashMap<String, HashMap< String, HashMap<String, Double>> > mapEmployeFamilleCompetence= mapPosteEmployeFamilleCompetence.get(nomOnglet);
+		 HashMap<String,Double> mapFIMG=mapFamilleIMG.get(nomOnglet);
+		Set <String> setFamilleCompetence=mapFamilleCompetence.keySet();
+		Iterator <String>iteratorFamille=setFamilleCompetence.iterator();
+		while(iteratorFamille.hasNext())
+		{
+			//creation des colonnes famille
+			String famille=iteratorFamille.next();
+			Column colonneFamille=new Column();
+			colonneTitre.appendChild(colonneFamille);
+			//<column label="Code structure" align="center" width="100px" />
+			colonneFamille.setLabel(famille);
+			colonneFamille.setAlign("center");
+			colonneFamille.setWidth("100px");
+			
+		}
+		
+		//creation de la colonne IMI
+		Column colonneIMI=new Column();	
+		colonneTitre.appendChild(colonneIMI);
+		colonneIMI.setLabel("IMI");
+		colonneIMI.setAlign("center");
+		colonneIMI.setWidth("100px");
+		
+		
+		//creation des lignes pour chaque employe
+		Rows rows=new Rows();
+		grid.appendChild(rows);
+		Set <String>setEmploye =mapEmployeFamilleCompetence.keySet();
+		Iterator <String> iteratorEmploye=setEmploye.iterator();
+		while(iteratorEmploye.hasNext())
+		{
+			String nomEmploye=iteratorEmploye.next();
+			HashMap<String, String> mapFamilleIMI=mapEmployeFamilleIMI.get(nomEmploye);
+			//creation de la ligne employe
+			Row ligne=new Row();
+			rows.appendChild(ligne);
+			//remplissage des colonnes familles et IMI de la ligne employe
+			Label nom=new Label();
+			nom.setValue(nomEmploye);
+			System.out.println("employe= "+ nomEmploye);
+			
+			ligne.appendChild(nom);
+			iteratorFamille=setFamilleCompetence.iterator();
+			String IMI="";
+			while(iteratorFamille.hasNext())
+			{
+				
+				String nomFamille=iteratorFamille.next();
+				System.out.println("nomFamille=" +nomFamille);
+				String valeurIMI=mapFamilleIMI.get(nomFamille);
+				
+				String[] valeur=valeurIMI.split("#");
+				String val=valeur[0];
+				IMI=valeur[1];
+				Label infosFamille=new Label();
+				infosFamille.setValue(val);
+					
+				ligne.appendChild(infosFamille);
+			}
+			//affichage de la valeur IMI dans le tableau
+			Label infosIMI=new Label();
+			infosIMI.setValue(IMI);
+				
+			ligne.appendChild(infosIMI);
+		}
+		
+		//creation de la ligne IMG par famille
+		
+		
+		Row ligne=new Row();
+		rows.appendChild(ligne);
+		//remplissage des colonnes familles et IMI de la ligne employe
+		Label nom=new Label();
+		nom.setValue("Maitrise moyenne par domaine de competence");
+		
+		
+		ligne.appendChild(nom);
+		iteratorFamille=setFamilleCompetence.iterator();
+		int nbfamille=0;
+		while(iteratorFamille.hasNext())
+		{
+			
+			String nomFamille=iteratorFamille.next();
+			
+			Double valeur=mapFIMG.get(nomFamille);
+			
+			
+			String val=valeur.toString();
+			
+			Label infosFamilleIMG=new Label();
+			infosFamilleIMG.setValue(val);
+				
+			ligne.appendChild(infosFamilleIMG);
+			nbfamille++;
+		}
+		//creation de la dernière ligne IMG (footer)
+		
+		
+		//creation de la ligne IMG par famille
+		
+		
+//		Row ligneIMG=new Row();
+//		rows.appendChild(ligneIMG);
+//		
+//		Label nomIMG=new Label();
+//		nomIMG.setValue("IMG");		
+//		ligneIMG.appendChild(nomIMG);
+//		
+		Double img=mapPosteIMG.get(nomOnglet);
+		
+		nbfamille++;
+		Row ligneIMGVal=new Row();
+		ligneIMGVal.setSpans(nbfamille+"");
+		rows.appendChild(ligneIMGVal);
+		//remplissage des colonnes familles et IMI de la ligne employe
+		Label valIMG=new Label();
+		
+		valIMG.setValue("IMG = "+img.toString());		
+		ligneIMGVal.appendChild(valIMG);
+		
+//		Foot foot=new Foot();
+		
+//		Footer footer=new Footer();
+//		foot.appendChild(footer);
+//		footer.setSpan(5);
+//		footer.set
+		
+		return grid;
+	}
 }
