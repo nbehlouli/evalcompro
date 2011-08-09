@@ -46,7 +46,7 @@ background-color: #00CC00 ;
 		<listitem  self="@{each=listevaluateur}">
 
        
-			<listcell label="@{listevaluateur.evaluateur}" />
+			<listcell label="@{listevaluateur.evaluateur}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			<listcell label="@{listevaluateur.pourcentage}" >%
 	
 	        <progressmeter  id="progressbar" value="@{listevaluateur.pourcentage}"  style="upm"/>
