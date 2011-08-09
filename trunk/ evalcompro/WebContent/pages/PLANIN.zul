@@ -8,7 +8,7 @@
 </style>
 
 	<listbox id="admincomptelb" rows="1" model="@{winCtrl.model}"
-		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px" >
+		selectedItem="@{winCtrl.selected}"  width="1500px" mold="paging" pageSize="8" height="300px" >
 		<listhead sizable="true">
 		
 		    <listheader label="id planing" width="180px" sort="auto" align="center"  visible="false"  />
@@ -41,36 +41,36 @@
 			
 		</listitem>
 	</listbox>
-	<grid span="true" sizedByContent="true" width="100%" height="130px">
+	<grid span="true" sizedByContent="false" width="1500px" height="130px">
         <auxhead>
-            <auxheader colspan="13" class="topic">Edition des données</auxheader>
+            <auxheader colspan="10" class="topic">Edition des données</auxheader>
         </auxhead>
         <columns sizable="true">
         
-            <column label="id planing" width="180px" sort="auto" align="center"  visible="false"  />
-			<column label="Nom compagne" width="200px" sort="auto" align="center" />
-			<column label="Nom évaluateur" width="200px" sort="auto" align="center" />
-			<column label="Poste de travail" width="300px" sort="auto" align="center" />
-			<column label="Nom évalué" width="200px" sort="auto" align="center" />
+            <column label="id planing" width="0px" sort="auto" align="center"  visible="false"  />
+			<column label="Nom compagne" width="250px" sort="auto" align="center" />
+			<column label="Nom évaluateur" width="180px" sort="auto" align="center" />
+			<column label="Poste de travail" width="150px" sort="auto" align="center" />
+			<column label="Nom évalué" width="180px" sort="auto" align="center" />
 			<column label="Structure " width="80px" sort="auto" align="center" />
-			<column label="Date de l'évaluation" width="180px" align="center" />
+			<column label="Date de l'évaluation" width="180px" align="est" />
 			<column label="Heure début" width="80px" align="center"   />
 			<column label="Heure fin" width="80px" align="center"  />
 			<column label="Lieu" width="100px" align="center"  />
-			<column label="Personne ressource" width="200px" align="center"  />
+			<column label="Personne ressource" width="150px" align="center"  />
                    
            
         </columns>
         <rows>
             <row>
 
-				 <textbox id="id_planning"  width="180px"  sclass="textboxdetail" value="@{winCtrl.selected.id_planning_evaluation,save-when=none}"   visible="false"/>
-                 <listbox id="nom_compagne"  width="180px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.libelle_compagne,save-when=none}" />
+				 <textbox id="id_planning"  width="0px"  sclass="textboxdetail" value="@{winCtrl.selected.id_planning_evaluation,save-when=none}"   visible="false"/>
+                 <listbox id="nom_compagne"  width="250px"  sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.libelle_compagne,save-when=none}" />
                  <listbox id="Evaluateur"  width="180px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.evaluateur,save-when=none}" />
                  <listbox id="code_poste"  width="150px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.intitule_poste,save-when=none}" />
                  <listbox id="evalue"  width="180px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.evalue,save-when=none}" />
                  <listbox id="code_structure"  width="80px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.code_structure,save-when=none}" />
-                 <datebox id="date_evaluation"  cols="8"  sclass="textboxdetail" value="@{winCtrl.selected.date_evaluation,save-when=none}" format="yyyy/MM/dd"/>
+                 <datebox id="date_evaluation"  cols="180"  sclass="textboxdetail" value="@{winCtrl.selected.date_evaluation,save-when=none}" format="yyyy/MM/dd"/>
                  <listbox id="heure_debut_evaluation" sclass="textboxdetail"  width="80px" mold="select" selectedItem="@{winCtrl.selected.heure_debut_evaluation,save-when=none}"  />
                  <listbox id="heure_fin_evaluation"  sclass="textboxdetail" width="80px"  mold="select" selectedItem="@{winCtrl.selected.heure_fin_evaluation,save-when=none}"  />
                  <textbox id="lieu" width="100px"  sclass="textboxdetail" value="@{winCtrl.selected.lieu,save-when=none}"  />
