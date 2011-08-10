@@ -2,8 +2,14 @@ package Statistique.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
@@ -15,6 +21,7 @@ import common.CreateDatabaseCon;
 import Statistique.bean.EmployeCadreBean;
 import Statistique.bean.EmployeMoyFamBean;
 import Statistique.bean.StatEvolIMIEmployeBean;
+import Statistique.bean.StatIndiceMoyPosteBean;
 import Statistique.bean.StatMoyFamillePosteBean;
 
 import Statistique.bean.StatCotationEmployeBean;
@@ -337,6 +344,91 @@ public class StatCotationEmployeModel {
 		
 		return result;
 	}
+	
+	public HashMap getListFamille() throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		HashMap map = new HashMap();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select distinct code_famille,famille from repertoire_competence";
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			
+			while(rs.next()){
+				map.put(rs.getString("famille"), rs.getString("code_famille"));
+				//list_profile.add(rs.getString("libelle_profile"));
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return (HashMap) sortByComparator(map);
+	}
+	
+	public List getIndiceMoyPoste(String code_poste,String code_famille) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		List listmoyfam = new ArrayList<StatIndiceMoyPosteBean>();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select distinct r.libelle_competence,moy_par_competence from moy_poste_competence_stats m , repertoire_competence r" +
+					         " where code_poste=#code_poste and m.code_famille=#code_famille and r.code_competence=m.code_competence and r.code_famille=m.code_famille";
+			
+			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
+			sql_query = sql_query.replaceAll("#code_famille", "'"+code_famille+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+            while(rs.next()){
+				
+            	StatIndiceMoyPosteBean bean=new StatIndiceMoyPosteBean();
+				bean.setCompetence((rs.getString("libelle_competence")));	
+				bean.setIndice_moy((rs.getFloat("moy_par_competence")));
+				listmoyfam.add(bean);
+				
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return listmoyfam;
+	}
+	
+	 private static Map sortByComparator(Map unsortMap) {
+		 
+	        List list = new LinkedList(unsortMap.entrySet());
+	 
+	        //sort list based on comparator
+	        Collections.sort(list, new Comparator() {
+	             public int compare(Object o1, Object o2) {
+		           return ((Comparable) ((Map.Entry) (o1)).getValue())
+		           .compareTo(((Map.Entry) (o2)).getValue());
+	             }
+		});
+	 
+	        //put sorted list into map again
+		Map sortedMap = new LinkedHashMap();
+		for (Iterator it = list.iterator(); it.hasNext();) {
+		     Map.Entry entry = (Map.Entry)it.next();
+		     sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
+	   }	
 	
 	
 }
