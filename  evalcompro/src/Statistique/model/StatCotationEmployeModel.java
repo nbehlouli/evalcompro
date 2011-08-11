@@ -429,6 +429,42 @@ public class StatCotationEmployeModel {
 		}
 		return sortedMap;
 	   }	
+	 
+	 
+	 public float getIndiceMoyPerPoste(String code_poste,String code_famille) throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			float result=0;
+			
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String sql_query=" select round(avg(moy_par_competence),2) as indice_moy from moy_poste_competence_stats where code_poste=#code_poste  and code_famille=#code_famille" ;
+				
+				sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
+				sql_query = sql_query.replaceAll("#code_famille", "'"+code_famille+"'");
+				
+				ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+				
+	            while(rs.next()){
+					
+	            	
+					result=rs.getFloat("indice_moy");
+								
+		        }
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return result;
+		}
+	 
 	
 	
 }

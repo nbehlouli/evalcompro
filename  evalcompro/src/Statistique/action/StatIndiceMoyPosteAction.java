@@ -125,7 +125,8 @@ public class StatIndiceMoyPosteAction extends  GenericForwardComposer{
 		 		
 				
 			}
-			
+	         
+            catmodel.setValue("IMMF","Indice de maitrise moyen par famille",cotationMoel.getIndiceMoyPerPoste(poste,famille));
 			catmodel.setValue("IMG","Indice de maitrise global",cotationMoel.getIMGParPoste(poste));
 	 		mychart.setModel(catmodel);
 			
