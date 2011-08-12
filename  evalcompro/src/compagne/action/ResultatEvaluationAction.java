@@ -248,7 +248,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 				couleur=HSSFColor.GREEN.index;
 			 			else
 			 				if(clesFamille.equalsIgnoreCase("PERSONNELLES"))
-			 					couleur=HSSFColor.BLUE.index;
+			 					couleur=HSSFColor.LIGHT_BLUE.index;
 			 				else
 			 					if(clesFamille.equalsIgnoreCase("Opérationnelles"))
 			 						couleur=HSSFColor.ORCHID.index;
@@ -1008,12 +1008,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		valIMG.setValue("IMG = "+img.toString());		
 		ligneIMGVal.appendChild(valIMG);
 		
-//		Foot foot=new Foot();
-		
-//		Footer footer=new Footer();
-//		foot.appendChild(footer);
-//		footer.setSpan(5);
-//		footer.set
+
 		
 		return grid;
 	}
