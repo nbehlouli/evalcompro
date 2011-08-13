@@ -24,12 +24,13 @@ import org.zkoss.zul.impl.ChartEngine;
 
 import Statistique.bean.EmployeMoyFamBean;
 import Statistique.bean.StatCotationEmployeBean;
+import Statistique.bean.StatEvolIMGBean;
 import Statistique.bean.StatEvolIMIEmployeBean;
 import Statistique.bean.StatTrancheAgePosteBean;
 import Statistique.model.LineChartEngine;
 import Statistique.model.StatCotationEmployeModel;
 
-public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
+public class StatEvolIMGPosteTravailAction extends  GenericForwardComposer{
 
 	/**
 	 * 
@@ -37,18 +38,16 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 	private static final long serialVersionUID = 1L;
 	Chart mychart;
 	byte[] image;
-	Combobox nom_employe;
-	Combobox compagne;
+	Combobox poste_travail;
 	ArrayList<StatCotationEmployeBean> ListeCotationEmploye;
 	String selectedEmploye;
 	String selectedCompagne;
 	StatCotationEmployeBean selectedBean;
 	
-	Map map_compte=null;
-	Map map_compagne=null;
+	Map map_poste=null;
 
 	
-	public StatEvolIMIEmployeAction()
+	public StatEvolIMGPosteTravailAction()
 	{
 		
 	}
@@ -60,20 +59,23 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 		StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
 		//ListeCotationEmploye=cotationMoel.InitialiserStatCotationEmploye();
 		
-		map_compte=cotationMoel.getListEmployesFichValid();
-		Set set = (map_compte).entrySet(); 
+		map_poste=cotationMoel.getListPostTravailValid();
+		Set set = (map_poste).entrySet(); 
 		Iterator i = set.iterator();
 		
 		while(i.hasNext()) {
 			Map.Entry me = (Map.Entry)i.next();
-			nom_employe.appendItem((String) me.getKey());
+			poste_travail.appendItem((String) me.getKey());
 			}
 		
-		nom_employe.setVisible(true);
-		nom_employe.setSelectedIndex(0);
+		poste_travail.setSelectedIndex(0);
+		
+	 
+	 
+ }
 		
 		
-	}
+
 	
 	 @SuppressWarnings("static-access")
 	 public void onClick$downloadimage() 
@@ -86,21 +88,21 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 	 
 
 	 
-	public void onSelect$nom_employe() throws SQLException	 {
+	public void onSelect$poste_travail() throws SQLException	 {
 		
-		     String employe_id= (String) map_compte.get((String)nom_employe.getSelectedItem().getLabel());
+		     String code_poste= (String) map_poste.get((String)poste_travail.getSelectedItem().getLabel());
 		     
 		     CategoryModel catmodel = new SimpleCategoryModel();
 	       
-		     StatEvolIMIEmployeBean cpb;
+		     StatEvolIMGBean cpb;
 			 Iterator it;
 			 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-			 List sect_items=cotationMoel.getEvolIMIEmploye(employe_id);
+			 List sect_items=cotationMoel.getEvolIMGPoste(code_poste);
 	         it = sect_items.iterator();
 	         float imi=0;
 			while (it.hasNext()){
-		 		cpb  = (StatEvolIMIEmployeBean) it.next();
-		 		catmodel.setValue("",cpb.getDate_evol(),cpb.getImi());
+		 		cpb  = (StatEvolIMGBean)it.next();
+		 		catmodel.setValue("",cpb.getDate_evol(),cpb.getImg());
 		 		
 		 		//catmodel.setValue("IMI","indice de maitrise individuel",3);
 		 		mychart.setModel(catmodel);
@@ -110,37 +112,12 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 			}
 			
 			mychart.setModel(catmodel);
-			mychart.setYAxis("IMI"); 
+			mychart.setYAxis("IMG"); 
 			
 			ChartEngine d=mychart.getEngine();
 			image=d.drawChart(mychart);
 		
 	 }
 	 
-	/*public void onSelect$compagne() throws SQLException
-	 {
 	
-		 nom_employe.getItems().clear();
-		 String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
-		 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-		    map_compte=cotationMoel.getListEmployesFichValid(compagne_id);
-		    
-		    if (map_compte.size()!=0){
-		    	Set set = (map_compte).entrySet(); 
-				Iterator i = set.iterator();
-				
-				while(i.hasNext()) {
-					Map.Entry me = (Map.Entry)i.next();
-					nom_employe.appendItem((String) me.getKey());
-					}
-				
-				nom_employe.setVisible(true);
-				nom_employe.setSelectedIndex(0);
-		    	
-		    }
-		    
-		    else {
-		    	nom_employe.setVisible(false);
-		    }
-	 }*/
 }
