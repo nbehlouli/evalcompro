@@ -20,6 +20,7 @@ import common.CreateDatabaseCon;
 
 import Statistique.bean.EmployeCadreBean;
 import Statistique.bean.EmployeMoyFamBean;
+import Statistique.bean.StatEvolIMGBean;
 import Statistique.bean.StatEvolIMIEmployeBean;
 import Statistique.bean.StatIndiceMoyPosteBean;
 import Statistique.bean.StatMoyFamillePosteBean;
@@ -93,7 +94,51 @@ public class StatCotationEmployeModel {
 	}
 	
 	
-	
+	public HashMap getListEmployesFichValid() throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		HashMap map = new HashMap();
+		String sql_query="";
+		int id_profile=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
+		int id_evaluateur=ApplicationFacade.getInstance().getCompteUtilisateur().getId_compte();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			if (id_profile==1 || id_profile==2 ){
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
+					         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select distinct id_planning_evaluation  from planning_evaluation )";
+			//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			}
+			
+			else{
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
+		         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation " +
+		          " where  id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))";
+				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
+				//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			}
+			
+		   //System.out.println(sql_query);
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			
+			while(rs.next()){
+				map.put(rs.getString("nom"), rs.getString("id_employe"));
+				//list_profile.add(rs.getString("libelle_profile"));
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return map;
+	}
 	
 	
 	public HashMap getListEmployesFichValid(String id_compagne) throws SQLException
@@ -244,6 +289,47 @@ public class StatCotationEmployeModel {
 		return listbean;
 	}
 	
+	
+	public List getEvolIMGPoste(String code_poste) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		List listbean = new ArrayList<StatEvolIMGBean>();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query=" select DATE_FORMAT(c.date_fin ,' %b %Y ')as date_eval, round(img,2) img from img_stats s  ,compagne_evaluation c" +
+					         "  where s.id_compagne=c.id_compagne  and code_poste=#code_poste group by 1 ";
+			
+			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+            while(rs.next()){
+				
+            	StatEvolIMGBean bean=new StatEvolIMGBean();
+				bean.setDate_evol(rs.getString("date_eval"));	
+				bean.setImg(rs.getFloat("img"));
+				listbean.add(bean);
+				
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return listbean;
+	}
+	
+	
+	
+    
+    
+	
 	public HashMap getListPostTravailValid(String id_compagne) throws SQLException
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
@@ -259,6 +345,39 @@ public class StatCotationEmployeModel {
 					         " and p.id_compagne=e.id_compagne  and t.code_poste=p.code_poste and e.id_compagne=#id_compagne;";
 			
 			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			
+			while(rs.next()){
+				map.put(rs.getString("intitule_poste"), rs.getString("code_poste"));
+				//list_profile.add(rs.getString("libelle_profile"));
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return map;
+	}
+	
+	public HashMap getListPostTravailValid() throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		HashMap map = new HashMap();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select  distinct t.code_poste,t.intitule_poste from compagne_evaluation e, planning_evaluation p, poste_travail_description t" +
+					         " where e.id_compagne in (select id_compagne from compagne_validation where compagne_valide=1) " +
+					         " and p.id_compagne=e.id_compagne  and t.code_poste=p.code_poste ";
+			
+			//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
