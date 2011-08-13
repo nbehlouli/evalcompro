@@ -5,8 +5,9 @@ closable="true"  onClose="self.visible = false; event.stopPropagation();">
 	<div>	
 		 Selectionner le format : <listbox id="format" mold="select" >
 	        <listitem label="PDF" value="pdf" selected="true" />
+	        <listitem label="Excel" value="Excel"  />
 	          </listbox>
-	    <button id="pdfDownload" label="Exporter en PDF"  />
+	    <button id="pdfDownload" label="Exporter"  />
     </div>
    <div>
     <iframe id="report" height="600px" width="800px" />
