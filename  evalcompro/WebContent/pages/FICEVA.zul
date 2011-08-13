@@ -36,7 +36,7 @@
        									<combobox id="Famille" readonly="true" width="100%" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"/>
        									
        									<hlayout spacing="30px" >
-       									<button id="start" label="Start" onClick="timer.start()"/>
+       									<button id="start" label="Go" onClick="timer.start()"/>
        									<hlayout spacing="10px" >
        									<label id="count" sclass="count" />
        									
