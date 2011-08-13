@@ -86,8 +86,8 @@ public class StatIndiceMoyPosteAction extends  GenericForwardComposer{
 		// forcer la selection de la permiere ligne
 		poste_travail.setVisible(false);
 		compagne.setSelectedIndex(0);
-		code_famille.setSelectedIndex(0);
-		
+		code_famille.setVisible(false);
+
 		
 		
 	}
@@ -127,7 +127,7 @@ public class StatIndiceMoyPosteAction extends  GenericForwardComposer{
 			}
 	         
             catmodel.setValue("IMMF","Indice de maitrise moyen par famille",cotationMoel.getIndiceMoyPerPoste(poste,famille));
-			catmodel.setValue("IMG","Indice de maitrise global",cotationMoel.getIMGParPoste(poste));
+			catmodel.setValue("IMG","Indice de maitrise global - IMG - ",cotationMoel.getIMGParPoste(poste));
 	 		mychart.setModel(catmodel);
 			
 			ChartEngine d=mychart.getEngine();
@@ -156,4 +156,11 @@ public class StatIndiceMoyPosteAction extends  GenericForwardComposer{
 		 
 		 
 	 }
+	 
+	 public void onSelect$poste_travail()  {
+		 
+		 code_famille.setVisible(true);
+	 }
+	 
+	 
 }
