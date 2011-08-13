@@ -17,14 +17,11 @@
         <caption label="Sélection d'un employé" />
         	<vlayout spacing="5px">
          		<hlayout spacing ="10px">
-					<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/> 				       	
-					<combobox  id="compagne"  autodrop="true"  width="500px"  />			
+					<label value="Nom de l'employé:   "  sclass="textboxdetail"/>
+ 					<combobox id="nom_employe"  autodrop="true"  width="250px"  />	
 				</hlayout>
 			
-        		<hlayout spacing ="42px">
-        			<label value="Nom de l'employé:   "  sclass="textboxdetail"/>
- 					<combobox id="nom_employe"  autodrop="true"  width="250px"  />
- 				</hlayout>			
+        			
 			</vlayout>	   	
     </groupbox>
     
