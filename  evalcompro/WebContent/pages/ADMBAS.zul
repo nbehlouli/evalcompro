@@ -1,71 +1,79 @@
-<window border="normal" height="100%">
-	<grid fixedLayout="true">
-		<columns>
-			<column label="Type" width="150px" />
-			<column label="Content" />
-		</columns>
-		<rows>
-			<row>
-				<label value="UserName" width="150px" />
-				<textbox value="Jerry" width="150px" />
-			</row>
-			<row>
-				Password
-				<textbox type="password" value="123456789"
-					width="150px" />
-			</row>
-			<row>
-				Re-type Password
-				<textbox type="password" value="123456789"
-					width="150px" />
-			</row>
-			<row>
-				Age:
-				<intbox value="19" constraint="no negative,no zero"
-					width="150px" />
-			</row>
-			<row>
-				Phone:
-				<intbox constraint="no negative,no zero" width="150px"
-					value="12345678" />
-			</row>
-			<row>
-				Weight:
-				<decimalbox format="###.##" value="154.32"
-					width="150px" />
-			</row>
-			<row>
-				Birthday:
-				<hbox>
-					<datebox id="db" width="150px" />
-					<listbox
-						onSelect="db.setFormat((String)self.getSelectedItem().getValue())" mold="select"
-						rows="1">
-						<listitem label="Default" value="" />
-						<listitem label="yyyy/MM/dd hh:mm a"
-							value="yyyy/MM/dd hh:mm a" />
-						<listitem label="yyyy/MM/dd" value="yyyy/MM/dd" />
-						<listitem label="MM-dd-yy" value="MM-dd-yy" />
-					</listbox>
-				</hbox>
-			</row>
-			<row>
-				Address
-				<vbox>
-					<textbox width="250px"
-						value="123 W. 45 Street, New York, NY 10001" />
-					<hbox>
-						<label value="Zip code :" />
-						<intbox constraint="no negative,no zero"
-							width="150px" />
-					</hbox>
-				</vbox>
-			</row>
-			<row>
-				E-mail:
-				<textbox width="150px" value="zk@zkoss.org"
-					constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address" />
-			</row>
-		</rows>
-	</grid>
+<window  id="win" title="Compagne d'évaluation" apply="administration.action.DatabaseManagementAction" width="100%" height="100%" border="normal" contentStyle="overflow:auto"
+ closable="true"  onClose="self.visible = false; event.stopPropagation();">
+ 
+ <style>
+.textboxdetail {font-family: Verdana, Arial,Helvetica,sans-serif;
+ font-size: 10px;font-weight: ;
+}
+</style>
+                             
+	<listbox id="admincomptelb" rows="1" model="@{winCtrl.model}"
+		selectedItem="@{winCtrl.selected}"  width="100%" mold="paging" pageSize="8" height="300px" >
+		<listhead sizable="true">
+		
+		    <listheader label="id database" width="0px" sort="auto" align="center"  visible="false"  />
+			<listheader label="Nom base de données" width="250px" sort="auto" align="center" />
+			<listheader label="login" width="250px" sort="auto" align="center" />
+			<listheader label="Mot de passe" width="180px" align="center" />
+			<listheader label="Adresse IP" width="180px" align="center" />
+			<listheader label="Nom instance" width="180px" align="center" />
+			
+	
+		</listhead>
+		<listitem self="@{each=listcompagne}">
+		    <listcell label="@{listcompagne.database_id}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne.nom_base}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne.login}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne.pwd}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"   />
+			<listcell label="@{listcompagne.adresse_ip}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne.nom_instance}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			
+			
+		</listitem>
+	</listbox>
+	<grid span="true" sizedByContent="true" width="100%" height="130px">
+        <auxhead>
+            <auxheader colspan="5" class="topic">Edition des données</auxheader>
+        </auxhead>
+        <columns sizable="true">
+            
+            <column label="id database"  align="center" width="0px" visible="false"/>
+            <column label="Nom base de donnée"  align="center" width="250px"/>
+            <column label="login"  align="center" width="250px"/>
+            <column label="Mot de passe" align="center" width="100px"  />
+            <column label="Adresse IP" align="center" width="100px"/>
+            <column label="Nom instance" align="center" width="100px"/>
+           
+        </columns>
+        <rows>
+            <row>
+
+				 <textbox id="database_id"  width="0px" sclass="textboxdetail"  value="@{winCtrl.selected.database_id,save-when=none}"   visible="false"/>
+                 <textbox id="nom_base"  width="250px" sclass="textboxdetail"  value="@{winCtrl.selected.nom_base,save-when=none}" />
+                 <textbox id="login"  width="250px"  sclass="textboxdetail" value="@{winCtrl.selected.login,save-when=none}" />
+                 <textbox id="pwd"  width="100px"  sclass="textboxdetail" value="@{winCtrl.selected.pwd,save-when=none}" />
+                 <textbox id="adresse_ip"   width="100px" sclass="textboxdetail" value="@{winCtrl.selected.adresse_ip,save-when=none}" />
+                 <textbox id="nom_instance"  width="100px" sclass="textboxdetail" value="@{winCtrl.selected.nom_instance,save-when=none}" />
+                 
+                
+            </row>
+        </rows>
+    </grid>
+	
+
+	<hbox pack="center" width="100%" spacing="20">
+		<div>
+			<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter une compagne"/>
+			<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier une compagne"/>
+			<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer une compagne"/>
+			<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
+		</div>
+		<div>
+
+			
+		</div>
+
+		
+	</hbox>
 </window>
