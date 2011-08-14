@@ -17,6 +17,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.HSSFRegionUtil;
+import org.apache.poi.hssf.util.Region;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.zkoss.util.media.AMedia;
 
@@ -159,6 +161,8 @@ public void downloadInExcelFormat() throws IOException, SQLException
 	HashMap<String, Integer> mapFamilleNbCompetence=/*extractRepCompModel.*/getNBCompetenceParFamille(mapFamilleGroupeCompetencePoste);
 	HashMap<String, Integer> mapGroupeNbCompetence=/*extractRepCompModel.*/getNBCompetenceParGroupe(mapFamilleGroupeCompetencePoste);
 	HashMap <String, Short> mapFamilleColor=new HashMap<String, Short>();
+	
+	int nbCompAll=getNBCompetence(mapFamilleGroupeCompetencePoste);
 	//creation du fichier xls
 
 	//creation d'un document excel 
@@ -177,8 +181,13 @@ public void downloadInExcelFormat() throws IOException, SQLException
 	//creation de l'onglet
 	HSSFSheet sheet = workBook.createSheet("Répartition des compétences par poste de travail");
 	
-	
-
+ArrayList<HSSFCell> liste=new ArrayList <HSSFCell>();	
+for(int h=1;h<nbCompAll+1;h++)
+{
+	HSSFRow row3 = sheet.createRow(h);
+	HSSFCell c=row3.createCell(2);
+	liste.add(c);
+}
 	
 	//creation de l'entête du document excel
 	
@@ -330,14 +339,34 @@ public void downloadInExcelFormat() throws IOException, SQLException
  	    cellStyle2.setFont(font1);
  	    
  	    int finRow=numeroLigne+nbCompetence-1;
- 	    sheet.addMergedRegion(new CellRangeAddress(numeroLigne,(short)finRow,0,(short)0));
  	    
- 	    
+ 
+ 	 	
+ 
  	    //creation de la première colonne (familles)
  		HSSFCell cell3 = row1.createCell((short)0);
  	    cell3.setCellValue(famille);
  	 	cell3.setCellStyle(cellStyle2);
  	 	
+ 	   Region region = new Region(numeroLigne,(short)0,finRow,(short)0);
+	    //sheet.addMergedRegion(new CellRangeAddress(numeroLigne,(short)finRow,0,(short)0));
+	    
+	  sheet.addMergedRegion(region);
+	  //specification du style de la region
+	  
+	 HSSFRegionUtil.setBorderBottom( HSSFCellStyle.BORDER_THIN,
+	        region, sheet, workBook );
+	    HSSFRegionUtil.setBorderTop( HSSFCellStyle.BORDER_THIN,
+	        region, sheet, workBook );
+	    HSSFRegionUtil.setBorderLeft( HSSFCellStyle.BORDER_THIN,
+	        region, sheet, workBook );
+	    HSSFRegionUtil.setBorderRight( HSSFCellStyle.BORDER_THIN,
+	        region, sheet, workBook );
+	   HSSFRegionUtil.setBottomBorderColor(HSSFColor.BLACK.index, region, sheet, workBook);
+	    HSSFRegionUtil.setTopBorderColor(HSSFColor.BLACK.index, region, sheet, workBook);
+	    HSSFRegionUtil.setLeftBorderColor(HSSFColor.BLACK.index, region, sheet, workBook);
+	    HSSFRegionUtil.setRightBorderColor(HSSFColor.BLACK.index, region, sheet, workBook);
+	   
  	 	//creation lignes groupe
  	 	
  	 	int debutGroupeLigne=numeroLigne;
@@ -351,8 +380,8 @@ public void downloadInExcelFormat() throws IOException, SQLException
  	 		String groupe=iteratorGroupe.next();
  	 		int nbCompetenceG=mapGroupeNbCompetence.get(groupe);
  	 		int finGRow=debutGroupeLigne+nbCompetenceG-1;
- 	 		sheet.addMergedRegion(new CellRangeAddress(debutGroupeLigne,(short)finGRow,1,(short)1));
- 	 	    
+ 	 		//sheet.addMergedRegion(new CellRangeAddress(debutGroupeLigne,(short)finGRow,1,(short)1));
+	 		
  	 	    
  	 	    //creation de la première colonne (familles)
 
@@ -372,7 +401,28 @@ public void downloadInExcelFormat() throws IOException, SQLException
  	 	 	 	cell4.setCellStyle(cellStyle2);
  	 	 	}
  	 	 	
- 	 	 	
+ 	 	  /*******************************/
+  	 	   Region region1 = new Region(debutGroupeLigne,(short)1,finGRow,(short)1);
+  	 	    //sheet.addMergedRegion(new CellRangeAddress(numeroLigne,(short)finRow,0,(short)0));
+  	 	    
+  	 	  sheet.addMergedRegion(region1);
+  	 	  //specification du style de la region
+  	 	  
+  	 	 HSSFRegionUtil.setBorderBottom( HSSFCellStyle.BORDER_THIN,
+  	 	        region1, sheet, workBook );
+  	 	    HSSFRegionUtil.setBorderTop( HSSFCellStyle.BORDER_THIN,
+  	 	        region1, sheet, workBook );
+  	 	    HSSFRegionUtil.setBorderLeft( HSSFCellStyle.BORDER_THIN,
+  	 	        region1, sheet, workBook );
+  	 	    HSSFRegionUtil.setBorderRight( HSSFCellStyle.BORDER_THIN,
+  	 	        region1, sheet, workBook );
+  	 	   HSSFRegionUtil.setBottomBorderColor(HSSFColor.BLACK.index, region1, sheet, workBook);
+  	 	    HSSFRegionUtil.setTopBorderColor(HSSFColor.BLACK.index, region1, sheet, workBook);
+  	 	    HSSFRegionUtil.setLeftBorderColor(HSSFColor.BLACK.index, region1, sheet, workBook);
+  	 	    HSSFRegionUtil.setRightBorderColor(HSSFColor.BLACK.index, region1, sheet, workBook);
+  	 	   	 		
+  	 		
+ /***********************************/ 	 	 	
  	 	 	//creation lignes competence
  	 	 	
  	 	 	//////////////////////////////////////////////
@@ -407,37 +457,38 @@ public void downloadInExcelFormat() throws IOException, SQLException
  	 	 		cellStyle3.setFont(font1);
  	 	 		HSSFRow rowCree=null;
  	 	 	 	
- 	 	 	 	if((i==0) && (j==debutGroupeLigne))
- 	 	 	 	{
- 	 	 	 		
- 	 	 	 		HSSFCell cell4 = row1.createCell((short)2);
-	 	 	 	    cell4.setCellValue(competence);
-	 	 	 	 	cell4.setCellStyle(cellStyle3);
-	 	 	 	 	rowCree=row1;
- 	 	 	 	}
- 	 	 	 	else
- 	 	 	 	{
- 	 	 	 		if(j==debutGroupeLigne)
- 	 	 	 		{
- 	 	 	 			
- 	 	 	 			HSSFCell cell4 = row2.createCell((short)2);
- 	 	 	 			cell4.setCellValue(competence);
- 	 	 	 			cell4.setCellStyle(cellStyle3);
- 	 	 	 			rowCree=row2;
- 	 	 	 		}
- 	 	 	 		else
- 	 	 	 		{
- 	 	 	 			
- 	 	 	 			HSSFRow row3 = sheet.createRow(j);
- 	 	 	 			HSSFCell cell4 = row3.createCell((short)2);
- 	 	 	 			cell4.setCellValue(competence);
- 	 	 	 			cell4.setCellStyle(cellStyle3);
- 	 	 	 			rowCree=row3;
- 	 	 	 		}
- 	 	 	 	}
+// 	 	 	 	if((i==0) && (j==debutGroupeLigne))
+// 	 	 	 	{
+// 	 	 	 		
+// 	 	 	 		HSSFCell cell4 = row1.createCell((short)2);
+//	 	 	 	    cell4.setCellValue(competence);
+//	 	 	 	 	cell4.setCellStyle(cellStyle3);
+//	 	 	 	 	rowCree=row1;
+// 	 	 	 	}
+// 	 	 	 	else
+// 	 	 	 	{
+// 	 	 	 		if(j==debutGroupeLigne)
+// 	 	 	 		{
+// 	 	 	 			
+// 	 	 	 			HSSFCell cell4 = row2.createCell((short)2);
+// 	 	 	 			cell4.setCellValue(competence);
+// 	 	 	 			cell4.setCellStyle(cellStyle3);
+// 	 	 	 			rowCree=row2;
+// 	 	 	 		}
+// 	 	 	 		else
+// 	 	 	 		{
 
- 	 	 	 	
- 	 	 	 	
+ 	 	 	 			
+ 	 	 	 			///HSSFRow row3 = sheet.createRow(j);
+ 	 	 	 			HSSFCell cell4 = liste.get(j-1);//row3.createCell((short)2);
+ 	 	 	 			cell4.setCellValue(competence);
+ 	 	 	 			cell4.setCellStyle(cellStyle3);
+ 	 	 	 			rowCree=cell4.getRow();
+ 	 	 	 		
+//
+// 	 	 	 		}
+// 	 	 	 	}
+
  	 	 	 	
  	 	 	 	//cellule poste de travail 
  	 	 	 	
@@ -611,6 +662,37 @@ public HashMap<String, Integer> getNBCompetenceParGroupe(HashMap<String, HashMap
 		
 	}
 	return mapGroupeNbCompetence;
+	
+}
+
+public int getNBCompetence(HashMap<String, HashMap<String, HashMap<String, ArrayList<String>>>> mapFamilleGroupeCompetencePoste)
+{
+	HashMap<String, Integer> mapGroupeNbCompetence=new HashMap<String, Integer>();
+	
+	Set<String> setFamille=mapFamilleGroupeCompetencePoste.keySet();
+	Iterator<String> iteratorFamille=setFamille.iterator();
+	int nbCompetence=0;
+	while(iteratorFamille.hasNext())
+	{
+		
+		String famille=iteratorFamille.next();
+		HashMap<String, HashMap<String, ArrayList<String>>> mapGroupeCompetencePoste=mapFamilleGroupeCompetencePoste.get(famille);
+		Set<String> setGroupe=mapGroupeCompetencePoste.keySet();
+		Iterator<String > iteratorGroupe=setGroupe.iterator();
+		while(iteratorGroupe.hasNext())
+		{
+			
+			String groupe=iteratorGroupe.next();
+			HashMap<String, ArrayList<String>> mapCompetencePoste=mapGroupeCompetencePoste.get(groupe);
+			int nbComp=mapCompetencePoste.size();
+			//mapGroupeNbCompetence.put(groupe, nbComp);
+			nbCompetence=nbCompetence+nbComp;
+			
+		}
+		
+		
+	}
+	return nbCompetence;
 	
 }
 }
