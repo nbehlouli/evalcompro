@@ -18,6 +18,9 @@ import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
@@ -25,12 +28,14 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
 import compagne.model.CompagneCreationModel;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.CompagneCreationBean;
+import administration.bean.DataBaseClientLinkBean;
 import administration.bean.DatabaseManagementBean;
 import administration.bean.StructureEntrepriseBean;
 import administration.model.AdministrationLoginModel;
@@ -44,8 +49,10 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	Listbox admincomptelb;
+	Listbox admincomptelb1;
 	
-	
+
+    	 
 	Textbox database_id;
 	Textbox nom_base;
 	Textbox  login;
@@ -55,9 +62,24 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	
 	
 	
+	Listbox base_donnee;
+	Textbox client_id;
+	Textbox nom_client;
+	Textbox  secteur_id;
+	Textbox nom_secteur;
+	
+	Tab defBase;
+	Tab baseClient;
+	Component comp1;
+	
+	
 	AnnotateDataBinder binder;
+	AnnotateDataBinder binder1;
+
 	List<DatabaseManagementBean> model = new ArrayList<DatabaseManagementBean>();
+	List<DataBaseClientLinkBean> model1 = new ArrayList<DataBaseClientLinkBean>();
 	DatabaseManagementBean selected;
+	DataBaseClientLinkBean selected1;
 	List list_profile=null;
 	Button add;
 	Button okAdd;
@@ -66,7 +88,7 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	Button upload;
 	Button download;
 	Button effacer;
-	 Map map=null;
+    Map map_database=null;
 	public DatabaseManagementAction() {
 	}
 
@@ -76,9 +98,11 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
+	
 		DatabaseManagementModel init= new DatabaseManagementModel();
-	  
 		model=init.loadDatabaselist();
+		
+		
     	binder = new AnnotateDataBinder(comp);
 		if(model.size()!=0)
 			selected=model.get(0);
@@ -86,6 +110,7 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 		if(admincomptelb.getItemCount()!=0)
 			admincomptelb.setSelectedIndex(0);
 		binder.loadAll();
+		baseClient.addForward(Events.ON_CLICK, comp, "onSelectTab");
 		
 	}
 
@@ -102,7 +127,51 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	public void setSelected(DatabaseManagementBean selected) {
 		this.selected = selected;
 	}
+	
+	
+	public List<DataBaseClientLinkBean> getModel1() {
+		return model1;
+	}
 
+
+
+	public DataBaseClientLinkBean getSelected1() {
+		return selected1;
+	}
+
+	public void setSelected1(DataBaseClientLinkBean selected1) {
+		this.selected1 = selected1;
+	}
+	
+	
+	public void onSelectTab(ForwardEvent event) throws SQLException
+	 {
+		
+		DatabaseManagementModel init= new DatabaseManagementModel();
+	   
+		map_database=init.getListDB();
+		Set set = (map_database).entrySet(); 
+    	Iterator i = set.iterator();
+		
+		// Display elements
+		while(i.hasNext()) {
+		Map.Entry me = (Map.Entry)i.next();
+		base_donnee.appendItem((String) me.getKey(),(String) me.getKey());
+		//profilemodel.add((String) me.getKey());
+		}
+		
+		
+		model1=init.loadDatabaseClientlist();
+    	binder1 = new AnnotateDataBinder(self);
+		if(model.size()!=0)
+			selected1=model1.get(0);
+		
+		if(admincomptelb1.getItemCount()!=0)
+			admincomptelb1.setSelectedIndex(0);
+		binder1.loadAll();
+		
+		
+	 }
 	public void onClick$add() throws WrongValueException, ParseException {
 		
 		clearFields();
@@ -116,34 +185,66 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	
 	public void onClick$okAdd()throws WrongValueException, ParseException, InterruptedException {
 	 	
-		DatabaseManagementBean addedData = new DatabaseManagementBean();
-	
-		addedData.setNom_base(getSelectednom_base());
-		addedData.setLogin(getSelectedlogin());
-		addedData.setPwd(getSelectedPwd());
-		addedData.setAdresse_ip(getSelectedAdresse_ip());
-		addedData.setNom_instance(getSelectedNom_instance());
-	
-		//controle d'intégrité 
-		DatabaseManagementModel compagne_model =new DatabaseManagementModel();
-		//compagne_model.addCompagne(addedData);
-		//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
-		Boolean donneeValide=true;
+		//Tab defBase;
+		//Tab baseClient;
 		
-	if (donneeValide)
-		{
-			//insertion de la donnée ajoutée dans la base de donnée
-			boolean donneeAjoute=compagne_model.addDatabase(addedData);
-			// raffrechissemet de l'affichage
-			if (donneeAjoute )
+		if (baseClient.isSelected()){
+			
+			DataBaseClientLinkBean addedData = new DataBaseClientLinkBean();
+			addedData.setDatabase_id(getSelectedBaseDonnee());
+			addedData.setNom_client(getSelectednom_client());
+			addedData.setNom_secteur(getSelectednom_secteur().toUpperCase());
+			addedData.setNom_base(getSelectedBaseDonneeNom());
+				
+			//controle d'intégrité 
+			DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+			//compagne_model.addCompagne(addedData);
+			//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+			Boolean donneeValide=true;
+			
+		if (donneeValide)
 			{
-				model.add(addedData);
-			
-				selected = addedData;
-			
-				binder.loadAll();
+				//insertion de la donnée ajoutée dans la base de donnée
+				boolean donneeAjoute=compagne_model.addLinkDatabaseClient(addedData);
+				// raffrechissemet de l'affichage
+				if (donneeAjoute )
+				{
+					model1.add(addedData);
+					selected1 = addedData;
+					binder1.loadAll();
+				}
 			}
 		}
+		else {
+				DatabaseManagementBean addedData = new DatabaseManagementBean();
+				addedData.setNom_base(getSelectednom_base());
+				addedData.setLogin(getSelectedlogin());
+				addedData.setPwd(getSelectedPwd());
+				addedData.setAdresse_ip(getSelectedAdresse_ip());
+				addedData.setNom_instance(getSelectedNom_instance());
+			
+				//controle d'intégrité 
+				DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+				//compagne_model.addCompagne(addedData);
+				//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+				Boolean donneeValide=true;
+				
+			if (donneeValide)
+				{
+					//insertion de la donnée ajoutée dans la base de donnée
+					boolean donneeAjoute=compagne_model.addDatabase(addedData);
+					// raffrechissemet de l'affichage
+					if (donneeAjoute )
+					{
+						model.add(addedData);
+					
+						selected = addedData;
+					
+						binder.loadAll();
+					}
+				}
+	
+	   }
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
 		add.setVisible(true);
@@ -160,13 +261,60 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 			pwd.setText("");
 			adresse_ip.setText("");
 			nom_instance.setText("");
+			
+			if (baseClient.isSelected()){
+				
+					base_donnee.setSelectedIndex(0);
+					client_id.setText("");
+					nom_client.setText("");
+					secteur_id.setText("");
+					nom_secteur.setText("");
+				
+			}
 	  }
 
 	public void onClick$update() throws WrongValueException, ParseException, InterruptedException {
-		if (selected == null) {
+		if (selected == null || selected1==null) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		
+
+		if (baseClient.isSelected()){
+			
+			DataBaseClientLinkBean addedData = new DataBaseClientLinkBean();
+			selected1.setDatabase_id(getSelectedBaseDonnee());
+			selected1.setNom_client(getSelectednom_client());
+			selected1.setNom_secteur(getSelectednom_secteur().toUpperCase());
+			selected1.setClient_id(getSelectedclient_id());
+		
+			//controle d'intégrité 
+			DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+			//compagne_model.addCompagne(addedData);
+			//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+			Boolean donneeValide=true;
+			//controle d'intégrité 
+			//Boolean donneeValide=compagne_model.controleIntegrite(selected);
+			if (donneeValide)
+			{
+				//insertion de la donnée ajoutée dans la base de donnée
+				
+				if (Messagebox.show("Voulez vous appliquer les modifications?", "Prompt", Messagebox.YES|Messagebox.NO,
+					    Messagebox.QUESTION) == Messagebox.YES) {
+					    //System.out.println("pressyes");
+					compagne_model.updateLinkDatabaseClient(selected1);
+					binder1.loadAll();
+					return;
+				}
+				
+				else{
+					return;
+				}
+			}	
+		}
+		else {
+			
+		
 		DatabaseManagementBean addedData = new DatabaseManagementBean();
 		
 		selected.setDatabase_id(getSelectedIdbase());
@@ -200,38 +348,58 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 			}
 		}	
 			
+  }		
 			
-			
-	}
+}
 
-	public void onClick$delete() throws InterruptedException, SQLException {
-		if (selected == null) {
+	public void onClick$delete() throws InterruptedException, SQLException, ParseException {
+		if (selected == null || selected1== null ) {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
-		DatabaseManagementModel compagne_model =new DatabaseManagementModel();
-		//suppression de la donnée supprimée de la base de donnée
-		selected.setDatabase_id(getSelectedIdbase());
-		
-		if (Messagebox.show("Voulez vous supprimer cette base de données?", "Prompt", Messagebox.YES|Messagebox.NO,
-			    Messagebox.QUESTION) == Messagebox.YES) {
-			    //System.out.println("pressyes");
-			compagne_model.deleteDatabase(selected);
-			model.remove(selected);
-			selected = null;
-			binder.loadAll();
-			return;
+		if (baseClient.isSelected()){
+			
+			DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+			//suppression de la donnée supprimée de la base de donnée
+			selected1.setClient_id(getSelectedclient_id());
+			
+			if (Messagebox.show("Voulez vous supprimer cette base de données?", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) {
+				    //System.out.println("pressyes");
+				compagne_model.deleteLinkDatabaseClient(selected1);
+				model1.remove(selected1);
+				selected1 = null;
+				binder1.loadAll();
+				return;
+			}
+			
+			else{
+				return;
+			}
+			
 		}
 		
-		else{
-			return;
-		}
+		else {
+				DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+				//suppression de la donnée supprimée de la base de donnée
+				selected.setDatabase_id(getSelectedIdbase());
+				
+				if (Messagebox.show("Voulez vous supprimer cette base de données?", "Prompt", Messagebox.YES|Messagebox.NO,
+					    Messagebox.QUESTION) == Messagebox.YES) {
+					    //System.out.println("pressyes");
+					compagne_model.deleteDatabase(selected);
+					model.remove(selected);
+					selected = null;
+					binder.loadAll();
+					return;
+				}
+				
+				else{
+					return;
+				}
+	  }
 		
-		
-		
-
-		
-	}
+}
 
 	public void onClick$effacer()  {
 		
@@ -250,6 +418,11 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 	
 	public void onSelect$admincomptelb() {
 		closeErrorBox(new Component[] { database_id,nom_base,login, pwd, adresse_ip,nom_instance});
+	}
+	
+
+	public void onSelect$admincomptelb1() {
+		closeErrorBox(new Component[] { client_id,nom_client,secteur_id, nom_secteur, base_donnee});
 	}
 	
 	
@@ -309,7 +482,55 @@ public class DatabaseManagementAction extends GenericForwardComposer {
 		return name;
 	}
 	
+	private String getSelectednom_client() throws WrongValueException {
+		String name = nom_client.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nom_client, "Merci de saisir un nom client!");
+		}
+		return name;
+	}
 	
-
+	private Integer getSelectedclient_id() throws WrongValueException {
+		
+		Integer name =  Integer.parseInt(client_id.getValue());
+		if (name==null) {
+			throw new WrongValueException(client_id, "Merci de saisir un client id!");
+		}
+		return name;
+	}
+	
+   private Integer getSelectedsecteur_id() throws WrongValueException {
+		
+		Integer name =  Integer.parseInt(secteur_id.getValue());
+		if (name==null) {
+			throw new WrongValueException(secteur_id, "Merci de saisir un secteur id!");
+		}
+		return name;
+	}
+	
+   private String getSelectednom_secteur() throws WrongValueException {
+		String name = nom_secteur.getValue();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(nom_secteur, "Merci de saisir un  secteur d'activité!");
+		}
+		return name;
+	}
+	
+   
+   private int getSelectedBaseDonnee() throws WrongValueException {
+		Integer name=(Integer) map_database.get((String)base_donnee.getSelectedItem().getLabel());
+		if (name==null) {
+			throw new WrongValueException(base_donnee, "Merci de choisir une base de données client!");
+		}
+		return name;
+	}
+   
+   private String getSelectedBaseDonneeNom() throws WrongValueException {
+		String name=(String)base_donnee.getSelectedItem().getLabel();
+		if (Strings.isBlank(name)) {
+			throw new WrongValueException(base_donnee, "Merci de choisir une base de données client!");
+		}
+		return name;
+	}
 
 }
