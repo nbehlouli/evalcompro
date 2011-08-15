@@ -82,12 +82,12 @@
 			
 	
 		</listhead>
-		<listitem self="@{each=listcompagne}">
-		    <listcell label="@{listcompagne.client_id}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
-			<listcell label="@{listcompagne.nom_client}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
-			<listcell label="@{listcompagne.secteur_id}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-			<listcell label="@{listcompagne.nom_secteur}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"   />
-			<listcell label="@{listcompagne.nom_base}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+		<listitem self="@{each=listcompagne1}">
+		    <listcell label="@{listcompagne1.client_id}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne1.nom_client}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
+			<listcell label="@{listcompagne1.secteur_id}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+			<listcell label="@{listcompagne1.nom_secteur}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"   />
+			<listcell label="@{listcompagne1.nom_base}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
 			
 			
 			
@@ -110,9 +110,9 @@
             <row>
 
 				 <textbox id="client_id"  width="0px" sclass="textboxdetail"  value="@{winCtrl.selected1.client_id,save-when=none}"   visible="false"/>
-                 <textbox id="nom_client"  width="150px" sclass="textboxdetail"  value="@{winCtrl.selected1.nom_client,save-when=none}" />
-                 <textbox id="secteur_id"  width="150px"  sclass="textboxdetail" value="@{winCtrl.selected1.secteur_id,save-when=none}"   visible="false"/>
-                 <textbox id="nom_secteur"  width="100px"  sclass="textboxdetail" value="@{winCtrl.selected1.nom_secteur,save-when=none}" />
+                 <textbox id="nom_client"  width="200px" sclass="textboxdetail"  value="@{winCtrl.selected1.nom_client,save-when=none}" />
+                 <textbox id="secteur_id"  width="200px"  sclass="textboxdetail" value="@{winCtrl.selected1.secteur_id,save-when=none}"   visible="false"/>
+                 <textbox id="nom_secteur"  width="200px"  sclass="textboxdetail" value="@{winCtrl.selected1.nom_secteur,save-when=none}" />
                  <listbox id="base_donnee"   width="100px" sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected1.nom_base,save-when=none}" />
                  
                 
