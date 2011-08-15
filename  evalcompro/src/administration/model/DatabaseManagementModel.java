@@ -17,6 +17,7 @@ import org.zkoss.zul.SimpleListModel;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.CompagneCreationBean;
+import administration.bean.DataBaseClientLinkBean;
 import administration.bean.DatabaseManagementBean;
 import administration.bean.SelCliDBNameBean;
 import administration.bean.StructureEntrepriseBean;
@@ -104,7 +105,7 @@ private ListModel strset =null;
 			stmt = (Statement) conn.createStatement();
 			String sql_query="INSERT INTO liste_db( nom_base, login, pwd, adresse_ip, nom_instance) values ( #nom_base, #login, #pwd, #adresse_ip, #nom_instance) ";
 			
-			sql_query = sql_query.replaceAll("#nom_base", "'"+ addedData.getNom_base()+"'");
+			sql_query = sql_query.replaceAll("#nom_base", "'"+ addedData.getNom_base().toUpperCase()+"'");
 			sql_query = sql_query.replaceAll("#login", "'"+ addedData.getLogin()+"'");
 			sql_query = sql_query.replaceAll("#pwd", "'"+ addedData.getPwd()+"'");
 			sql_query = sql_query.replaceAll("#adresse_ip", "'"+ addedData.getAdresse_ip()+"'");
@@ -213,7 +214,7 @@ private ListModel strset =null;
             String sql_query="Update liste_db set nom_base=#nom_base, login=#login, pwd=#pwd, adresse_ip=#adresse_ip, nom_instance=#nom_instance where database_id=#database_id";
             
             sql_query = sql_query.replaceAll("#database_id", "'"+ addedData.getDatabase_id()+"'");
-        	sql_query = sql_query.replaceAll("#nom_base", "'"+ addedData.getNom_base()+"'");
+        	sql_query = sql_query.replaceAll("#nom_base", "'"+ addedData.getNom_base().toUpperCase()+"'");
 			sql_query = sql_query.replaceAll("#login", "'"+ addedData.getLogin()+"'");
 			sql_query = sql_query.replaceAll("#pwd", "'"+ addedData.getPwd()+"'");
 			sql_query = sql_query.replaceAll("#adresse_ip", "'"+ addedData.getAdresse_ip()+"'");
@@ -296,9 +297,238 @@ private ListModel strset =null;
 		return true;
 	}
 	
+	public HashMap getListDB() throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDB();
+		Statement stmt = null;
+		HashMap map = new HashMap();
+				
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String profile_list="select  distinct database_id , upper(nom_base) as nom_base from liste_db"; 
+			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+			
+			
+			while(rs.next()){
+				map.put(rs.getString("nom_base"), rs.getInt("database_id"));
+				//list_profile.add(rs.getString("libelle_profile"));
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return map;
+	}	
+	
+public List loadDatabaseClientlist() throws SQLException{
+		
+		
+		List listbean = new ArrayList<DataBaseClientLinkBean>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDB();
+		Statement stmt = null;
+		
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_comp="select  client_id,nom_client,secteur_id,nom_secteur,upper(l.nom_base) as nom_base" +
+					        " from cross_db c, liste_db l where l.database_id=c.database_id";
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
+			
+			while(rs.next()){
+				
+				DataBaseClientLinkBean bean=new DataBaseClientLinkBean();
+				bean.setClient_id(rs.getInt("client_id"));
+				bean.setNom_client(rs.getString("nom_client"));
+				bean.setSecteur_id(rs.getInt("secteur_id"));
+				bean.setNom_secteur(rs.getString("nom_secteur"));
+				//bean.setDatabase_id(rs.getInt("database_id"));
+				bean.setNom_base(rs.getString("nom_base"));
+				
+				  
+				listbean.add(bean);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			stmt.close();
+			conn.close();
+			
+		}
+		return listbean;
+
+ }
+
+public boolean addLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
+{
 	
 	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToDB();
+	Statement stmt = null;
+
 	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query=" INSERT INTO cross_db(nom_client, secteur_id, nom_secteur, database_id)   VALUES(#nom_client,#secteur_id,#nom_secteur,#database_id);";
+		
+		sql_query = sql_query.replaceAll("#nom_client", "'"+ addedData.getNom_client().toUpperCase()+"'");
+		sql_query = sql_query.replaceAll("#secteur_id", "'"+ 0+"'");
+		sql_query = sql_query.replaceAll("#nom_secteur", "'"+ addedData.getNom_secteur().toUpperCase()+"'");
+		sql_query = sql_query.replaceAll("#database_id", "'"+ addedData.getDatabase_id()+"'");
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été insérée dans la base ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
+
+public boolean updateLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
+{
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToDB();
+	Statement stmt = null;
+
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query=" Update cross_db set nom_client=#nom_client, secteur_id=#secteur_id,nom_secteur=#nom_secteur,database_id=#database_id  where client_id=#client_id";
+		
+		sql_query = sql_query.replaceAll("#nom_client", "'"+ addedData.getNom_client().toUpperCase()+"'");
+		sql_query = sql_query.replaceAll("#secteur_id", "'"+ 0+"'");
+		sql_query = sql_query.replaceAll("#nom_secteur", "'"+ addedData.getNom_secteur().toUpperCase()+"'");
+		sql_query = sql_query.replaceAll("#database_id", "'"+ addedData.getDatabase_id()+"'");
+		sql_query = sql_query.replaceAll("#client_id", "'"+ addedData.getClient_id()+"'");
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été modifiée", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
+
+public boolean deleteLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
+{
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToDB();
+	Statement stmt = null;
+
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query=" delete from cross_db where client_id=#client_id";
+		
+		sql_query = sql_query.replaceAll("#client_id", "'"+ addedData.getClient_id()+"'");
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été supprimée ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
 	
 
 
