@@ -16,6 +16,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
@@ -26,6 +27,7 @@ import org.zkoss.zul.Textbox;
 
 
 import administration.bean.CotationIMIvsStrategieBean;
+import administration.bean.IMIvsStrategieBean;
 
 import administration.model.CotationIMIvsStrategieModel;
 
@@ -45,14 +47,15 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 	Textbox label_cotation;
 	Textbox  definition_cotation;
 	Listbox valeur_cotation;
+
+
+	Textbox id_imi_startegie;
+	Textbox startegie;
+	Textbox  besoin_developpement;
+	Listbox imi_borne_inf;
+	Listbox imi_borne_sup;
 	
-	
-	
-	//Listbox valeur_cotation;
-	Textbox client_id;
-	Textbox nom_client;
-	Textbox  secteur_id;
-	Textbox nom_secteur;
+
 	
 	Tab defBase;
 	Tab baseClient;
@@ -63,9 +66,9 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 	AnnotateDataBinder binder1;
 
 	List<CotationIMIvsStrategieBean> model = new ArrayList<CotationIMIvsStrategieBean>();
-	List<CotationIMIvsStrategieBean> model1 = new ArrayList<CotationIMIvsStrategieBean>();
+	List<IMIvsStrategieBean> model1 = new ArrayList<IMIvsStrategieBean>();
 	CotationIMIvsStrategieBean selected;
-	CotationIMIvsStrategieBean selected1;
+	IMIvsStrategieBean selected1;
 	List list_profile=null;
 	Button add;
 	Button okAdd;
@@ -127,39 +130,40 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 	}
 	
 	
-	public List<CotationIMIvsStrategieBean> getModel1() {
+	public List<IMIvsStrategieBean> getModel1() {
 		return model1;
 	}
 
 
 
-	public CotationIMIvsStrategieBean getSelected1() {
+	public IMIvsStrategieBean getSelected1() {
 		return selected1;
 	}
 
-	public void setSelected1(CotationIMIvsStrategieBean selected1) {
+	public void setSelected1(IMIvsStrategieBean selected1) {
 		this.selected1 = selected1;
 	}
 	
 	
-	/*public void onSelectTab(ForwardEvent event) throws SQLException
+	public void onSelectTab(ForwardEvent event) throws SQLException
 	 {
 		
-		DatabaseManagementModel init= new DatabaseManagementModel();
+		CotationIMIvsStrategieModel init= new CotationIMIvsStrategieModel();
 	   
-		map_database=init.getListDB();
-		Set set = (map_database).entrySet(); 
+		map_valeur_cotation=init.list_valeursCotation();
+		Set set = (map_valeur_cotation).entrySet(); 
     	Iterator i = set.iterator();
 		
 		// Display elements
 		while(i.hasNext()) {
 		Map.Entry me = (Map.Entry)i.next();
-		base_donnee.appendItem((String) me.getKey(),(String) me.getKey());
+		imi_borne_inf.appendItem(((Integer)me.getKey()).toString(),((Integer)me.getKey()).toString());
+		imi_borne_sup.appendItem(((Integer)me.getKey()).toString(),((Integer)me.getKey()).toString());
 		//profilemodel.add((String) me.getKey());
 		}
 		
 		
-		model1=init.loadDatabaseClientlist();
+		model1=init.loadIMIvsStrategie();
     	binder1 = new AnnotateDataBinder(self);
 		if(model.size()!=0)
 			selected1=model1.get(0);
@@ -169,7 +173,7 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		binder1.loadAll();
 		
 		
-	 }*/
+	 }
 	public void onClick$add() throws WrongValueException, ParseException {
 		
 		clearFields();
@@ -181,7 +185,7 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		
 	}
 	
-	public void onClick$okAdd()throws WrongValueException, ParseException, InterruptedException {
+	public void onClick$okAdd()throws WrongValueException, ParseException, InterruptedException, SQLException {
 	 	
 		//Tab defBase;
 		//Tab baseClient;
@@ -197,8 +201,8 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 			//controle d'intégrité 
 			CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
 			//compagne_model.addCompagne(addedData);
-			//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
-			Boolean donneeValide=true;
+			Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+			//Boolean donneeValide=true;
 			
 		if (donneeValide)
 			{
@@ -213,36 +217,36 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 				}
 			}
 		}
-		/*else {
-				DatabaseManagementBean addedData = new DatabaseManagementBean();
-				addedData.setNom_base(getSelectednom_base());
-				addedData.setLogin(getSelectedlogin());
-				addedData.setPwd(getSelectedPwd());
-				addedData.setAdresse_ip(getSelectedAdresse_ip());
-				addedData.setNom_instance(getSelectedNom_instance());
+		else {
+			   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
+				addedData.setBesoin_developpement(getSelectedbesoin_developpement());
+				addedData.setStartegie(getSelectedStrategie());
+				addedData.setImi_borne_inf(getSelectedImi_inf());
+				addedData.setImi_borne_sup(getSelectedImi_sup());
+
 			
 				//controle d'intégrité 
-				DatabaseManagementModel compagne_model =new DatabaseManagementModel();
+				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
 				//compagne_model.addCompagne(addedData);
-				//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
-				Boolean donneeValide=true;
+				Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
+				//Boolean donneeValide=true;
 				
 			if (donneeValide)
 				{
 					//insertion de la donnée ajoutée dans la base de donnée
-					boolean donneeAjoute=compagne_model.addDatabase(addedData);
+					boolean donneeAjoute=compagne_model.addImiVsStrat(addedData);
 					// raffrechissemet de l'affichage
 					if (donneeAjoute )
 					{
-						model.add(addedData);
+						model1.add(addedData);
 					
-						selected = addedData;
+						selected1 = addedData;
 					
-						binder.loadAll();
+						binder1.loadAll();
 					}
 				}
 	
-	   }*/
+	   }
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
 		add.setVisible(true);
@@ -260,16 +264,17 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		 valeur_cotation.setSelectedIndex(0);
 		
 			if (baseClient.isSelected()){
-				
-				
-					nom_client.setText("");
-					secteur_id.setText("");
-					nom_secteur.setText("");
+			
+				id_imi_startegie.setText("");
+				besoin_developpement.setText("");
+				startegie.setText("");
+				imi_borne_inf.setSelectedIndex(0);
+				imi_borne_sup.setSelectedIndex(0);
 				
 			}
 	  }
 
-	public void onClick$update() throws WrongValueException, ParseException, InterruptedException {
+	public void onClick$update() throws WrongValueException, ParseException, InterruptedException, SQLException {
 
 		
 
@@ -283,12 +288,8 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		
 			//controle d'intégrité 
 			CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
-			//compagne_model.addCompagne(addedData);
-			//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
-			Boolean donneeValide=true;
-			//controle d'intégrité 
-			//Boolean donneeValide=compagne_model.controleIntegrite(selected);
-			if (donneeValide)
+			Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+				if (donneeValide)
 			{
 				//insertion de la donnée ajoutée dans la base de donnée
 				
@@ -305,44 +306,36 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 				}
 			}	
 		}
-		/*else {
+		else {
+			   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
+				addedData.setBesoin_developpement(getSelectedbesoin_developpement());
+				addedData.setStartegie(getSelectedStrategie());
+				addedData.setImi_borne_inf(getSelectedImi_inf());
+				addedData.setImi_borne_sup(getSelectedImi_sup());
+				addedData.setId_imi_startegie(getSelectedId_imi_startegie());
+
 			
-		
-		DatabaseManagementBean addedData = new DatabaseManagementBean();
-		
-		selected.setDatabase_id(getSelectedIdbase());
-		selected.setNom_base(getSelectednom_base());
-		selected.setLogin(getSelectedlogin());
-		selected.setPwd(getSelectedPwd());
-		selected.setAdresse_ip(getSelectedAdresse_ip());
-		selected.setNom_instance(getSelectedNom_instance());
+				//controle d'intégrité 
+				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
+				Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
+				//Boolean donneeValide=true;
+				
+			if (donneeValide)
+				{
+					//insertion de la donnée ajoutée dans la base de donnée
+					boolean donneeAjoute=compagne_model.UpdateImiVsStrat(addedData);
+					// raffrechissemet de l'affichage
+					if (donneeAjoute )
+					{
+						model1.add(addedData);
+					
+						selected1 = addedData;
+					
+						binder1.loadAll();
+					}
+				}
 	
-		//controle d'intégrité 
-		DatabaseManagementModel compagne_model =new DatabaseManagementModel();
-		//compagne_model.addCompagne(addedData);
-		//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
-		Boolean donneeValide=true;
-		//controle d'intégrité 
-		//Boolean donneeValide=compagne_model.controleIntegrite(selected);
-		if (donneeValide)
-		{
-			//insertion de la donnée ajoutée dans la base de donnée
-			
-			if (Messagebox.show("Voulez vous appliquer les modifications?", "Prompt", Messagebox.YES|Messagebox.NO,
-				    Messagebox.QUESTION) == Messagebox.YES) {
-				    //System.out.println("pressyes");
-				compagne_model.updateDatabase(selected);
-				binder.loadAll();
-				return;
-			}
-			
-			else{
-				return;
-			}
-		}	
-			
-  }		*/
-			
+	   }
 }
 
 	public void onClick$delete() throws InterruptedException, SQLException, ParseException {
@@ -368,25 +361,25 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 			
 		}
 		
-		/*else {
-				DatabaseManagementModel compagne_model =new DatabaseManagementModel();
-				//suppression de la donnée supprimée de la base de donnée
-				selected.setDatabase_id(getSelectedIdbase());
+		else {
+			   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
+			   selected1.setId_imi_startegie(getSelectedId_imi_startegie());
+				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();			//suppression de la donnée supprimée de la base de donnée
 				
 				if (Messagebox.show("Voulez vous supprimer cette base de données?", "Prompt", Messagebox.YES|Messagebox.NO,
 					    Messagebox.QUESTION) == Messagebox.YES) {
 					    //System.out.println("pressyes");
-					compagne_model.deleteDatabase(selected);
-					model.remove(selected);
-					selected = null;
-					binder.loadAll();
+					compagne_model.deleteImiVsStrat(selected1);
+					model1.remove(selected1);
+					selected1 = null;
+					binder1.loadAll();
 					return;
 				}
 				
 				else{
 					return;
 				}
-	  }*/
+	  }
 		
 }
 
@@ -410,11 +403,13 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		closeErrorBox(new Component[] { id_cotation,label_cotation,definition_cotation, valeur_cotation});
 	}
 	
-/*
+	
+
+		
 	public void onSelect$admincomptelb1() {
-		closeErrorBox(new Component[] { client_id,nom_client,secteur_id, nom_secteur, base_donnee});
+		closeErrorBox(new Component[] { id_imi_startegie,startegie,besoin_developpement, imi_borne_inf, imi_borne_sup});
 	}
-	*/
+	
 	
 	private void closeErrorBox(Component[] comps){
 		for(Component comp:comps){
@@ -458,6 +453,48 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		return name;
 	}
    
-  
+
+	
+	 private String getSelectedImi_inf() throws WrongValueException {
+			String name= (String) imi_borne_inf.getSelectedItem().getValue();
+			if (name==null) {
+				throw new WrongValueException(imi_borne_inf, "Merci de selectionner une borne inferieure!");
+			}
+			return name;
+		}
+
+	 private String getSelectedImi_sup() throws WrongValueException {
+			String name= (String) imi_borne_sup.getSelectedItem().getValue();
+			if (name==null) {
+				throw new WrongValueException(imi_borne_sup, "Merci de selectionner une borne superieure!");
+			}
+			return name;
+		}
+	
+	 private String getSelectedStrategie() throws WrongValueException {
+			String name = startegie.getValue();
+			if (Strings.isBlank(name)) {
+				throw new WrongValueException(startegie, "Merci de saisir une strategie!");
+			}
+			return name;
+		}
+	 
+	 private String getSelectedbesoin_developpement() throws WrongValueException {
+			String name = besoin_developpement.getValue();
+			if (Strings.isBlank(name)) {
+				throw new WrongValueException(besoin_developpement, "Merci de saisir un besoin de développement!");
+			}
+			return name;
+		}
+   
+	 private Integer getSelectedId_imi_startegie() throws WrongValueException {
+			Integer name = Integer.parseInt(id_imi_startegie.getValue());
+			if (name==null) {
+				throw new WrongValueException(id_imi_startegie, "Merci de saisir un id strategie!");
+			}
+			return name;
+		}
+
+   
 
 }

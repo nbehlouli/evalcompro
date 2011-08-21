@@ -26,6 +26,7 @@ import administration.bean.CompagneCreationBean;
 import administration.bean.CotationIMIvsStrategieBean;
 import administration.bean.DataBaseClientLinkBean;
 import administration.bean.DatabaseManagementBean;
+import administration.bean.IMIvsStrategieBean;
 import administration.bean.SelCliDBNameBean;
 import administration.bean.StructureEntrepriseBean;
 
@@ -39,6 +40,8 @@ public class CotationIMIvsStrategieModel {
 	
 
 private ArrayList<CotationIMIvsStrategieBean>  listbean=null; 
+
+
 private ListModel strset =null;
 	
 	/**
@@ -80,6 +83,8 @@ private ListModel strset =null;
 			conn.close();
 			
 		}
+		
+	
 		return listbean;
 	
 		
@@ -151,48 +156,76 @@ private ListModel strset =null;
 	 * @param addedData
 	 * @return
 	 * @throws InterruptedException 
+	 * @throws SQLException 
 	 */
 	
-	/*public boolean controleIntegrite(CompagneCreationBean addedData) throws InterruptedException
+	public boolean controleIntegrite(CotationIMIvsStrategieBean addedData) throws InterruptedException, SQLException
 	{
 		try 
 		{   
 			
-			
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-					
-			
-			DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-			if(addedData.getNom_compagne().length()>50)
+			Iterator<CotationIMIvsStrategieBean> index=loadCotationCompetence().iterator();
+			while(index.hasNext())
 			{
-				Messagebox.show("La taille du champ nom ne doit pas dépasser 50 caractères", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				CotationIMIvsStrategieBean donnee=index.next();
+				 if (Integer.valueOf(addedData.getValeur_cotation())==Integer.valueOf(donnee.getValeur_cotation())){
+					 
+					 Messagebox.show("La valeur de la cotation: "+Integer.valueOf(addedData.getValeur_cotation())+" exist deja!", "Erreur",Messagebox.OK, Messagebox.ERROR);
+						
+						return false;
+					 
+				 }
 				
-				return false;
 			}
-			else
-								if(addedData.getDate_deb_comp().after(addedData.getDate_fin_comp()))
-								{
-									Messagebox.show("La date fin de  compagne doit être superieure à la date debut compagne !", "Erreur",Messagebox.OK, Messagebox.ERROR);
-									return false;
-								}
 								
-									
 		} 
 		catch (InterruptedException e1) {
-			 TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		catch (NumberFormatException nfe)
-	    {
-			Messagebox.show("Le mot de passe doit être un entier composé de 8 chiffres Exemple 21012001", "Erreur",Messagebox.OK, Messagebox.ERROR);
-			return false;
-	    }
-		
+	
 			
 		return true;
 	}
 	
-	*/
+	
+	public boolean controleIntegriteImi(IMIvsStrategieBean addedData) throws InterruptedException, SQLException
+	{
+		try 
+		{   
+				 if (Integer.valueOf(addedData.getImi_borne_inf())>= Integer.valueOf(addedData.getImi_borne_sup())){
+					 	Messagebox.show("La borne inferieure doit être inferieure strictement a la borne superieure!", "Erreur",Messagebox.OK, Messagebox.ERROR);
+						return false;		 
+				 }
+				 Iterator<IMIvsStrategieBean> index=loadIMIvsStrategie().iterator();
+					while(index.hasNext())
+					{
+						IMIvsStrategieBean donnee=index.next();
+							 if ((Integer.valueOf(addedData.getImi_borne_inf())>=Integer.valueOf(donnee.getImi_borne_inf()) && 
+									             Integer.valueOf(addedData.getImi_borne_inf())<Integer.valueOf(donnee.getImi_borne_sup()))) {
+								 	Messagebox.show("Chevauchement  de la borne inferieure avec des bornes existantes ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+									return false;	 
+							 }
+							 else if ((Integer.valueOf(addedData.getImi_borne_sup())>=Integer.valueOf(donnee.getImi_borne_inf()) && 
+						             Integer.valueOf(addedData.getImi_borne_sup())<Integer.valueOf(donnee.getImi_borne_sup()))) {
+								 	Messagebox.show("Chevauchement  de la borne superieure avec des bornes existantes ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+									return false;	 
+							 }
+						
+					}
+											
+		} 
+		catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+			
+		return true;
+	}
+	
+	
+	
 	
 	/**
 	 * Cette classe permet de mettre à jour la table structure_entreprise
@@ -556,6 +589,214 @@ for (Iterator it = list.iterator(); it.hasNext();) {
 }
 return sortedMap;
 }	
+
+public List loadIMIvsStrategie() throws SQLException{
+	
+	
+	List listbean1 = new ArrayList<IMIvsStrategieBean>();
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt = null;
+	
+	try {
+		stmt = (Statement) conn.createStatement();
+		String sel_comp="select id_imi_startegie,imi_borne_inf,imi_borne_sup,besoin_developpement,startegie from imi_strategie";
+		
+		ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
+		
+		while(rs.next()){
+			
+			IMIvsStrategieBean bean=new IMIvsStrategieBean();
+			bean.setId_imi_startegie(rs.getInt("id_imi_startegie"));
+			bean.setImi_borne_inf(String.valueOf(rs.getInt("imi_borne_inf")));
+			bean.setImi_borne_sup(String.valueOf(rs.getInt("imi_borne_sup")));
+			bean.setBesoin_developpement(rs.getString("besoin_developpement"));
+			bean.setStartegie(rs.getString("startegie"));
+			listbean1.add(bean);
+			   
+				
+			}
+		stmt.close();
+		conn.close();
+		
+	} catch (SQLException e) {
+		stmt.close();
+		conn.close();
+		
+	}
+	
+
+	return listbean1;
+	
+}
+
+
+public boolean addImiVsStrat(IMIvsStrategieBean addedData) throws ParseException
+{
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt = null;
+
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query="INSERT INTO imi_strategie( imi_borne_inf, imi_borne_sup, besoin_developpement, startegie) " +
+				          " values (#imi_borne_inf,#imi_borne_sup,#besoin_developpement,#startegie)";		
+		sql_query = sql_query.replaceAll("#imi_borne_inf", "'"+ addedData.getImi_borne_inf()+"'");
+		sql_query = sql_query.replaceAll("#imi_borne_sup", "'"+ addedData.getImi_borne_sup()+"'");
+		sql_query = sql_query.replaceAll("#besoin_developpement", "'"+ addedData.getBesoin_developpement()+"'");
+		sql_query = sql_query.replaceAll("#startegie", "'"+ addedData.getStartegie()+"'");
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été insérée dans la base ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
+
+
+public boolean UpdateImiVsStrat(IMIvsStrategieBean addedData) throws ParseException
+{
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt = null;
+
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query="Update imi_strategie set imi_borne_inf=#imi_borne_inf, imi_borne_sup=#imi_borne_sup, besoin_developpement=#besoin_developpement, startegie=#startegie where id_imi_startegie=#id_imi_startegie ";
+		sql_query = sql_query.replaceAll("#imi_borne_inf", "'"+ addedData.getImi_borne_inf()+"'");
+		sql_query = sql_query.replaceAll("#imi_borne_sup", "'"+ addedData.getImi_borne_sup()+"'");
+		sql_query = sql_query.replaceAll("#besoin_developpement", "'"+ addedData.getBesoin_developpement()+"'");
+		sql_query = sql_query.replaceAll("#startegie", "'"+ addedData.getStartegie()+"'");
+		sql_query = sql_query.replaceAll("#id_imi_startegie", "'"+ addedData.getId_imi_startegie()+"'");
+
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été modifiée dans la base ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
+
+
+public boolean deleteImiVsStrat(IMIvsStrategieBean addedData) throws ParseException
+{
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt = null;
+
+	
+	try 
+	{
+		                                                
+		stmt = (Statement) conn.createStatement();
+		String sql_query="delete from imi_strategie where id_imi_startegie=#id_imi_startegie ";
+		sql_query = sql_query.replaceAll("#id_imi_startegie", "'"+ addedData.getId_imi_startegie()+"'");
+
+		
+		 stmt.execute(sql_query);
+	} 
+	catch (SQLException e) 
+	{
+		try 
+		{
+			Messagebox.show("La donnée n'a pas été suprimmée dans la base ", "Erreur",Messagebox.OK, Messagebox.ERROR);
+		} 
+		catch (InterruptedException e1) {
+			 //TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 //TODO Auto-generated catch block
+		try {
+			stmt.close();conn.close();
+		} catch (SQLException e1) {
+			 //TODO Auto-generated catch block
+			
+			e1.printStackTrace();
+			return false;
+		}
+		
+		
+		return false;
+	}
+	try {
+		stmt.close();conn.close();
+	} catch (SQLException e) {
+		 //TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	}
+	return true;
+}
+
+
 
 
 }
