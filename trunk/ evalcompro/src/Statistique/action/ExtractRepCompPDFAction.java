@@ -151,6 +151,7 @@ public void onClick$pdfDownload() throws IOException, SQLException  {
  * @throws IOException
  * @throws SQLException
  */
+@SuppressWarnings("deprecation")
 public void downloadInExcelFormat() throws IOException, SQLException
 {
 	//récupération des données 
