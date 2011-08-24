@@ -270,7 +270,7 @@ public class ResultatEvaluationModel {
 				+" from employe e, repertoire_competence r, imi_stats i "
 				+" where i.id_employe=e.id_employe  "
 				+" and r.code_famille=i.code_famille "
-				+" and id_compagne=id_compagne ORDER BY imi DESC";
+				+" and id_compagne=#id_compagne ORDER BY imi DESC";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -402,7 +402,7 @@ public class ResultatEvaluationModel {
 				+" from poste_travail_description p, repertoire_competence r, moy_poste_famille_stats i"
 				+" where p.code_poste=i.code_poste "
 				+" and r.code_famille=i.code_famille"
-				+" and id_compagne=id_compagne ";
+				+" and id_compagne=#id_compagne ";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -480,7 +480,7 @@ public class ResultatEvaluationModel {
 				+" and e.code_poste=f.code_poste";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
-			System.out.println(select_structure);
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
@@ -555,6 +555,72 @@ public class ResultatEvaluationModel {
 			}
 		}
 		return mapPostFamilleCompetenceStats;
+	}
+	
+	public HashMap<String, ArrayList<String>> getEmployeTriIMI(String id_compagne)
+	{
+		HashMap<String, ArrayList<String>> mapPostEmployeTriIMI=new HashMap<String, ArrayList<String>>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select distinct e.nom, e.prenom,  round (i.imi, 2) as imi , p.intitule_poste "
+			 +" from employe e,  imi_stats i , poste_travail_description p "
+			 +" where i.id_employe=e.id_employe "  
+			 +" and p.code_poste=e.code_poste "
+			 +" and id_compagne=#id_compagne  ORDER BY imi DESC";
+			
+			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					String nom=rs.getString("nom");
+					String prenom=rs.getString("prenom");
+					String employe=nom+" " +prenom;
+					//Double imi=rs.getDouble("imi"); 
+					String intitule_poste=rs.getString("intitule_poste");
+					
+					if(mapPostEmployeTriIMI.containsKey(intitule_poste))
+					{
+						mapPostEmployeTriIMI.get(intitule_poste).add(employe);
+					}
+					else
+					{
+						ArrayList<String> listEmploye=new ArrayList<String>();
+						listEmploye.add(employe);
+						mapPostEmployeTriIMI.put(intitule_poste, listEmploye);
+					}
+					
+	
+				}
+				else {
+					return mapPostEmployeTriIMI;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return mapPostEmployeTriIMI;
 	}
 
 }
