@@ -161,6 +161,9 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		
 			Label labelNiv1=new Label();
 
+			
+			//attribution du style
+			labelNiv1.setStyle("font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;");
 			labelNiv1.setValue(sgroupe); //affichage libelle niveau 1 ; niveau famille
 			labelNiv1.setParent(celluleNiv1);
 			celluleNiv1.setParent(row);
@@ -186,6 +189,9 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 			
 
 					Label labelNiv2=new Label();
+					
+					//attribution du style
+					labelNiv2.setStyle("font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;");
 					labelNiv2.setValue(scompetence); //affichage du label groupe
 					labelNiv2.setParent(celluleNiv2);
 					celluleNiv2.setParent(row);
@@ -333,6 +339,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 			
 				Label labelNiv1=new Label();
 				
+				//attribution du style
+				labelNiv1.setStyle("font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;");
 				labelNiv1.setValue(listGroupe.get(niv1)); //affichage libelle niveau 1 ; niveau famille
 				labelNiv1.setParent(celluleNiv1);
 				celluleNiv1.setParent(row);
@@ -358,6 +366,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 				
 
 						Label labelNiv2=new Label();
+						//attribution du style
+						labelNiv2.setStyle("font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;");
 						labelNiv2.setValue(scompetence); //affichage du label groupe
 						labelNiv2.setParent(celluleNiv2);
 						celluleNiv2.setParent(row);
