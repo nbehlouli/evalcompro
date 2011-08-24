@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
@@ -29,6 +30,7 @@ import org.zkoss.zul.Textbox;
 
 
 
+import administration.bean.DroitsAccessBean;
 import administration.bean.IMIvsStrategieBean;
 import administration.bean.ProfileDroitsAccessBean;
 
@@ -50,12 +52,7 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	Label lbl_id_profile;
 
 
-	Textbox id_imi_startegie;
-	Textbox startegie;
-	Textbox  besoin_developpement;
-	Listbox imi_borne_inf;
-	Listbox imi_borne_sup;
-	
+	Combobox profile;
 
 	
 	Tab defBase;
@@ -67,9 +64,9 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	AnnotateDataBinder binder1;
 
 	List<ProfileDroitsAccessBean> model = new ArrayList<ProfileDroitsAccessBean>();
-	List<IMIvsStrategieBean> model1 = new ArrayList<IMIvsStrategieBean>();
+	List<DroitsAccessBean> model1 = new ArrayList<DroitsAccessBean>();
 	ProfileDroitsAccessBean selected;
-	IMIvsStrategieBean selected1;
+	DroitsAccessBean selected1;
 	List list_profile=null;
 	Button add;
 	Button okAdd;
@@ -78,7 +75,7 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	Button upload;
 	Button download;
 	Button effacer;
-    Map map_valeur_cotation=null;
+    Map map_profile=null;
 	public ProfileDroitsAccesAction() {
 	}
 
@@ -121,17 +118,17 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	}
 	
 	
-	public List<IMIvsStrategieBean> getModel1() {
+	public List<DroitsAccessBean> getModel1() {
 		return model1;
 	}
 
 
 
-	public IMIvsStrategieBean getSelected1() {
+	public DroitsAccessBean getSelected1() {
 		return selected1;
 	}
 
-	public void setSelected1(IMIvsStrategieBean selected1) {
+	public void setSelected1(DroitsAccessBean selected1) {
 		this.selected1 = selected1;
 	}
 	
@@ -245,15 +242,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
  public void clearFields(){
 	 id_profile.setText("");
 	 libelle_profile.setText("");
-	 if (baseClient.isSelected()){
-		
-			id_imi_startegie.setText("");
-			besoin_developpement.setText("");
-			startegie.setText("");
-			imi_borne_inf.setSelectedIndex(0);
-			imi_borne_sup.setSelectedIndex(0);
-			
-		}
+	 
   }
 	
  
@@ -385,27 +374,26 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 
 	
 	
-	/*public void onSelectTab(ForwardEvent event) throws SQLException
+	public void onSelectTab(ForwardEvent event) throws SQLException
 	 {
+		ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
 		
-		CotationIMIvsStrategieModel init= new CotationIMIvsStrategieModel();
-	   
-		map_valeur_cotation=init.list_valeursCotation();
-		Set set = (map_valeur_cotation).entrySet(); 
+		
+		map_profile=init.selectProfiles();
+		Set set = (map_profile).entrySet(); 
     	Iterator i = set.iterator();
 		
 		// Display elements
 		while(i.hasNext()) {
 		Map.Entry me = (Map.Entry)i.next();
-		imi_borne_inf.appendItem(((Integer)me.getKey()).toString(),((Integer)me.getKey()).toString());
-		imi_borne_sup.appendItem(((Integer)me.getKey()).toString(),((Integer)me.getKey()).toString());
+		profile.appendItem((String)me.getKey());
 		//profilemodel.add((String) me.getKey());
 		}
+				
 		
-		
-		model1=init.loadIMIvsStrategie();
+		model1=init.loadDroitsAccess();
     	binder1 = new AnnotateDataBinder(self);
-		if(model.size()!=0)
+		if(model1.size()!=0)
 			selected1=model1.get(0);
 		
 		if(admincomptelb1.getItemCount()!=0)
@@ -415,7 +403,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 		
 	 }
 	
-	
+	/*
 
 
 	
