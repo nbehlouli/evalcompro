@@ -73,6 +73,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 	
 	HashMap<String, HashMap<String, HashMap< String, Double>>> mapPostFamilleCompetenceStats;
 	
+	HashMap<String, ArrayList<String>> mapPostEmployeTriIMI;
+	
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		
@@ -111,6 +113,8 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
 			
 			 mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
+			 
+			 mapPostEmployeTriIMI =resultatEvaluationModel.getEmployeTriIMI(selected_id_compagne);
 			 
 			 AfficherInfosCompagne();
 		}
@@ -328,10 +332,17 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 	Iterator<String> iteratorEmploye=listEmploye.iterator();
 			 	
 			 	int numLigne=3;
-			 	while(iteratorEmploye.hasNext())
+			 	
+			 	
+			///////prise en cmpte du tri/////////////
+				ArrayList<String> listemployeTrie=mapPostEmployeTriIMI.get(nomOnglet);
+				Iterator<String> iteratoremployeTrie=listemployeTrie.iterator();
+				////////////////////////////////////////////////
+			 	while(/*iteratorEmploye.hasNext()*/iteratoremployeTrie.hasNext())
 			 	{
+			 		String nomEmploye=iteratoremployeTrie.next();
 			 		
-			 		String nomEmploye=iteratorEmploye.next();
+			 		//String nomEmploye=iteratorEmploye.next();
 			 		
 			 		//creation d'une ligne employe
 			 		
@@ -917,9 +928,15 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		grid.appendChild(rows);
 		Set <String>setEmploye =mapEmployeFamilleCompetence.keySet();
 		Iterator <String> iteratorEmploye=setEmploye.iterator();
-		while(iteratorEmploye.hasNext())
+		
+		///////prise en cmpte du tri/////////////
+		ArrayList<String> listemployeTrie=mapPostEmployeTriIMI.get(nomOnglet);
+		Iterator<String> iteratoremployeTrie=listemployeTrie.iterator();
+		///////////////////
+		while(/*iteratorEmploye.hasNext()*/iteratoremployeTrie.hasNext())
 		{
-			String nomEmploye=iteratorEmploye.next();
+			//String nomEmploye=iteratorEmploye.next();
+			String nomEmploye=iteratoremployeTrie.next();
 			HashMap<String, String> mapFamilleIMI=mapEmployeFamilleIMI.get(nomEmploye);
 			//creation de la ligne employe
 			Row ligne=new Row();
