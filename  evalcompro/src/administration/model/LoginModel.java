@@ -113,7 +113,7 @@ public static void checkProfile(List compte_user) throws SQLException  {
 	String select_profile=" select id_ecran,code_ecran,libelle_ecran,code_menu,libelle_menu"+ 
 	                      " from liste_ecran where code_ecran in ("+
 			              "select   code_ecran from droits where id_profile=#profile"+
-	                      " and hide=0 and ecriture=1 and lecture=1 ) ";
+	                      " and hide=0 ) ";
 	
 
 	select_profile = select_profile.replaceAll("#profile",profile.toString() );
