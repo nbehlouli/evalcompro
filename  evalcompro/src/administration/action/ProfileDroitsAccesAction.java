@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,22 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.CategoryModel;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.SimpleCategoryModel;
 
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.impl.ChartEngine;
 
 
 
+import Statistique.bean.StatEvolIMIEmployeBean;
+import Statistique.model.StatCotationEmployeModel;
 import administration.bean.DroitsAccessBean;
 import administration.bean.IMIvsStrategieBean;
 import administration.bean.ProfileDroitsAccessBean;
@@ -76,6 +83,7 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	Button download;
 	Button effacer;
     Map map_profile=null;
+    Map map_listecran=null;
 	public ProfileDroitsAccesAction() {
 	}
 
@@ -376,9 +384,10 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 	
 	public void onSelectTab(ForwardEvent event) throws SQLException
 	 {
+		
+		
+		profile.getItems().clear();
 		ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
-		
-		
 		map_profile=init.selectProfiles();
 		Set set = (map_profile).entrySet(); 
     	Iterator i = set.iterator();
@@ -391,7 +400,26 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 		}
 				
 		
-		model1=init.loadDroitsAccess();
+		/*model1=init.loadDroitsAccess();
+    	binder1 = new AnnotateDataBinder(self);
+		if(model1.size()!=0)
+			selected1=model1.get(0);
+		
+		if(admincomptelb1.getItemCount()!=0)
+			admincomptelb1.setSelectedIndex(0);
+		binder1.loadAll();*/
+		
+		
+	 }
+	
+	public void onSelect$profile() throws SQLException	 {
+		
+	     Integer profile_id= (Integer) map_profile.get((String)profile.getSelectedItem().getLabel());
+	     
+	 	ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
+      
+	 	model1=init.loadDroitsAccess(profile_id);
+	 	map_listecran=init.listScreenAccessRight(model1);
     	binder1 = new AnnotateDataBinder(self);
 		if(model1.size()!=0)
 			selected1=model1.get(0);
@@ -399,88 +427,79 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 		if(admincomptelb1.getItemCount()!=0)
 			admincomptelb1.setSelectedIndex(0);
 		binder1.loadAll();
-		
-		
-	 }
+        
 	
+}
+	public void onCreation(ForwardEvent event){
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
+		Set set = (map_listecran).entrySet(); 
+    	Iterator i = set.iterator();
+
+    	String maChaine="";
+		
+		// Display elements
+		while(i.hasNext()) {
+			  int tab[ ] = new int[3];
+			  int k=0;
+				Map.Entry me = (Map.Entry)i.next();
+				 maChaine =(String)me.getValue();
+				 java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(maChaine, "|");
+
+				 while ( tokenizer.hasMoreTokens() ) {
+				    
+				     tab[k]=Integer.valueOf(tokenizer.nextToken());
+				     k++;
+				 }
+		 
+				 if ((checkbox.getName().equalsIgnoreCase("hide")) &&
+					 (checkbox.getValue().equalsIgnoreCase((String)me.getKey())) &&
+					  (tab[0]==1)){
+				      
+					 checkbox.setChecked(true);	 
+		          }
+				 
+				 else if ((checkbox.getName().equalsIgnoreCase("ecriture")) &&
+						 (checkbox.getValue().equalsIgnoreCase((String)me.getKey())) &&
+						  (tab[1]==1)){
+					
+						 checkbox.setChecked(true);	 
+			          }
+				 
+				 else if ((checkbox.getName().equalsIgnoreCase("lecture")) &&
+						 (checkbox.getValue().equalsIgnoreCase((String)me.getKey())) &&
+						  (tab[2]==1)){
+				
+						 checkbox.setChecked(true);	 
+			          }
+	   }
+}
 	/*
 
+	public void onModifyCheckedBox(ForwardEvent event){
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
 
-	
-
-	
-
-		
-	public void onSelect$admincomptelb1() {
-		closeErrorBox(new Component[] { id_imi_startegie,startegie,besoin_developpement, imi_borne_inf, imi_borne_sup});
-	}
-	
-	
-	
-
-
-	
-	
-	private String getSelectedlabel_cotation() throws WrongValueException {
-		String name = label_cotation.getValue();
-		if (Strings.isBlank(name)) {
-			throw new WrongValueException(label_cotation, "Merci de saisir un label!");
-		}
-		return name;
-	}
-	
-	
-   
-   private String getSelectedvaleur_cotation() throws WrongValueException {
-		String name= (String) valeur_cotation.getSelectedItem().getValue();
-		if (name==null) {
-			throw new WrongValueException(valeur_cotation, "Merci de choisir une valeur cotation!");
-		}
-		return name;
-	}
-   
-
-	
-	 private String getSelectedImi_inf() throws WrongValueException {
-			String name= (String) imi_borne_inf.getSelectedItem().getValue();
-			if (name==null) {
-				throw new WrongValueException(imi_borne_inf, "Merci de selectionner une borne inferieure!");
+		if (checkbox.isChecked())
+		{
+			//verifier si ça n'a pas encore été unchecked
+			if(unselectedCheckBox.containsValue(checkbox))
+			{
+				unselectedCheckBox.remove(checkbox);
+				
 			}
-			return name;
+			selectedCheckBox.put(checkbox.getValue(), checkbox);
 		}
-
-	 private String getSelectedImi_sup() throws WrongValueException {
-			String name= (String) imi_borne_sup.getSelectedItem().getValue();
-			if (name==null) {
-				throw new WrongValueException(imi_borne_sup, "Merci de selectionner une borne superieure!");
+		else
+		{
+			//verifier si ça n'a pas encore été checked
+			if(selectedCheckBox.containsValue(checkbox))
+			{
+				selectedCheckBox.remove(checkbox);
+				
 			}
-			return name;
+			unselectedCheckBox.put(checkbox.getValue(), checkbox);
 		}
-	
-	 private String getSelectedStrategie() throws WrongValueException {
-			String name = startegie.getValue();
-			if (Strings.isBlank(name)) {
-				throw new WrongValueException(startegie, "Merci de saisir une strategie!");
-			}
-			return name;
-		}
-	 
-	 private String getSelectedbesoin_developpement() throws WrongValueException {
-			String name = besoin_developpement.getValue();
-			if (Strings.isBlank(name)) {
-				throw new WrongValueException(besoin_developpement, "Merci de saisir un besoin de développement!");
-			}
-			return name;
-		}
-   
-	 private Integer getSelectedId_imi_startegie() throws WrongValueException {
-			Integer name = Integer.parseInt(id_imi_startegie.getValue());
-			if (name==null) {
-				throw new WrongValueException(id_imi_startegie, "Merci de saisir un id strategie!");
-			}
-			return name;
-		}*/
-
+		//selectedCheckBox
+	}*/
    
 
 }
