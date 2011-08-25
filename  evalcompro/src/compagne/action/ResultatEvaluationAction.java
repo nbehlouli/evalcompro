@@ -427,7 +427,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 						 	
 						 	cellCompetence.setCellStyle(cellStyle1);
 						 	cellCompetence.setCellValue(valeurStat);
-						 	System.out.println( "valeur stat "+ valeurStat +" indexColonne ="+indexColonne);
+						 	//System.out.println( "valeur stat "+ valeurStat +" indexColonne ="+indexColonne);
 						 	indexColonne++;
 				 		}
 				 	}
@@ -669,7 +669,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 		
 			 		sheet.addMergedRegion(new CellRangeAddress(numLigne,(short)numLigne,indexColonne,(short)indexColonne+nbcompetence-1));
 			 		int ff=indexColonne+nbcompetence-1;
-			 		System.out.println("CellRangeAddress("+numLigne+",(short)"+numLigne+","+indexColonne+",(short)"+ff+")");
+			 		//System.out.println("CellRangeAddress("+numLigne+",(short)"+numLigne+","+indexColonne+",(short)"+ff+")");
 				 	HSSFCell cell7 = row6.createCell((short)indexColonne);
 				 	
 				 	
