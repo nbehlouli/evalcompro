@@ -248,238 +248,9 @@ private ListModel strset =null;
 		return true;
 	}
 	
-	public HashMap getListDB() throws SQLException
-	{
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
-		Statement stmt = null;
-		HashMap map = new HashMap();
-				
-		try 
-		{
-			stmt = (Statement) conn.createStatement();
-			String profile_list="select  distinct database_id , upper(nom_base) as nom_base from liste_db"; 
-			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
-			
-			
-			while(rs.next()){
-				map.put(rs.getString("nom_base"), rs.getInt("database_id"));
-				//list_profile.add(rs.getString("libelle_profile"));
-	        }
-			stmt.close();conn.close();
-		} 
-		catch (SQLException e){
-				e.printStackTrace();
-				stmt.close();conn.close();
-		}
-		
-		return map;
-	}	
 	
-public List loadDatabaseClientlist() throws SQLException{
-		
-		
-		List listbean = new ArrayList<DataBaseClientLinkBean>();
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
-		Statement stmt = null;
-		
-		try {
-			stmt = (Statement) conn.createStatement();
-			String sel_comp="select  client_id,nom_client,secteur_id,nom_secteur,upper(l.nom_base) as nom_base" +
-					        " from cross_db c, liste_db l where l.database_id=c.database_id";
-			
-			ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
-			
-			while(rs.next()){
-				
-				DataBaseClientLinkBean bean=new DataBaseClientLinkBean();
-				bean.setClient_id(rs.getInt("client_id"));
-				bean.setNom_client(rs.getString("nom_client"));
-				bean.setSecteur_id(rs.getInt("secteur_id"));
-				bean.setNom_secteur(rs.getString("nom_secteur"));
-				//bean.setDatabase_id(rs.getInt("database_id"));
-				bean.setNom_base(rs.getString("nom_base"));
-				
-				  
-				listbean.add(bean);
-				   
-					
-				}
-			stmt.close();
-			conn.close();
-			
-		} catch (SQLException e) {
-			stmt.close();
-			conn.close();
-			
-		}
-		return listbean;
 
- }
 
-public boolean addLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
-{
-	
-	
-	CreateDatabaseCon dbcon=new CreateDatabaseCon();
-	Connection conn=(Connection) dbcon.connectToDB();
-	Statement stmt = null;
-
-	
-	try 
-	{
-		                                                
-		stmt = (Statement) conn.createStatement();
-		String sql_query=" INSERT INTO cross_db(nom_client, secteur_id, nom_secteur, database_id)   VALUES(#nom_client,#secteur_id,#nom_secteur,#database_id);";
-		
-		sql_query = sql_query.replaceAll("#nom_client", "'"+ addedData.getNom_client().toUpperCase()+"'");
-		sql_query = sql_query.replaceAll("#secteur_id", "'"+ 0+"'");
-		sql_query = sql_query.replaceAll("#nom_secteur", "'"+ addedData.getNom_secteur().toUpperCase()+"'");
-		sql_query = sql_query.replaceAll("#database_id", "'"+ addedData.getDatabase_id()+"'");
-		
-		 stmt.execute(sql_query);
-	} 
-	catch (SQLException e) 
-	{
-		try 
-		{
-			Messagebox.show("La donnée n'a pas été insérée dans la base ", "Erreur",Messagebox.OK, Messagebox.ERROR);
-		} 
-		catch (InterruptedException e1) {
-			 //TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		 //TODO Auto-generated catch block
-		try {
-			stmt.close();conn.close();
-		} catch (SQLException e1) {
-			 //TODO Auto-generated catch block
-			
-			e1.printStackTrace();
-			return false;
-		}
-		
-		
-		return false;
-	}
-	try {
-		stmt.close();conn.close();
-	} catch (SQLException e) {
-		 //TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	}
-	return true;
-}
-
-public boolean updateLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
-{
-	
-	
-	CreateDatabaseCon dbcon=new CreateDatabaseCon();
-	Connection conn=(Connection) dbcon.connectToDB();
-	Statement stmt = null;
-
-	
-	try 
-	{
-		                                                
-		stmt = (Statement) conn.createStatement();
-		String sql_query=" Update cross_db set nom_client=#nom_client, secteur_id=#secteur_id,nom_secteur=#nom_secteur,database_id=#database_id  where client_id=#client_id";
-		
-		sql_query = sql_query.replaceAll("#nom_client", "'"+ addedData.getNom_client().toUpperCase()+"'");
-		sql_query = sql_query.replaceAll("#secteur_id", "'"+ 0+"'");
-		sql_query = sql_query.replaceAll("#nom_secteur", "'"+ addedData.getNom_secteur().toUpperCase()+"'");
-		sql_query = sql_query.replaceAll("#database_id", "'"+ addedData.getDatabase_id()+"'");
-		sql_query = sql_query.replaceAll("#client_id", "'"+ addedData.getClient_id()+"'");
-		
-		 stmt.execute(sql_query);
-	} 
-	catch (SQLException e) 
-	{
-		try 
-		{
-			Messagebox.show("La donnée n'a pas été modifiée", "Erreur",Messagebox.OK, Messagebox.ERROR);
-		} 
-		catch (InterruptedException e1) {
-			 //TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		 //TODO Auto-generated catch block
-		try {
-			stmt.close();conn.close();
-		} catch (SQLException e1) {
-			 //TODO Auto-generated catch block
-			
-			e1.printStackTrace();
-			return false;
-		}
-		
-		
-		return false;
-	}
-	try {
-		stmt.close();conn.close();
-	} catch (SQLException e) {
-		 //TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	}
-	return true;
-}
-
-public boolean deleteLinkDatabaseClient(DataBaseClientLinkBean addedData) throws ParseException
-{
-	
-	
-	CreateDatabaseCon dbcon=new CreateDatabaseCon();
-	Connection conn=(Connection) dbcon.connectToDB();
-	Statement stmt = null;
-
-	
-	try 
-	{
-		                                                
-		stmt = (Statement) conn.createStatement();
-		String sql_query=" delete from cross_db where client_id=#client_id";
-		
-		sql_query = sql_query.replaceAll("#client_id", "'"+ addedData.getClient_id()+"'");
-		
-		 stmt.execute(sql_query);
-	} 
-	catch (SQLException e) 
-	{
-		try 
-		{
-			Messagebox.show("La donnée n'a pas été supprimée ", "Erreur",Messagebox.OK, Messagebox.ERROR);
-		} 
-		catch (InterruptedException e1) {
-			 //TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		 //TODO Auto-generated catch block
-		try {
-			stmt.close();conn.close();
-		} catch (SQLException e1) {
-			 //TODO Auto-generated catch block
-			
-			e1.printStackTrace();
-			return false;
-		}
-		
-		
-		return false;
-	}
-	try {
-		stmt.close();conn.close();
-	} catch (SQLException e) {
-		 //TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	}
-	return true;
-}
 
 public HashMap list_valeursCotation() {
 	
@@ -513,7 +284,7 @@ return sortedMap;
 }	
 
 
-public List loadDroitsAccess() throws SQLException{
+public List loadDroitsAccess(Integer id_profile) throws SQLException{
 	
 	
 	List listbean1 = new ArrayList<DroitsAccessBean>();
@@ -523,8 +294,12 @@ public List loadDroitsAccess() throws SQLException{
 	
 	try {
 		stmt = (Statement) conn.createStatement();
-		String sql_query="select distinct d.code_ecran,l.libelle_menu,l.libelle_ecran,d.hide,d.ecriture,d.lecture " +
-				        " from droits d , liste_ecran  l where d.code_ecran=l.code_ecran order by l.libelle_menu,l.libelle_ecran";
+		String sql_query=" select code_ecran,libelle_menu,libelle_ecran,sum(hide) as hide , sum(ecriture) as ecriture, sum(lecture) as lecture" +
+				         "  from ( select  d.code_ecran,l.libelle_menu,l.libelle_ecran,d.hide,d.ecriture,d.lecture from droits d  , liste_ecran  l  where  d.code_ecran=l.code_ecran and  id_profile=#id_profile" +
+				         " union select  l.code_ecran,l.libelle_menu,l.libelle_ecran ,0 as hide ,0 as ecriture,0 as lecture from liste_ecran  l  )  t2 group by code_ecran,libelle_menu,libelle_ecran";
+		
+		
+		sql_query = sql_query.replaceAll("#id_profile", "'"+ id_profile+"'");
 		
 		ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 		
@@ -588,7 +363,22 @@ public HashMap selectProfiles() throws SQLException
 			stmt.close();conn.close();
 	}
 	
-	return map;
+	return (HashMap) sortByComparator(map);
+}
+
+
+public HashMap  listScreenAccessRight(List <DroitsAccessBean> listbean) throws SQLException
+{
+	Iterator<DroitsAccessBean> index=listbean.iterator();
+	HashMap map = new HashMap();
+	while(index.hasNext())
+	{
+		DroitsAccessBean donnee=index.next();
+		map.put(donnee.getCode_ecran(), donnee.getHide()+"|"+donnee.getEcriture()+"|"+
+				donnee.getLecture());
+	}	
+	
+	return (HashMap) sortByComparator(map);
 }
 
 
