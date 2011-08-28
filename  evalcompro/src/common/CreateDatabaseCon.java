@@ -132,6 +132,42 @@ public class CreateDatabaseCon
         }
         return connection;
     }
+    
+    public Connection connectToDBMulti()
+    {
+        try
+        {
+            InitContext intctx = new InitContext();
+            intctx.loadProperties();
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            Properties properties = new Properties(); // Create Properties object
+            properties.put("user", intctx.getJdbcusername());         // Set user ID for connection
+            properties.put("password",intctx.getJdbcpassword());     // Set password for connection
+            properties.put("allowMultiQueries", "true");
+            connection = (Connection) DriverManager.getConnection(intctx.getJdbcurl(), properties );
+            
+            connection.setAutoCommit(true);
+            
+          
+        }
+        catch(Exception e)
+        {
+            if(connection != null)
+            {
+                try
+                {
+                    connection.close();
+                }
+                catch(Exception e1)
+                {
+                    throw new RuntimeException(e);
+                   
+                }
+            }
+        }
+        return connection;
+    }
 
   
     
