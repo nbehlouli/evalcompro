@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
@@ -102,7 +103,7 @@ private ListModel strset =null;
 		
 		
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
+		Connection conn=(Connection) dbcon.connectToDBMulti();
 		Statement stmt = null;
 	
 		
@@ -114,7 +115,13 @@ private ListModel strset =null;
 			
 			sql_query = sql_query.replaceAll("#libelle_profile", "'"+ addedData.getLibelle_profile().toUpperCase()+"'");
 		
-			 stmt.execute(sql_query);
+			String sql_query_droit="insert into droits  (id_profile, code_ecran, hide, ecriture, lecture)" +
+					               " select (select max(id_profile) from profile),code_ecran,1,0,0 from liste_ecran";
+
+			
+			
+				 stmt.execute(sql_query+";"+sql_query_droit);
+			
 		} 
 		catch (SQLException e) 
 		{
@@ -214,13 +221,13 @@ private ListModel strset =null;
 	public Boolean deleteProfile(ProfileDroitsAccessBean addedData) throws SQLException
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
+		Connection conn=(Connection) dbcon.connectToDBMulti();
 		Statement stmt = null;
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-           String sql_query=" delete from  profile  where id_profile=#id_profile  ";
+           String sql_query=" delete from  droits  where id_profile=#id_profile ; "+" delete from  profile  where id_profile=#id_profile  ";
 	    	sql_query = sql_query.replaceAll("#id_profile", "'"+ addedData.getId_profile()+"'");
 			
 			
@@ -296,7 +303,7 @@ public List loadDroitsAccess(Integer id_profile) throws SQLException{
 		stmt = (Statement) conn.createStatement();
 		String sql_query=" select code_ecran,libelle_menu,libelle_ecran,sum(hide) as hide , sum(ecriture) as ecriture, sum(lecture) as lecture" +
 				         "  from ( select  d.code_ecran,l.libelle_menu,l.libelle_ecran,d.hide,d.ecriture,d.lecture from droits d  , liste_ecran  l  where  d.code_ecran=l.code_ecran and  id_profile=#id_profile" +
-				         " union select  l.code_ecran,l.libelle_menu,l.libelle_ecran ,0 as hide ,0 as ecriture,0 as lecture from liste_ecran  l  )  t2 group by code_ecran,libelle_menu,libelle_ecran";
+				         " union select  l.code_ecran,l.libelle_menu,l.libelle_ecran ,0 as hide ,0 as ecriture,0 as lecture from liste_ecran  l  )  t2 group by libelle_menu,libelle_ecran";
 		
 		
 		sql_query = sql_query.replaceAll("#id_profile", "'"+ id_profile+"'");
@@ -381,7 +388,48 @@ public HashMap  listScreenAccessRight(List <DroitsAccessBean> listbean) throws S
 	return (HashMap) sortByComparator(map);
 }
 
+public void execQueriesProfile(HashMap map) throws SQLException{
+	
+	
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToDBMulti();
+	Statement stmt = null;
+	
+	String sql_query_delete="";
+	String sql_query_insert="";
+	String sql_query_all="";
+	
+	
+	
+	Set set = (map).entrySet(); 
+	Iterator i = set.iterator();
+	
+	// Display elements
+	while(i.hasNext()) {
+	Map.Entry me = (Map.Entry)i.next();
+	
+		 sql_query_insert=sql_query_insert+(String)me.getValue()+";";
+	}
+	
+	try {
+		stmt = (Statement) conn.createStatement();
+   	   stmt.execute(sql_query_insert);	
+	
+		stmt.close();
+		conn.close();
+		
+	} catch (SQLException e) {
+		stmt.close();
+		conn.close();
+		
+	}
+	
 
+
+	
+	
+}
 
 
 }
