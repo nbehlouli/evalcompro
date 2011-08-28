@@ -4,7 +4,6 @@ package administration.action;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,27 +20,17 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.SimpleCategoryModel;
-
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.impl.ChartEngine;
 
-
-
-import Statistique.bean.StatEvolIMIEmployeBean;
-import Statistique.model.StatCotationEmployeModel;
 import administration.bean.DroitsAccessBean;
-import administration.bean.IMIvsStrategieBean;
 import administration.bean.ProfileDroitsAccessBean;
-
-
+import administration.bean.ProfileSortedBean;
 import administration.model.ProfileDroitsAccessModel;
 
 
@@ -81,9 +70,14 @@ public class ProfileDroitsAccesAction extends GenericForwardComposer {
 	Button delete;
 	Button upload;
 	Button download;
+	Button valider;
 	Button effacer;
     Map map_profile=null;
     Map map_listecran=null;
+    
+    HashMap <String, Checkbox> selectedCheckBox;
+	HashMap <String, Checkbox> unselectedCheckBox;
+	
 	public ProfileDroitsAccesAction() {
 	}
 
@@ -207,36 +201,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 			}
 		}
 	}
-	/*else {
-		   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
-			addedData.setBesoin_developpement(getSelectedbesoin_developpement());
-			addedData.setStartegie(getSelectedStrategie());
-			addedData.setImi_borne_inf(getSelectedImi_inf());
-			addedData.setImi_borne_sup(getSelectedImi_sup());
-
-		
-			//controle d'intégrité 
-			CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
-			//compagne_model.addCompagne(addedData);
-			Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
-			//Boolean donneeValide=true;
-			
-		if (donneeValide)
-			{
-				//insertion de la donnée ajoutée dans la base de donnée
-				boolean donneeAjoute=compagne_model.addImiVsStrat(addedData);
-				// raffrechissemet de l'affichage
-				if (donneeAjoute )
-				{
-					model1.add(addedData);
-				
-					selected1 = addedData;
-				
-					binder1.loadAll();
-				}
-			}
-
-   }*/
+	
 	okAdd.setVisible(false);
 	effacer.setVisible(false);
 	add.setVisible(true);
@@ -287,36 +252,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 				}
 			}	
 		}
-		/*else {
-			   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
-				addedData.setBesoin_developpement(getSelectedbesoin_developpement());
-				addedData.setStartegie(getSelectedStrategie());
-				addedData.setImi_borne_inf(getSelectedImi_inf());
-				addedData.setImi_borne_sup(getSelectedImi_sup());
-				addedData.setId_imi_startegie(getSelectedId_imi_startegie());
-
-			
-				//controle d'intégrité 
-				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
-				Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
-				//Boolean donneeValide=true;
-				
-			if (donneeValide)
-				{
-					//insertion de la donnée ajoutée dans la base de donnée
-					boolean donneeAjoute=compagne_model.UpdateImiVsStrat(addedData);
-					// raffrechissemet de l'affichage
-					if (donneeAjoute )
-					{
-						model1.add(addedData);
-					
-						selected1 = addedData;
-					
-						binder1.loadAll();
-					}
-				}
-	
-	   }*/
+		
 }
 
 	public void onClick$delete() throws InterruptedException, SQLException, ParseException {
@@ -344,25 +280,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 			
 		}
 		
-	/*	else {
-			   IMIvsStrategieBean addedData = new IMIvsStrategieBean();
-			   selected1.setId_imi_startegie(getSelectedId_imi_startegie());
-				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();			//suppression de la donnée supprimée de la base de donnée
-				
-				if (Messagebox.show("Voulez vous supprimer cette base de données?", "Prompt", Messagebox.YES|Messagebox.NO,
-					    Messagebox.QUESTION) == Messagebox.YES) {
-					    //System.out.println("pressyes");
-					compagne_model.deleteImiVsStrat(selected1);
-					model1.remove(selected1);
-					selected1 = null;
-					binder1.loadAll();
-					return;
-				}
-				
-				else{
-					return;
-				}
-	  }*/
+	
 		
 }
 
@@ -385,7 +303,8 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 	public void onSelectTab(ForwardEvent event) throws SQLException
 	 {
 		
-		
+		selectedCheckBox=new HashMap <String, Checkbox>();
+		unselectedCheckBox=new HashMap <String, Checkbox>();
 		profile.getItems().clear();
 		ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
 		map_profile=init.selectProfiles();
@@ -398,18 +317,6 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 		profile.appendItem((String)me.getKey());
 		//profilemodel.add((String) me.getKey());
 		}
-				
-		
-		/*model1=init.loadDroitsAccess();
-    	binder1 = new AnnotateDataBinder(self);
-		if(model1.size()!=0)
-			selected1=model1.get(0);
-		
-		if(admincomptelb1.getItemCount()!=0)
-			admincomptelb1.setSelectedIndex(0);
-		binder1.loadAll();*/
-		
-		
 	 }
 	
 	public void onSelect$profile() throws SQLException	 {
@@ -473,7 +380,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 			          }
 	   }
 }
-	/*
+	
 
 	public void onModifyCheckedBox(ForwardEvent event){
 		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
@@ -486,7 +393,7 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 				unselectedCheckBox.remove(checkbox);
 				
 			}
-			selectedCheckBox.put(checkbox.getValue(), checkbox);
+			selectedCheckBox.put(checkbox.getValue()+"|"+checkbox.getName(), checkbox);
 		}
 		else
 		{
@@ -496,10 +403,174 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 				selectedCheckBox.remove(checkbox);
 				
 			}
-			unselectedCheckBox.put(checkbox.getValue(), checkbox);
+			unselectedCheckBox.put(checkbox.getValue()+"|"+checkbox.getName(), checkbox);
 		}
 		//selectedCheckBox
-	}*/
+	}
    
+	public void onClick$valider() throws SQLException{
+		//binder1 = new AnnotateDataBinder(self);
+		ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
+		Integer profile_id= (Integer) map_profile.get((String)profile.getSelectedItem().getLabel());
+		HashMap map_screen = setCheckedCkedBox();
+		HashMap map_result=setUncheckedBox();
+		
+		if (map_screen.size()!=0){
+			init.execQueriesProfile(getScreensrights( map_screen,profile_id));
+		}
+		if (map_result.size()!=0){
+		init.execQueriesProfile(getScreensrights( map_result,profile_id));
+		}
+		//binder1.loadAll();
+	}
 
+	/**
+	 * @return
+	 */
+	public HashMap setCheckedCkedBox() {
+		HashMap map_screen = new HashMap();
+		//Set<String> setselected = selectedCheckBox.keySet( );
+		Set<String> setselected = selectedCheckBox.keySet( );
+		ArrayList<String> listselected = new ArrayList<String>(setselected);
+		Iterator<String>iterator=listselected.iterator();
+		iterator=listselected.iterator();
+		
+		
+		
+		
+		while (iterator.hasNext())
+		{
+	
+			String tab[ ] = new String[2];
+			String value="";
+			int k=0;
+			String cles=(String)iterator.next();
+			Checkbox checkBox=selectedCheckBox.get(cles);
+			java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(cles, "|");
+
+			 while ( tokenizer.hasMoreTokens() ) {
+			    
+			     tab[k]=tokenizer.nextToken();
+			     k++;
+			     
+			 }
+			 if (map_screen.containsKey(tab[0])){
+				 value=tab[1]+"|"+ map_screen.get(tab[0]);
+			 }
+			 
+			 else{
+				 value=tab[1];
+			 }
+			// bean.setCodescreen( tab[0]);
+			
+			 map_screen.put(tab[0], value);
+			 //list_droit.add(bean);	     			
+		}
+		return map_screen;
+	}
+	
+	public HashMap setUncheckedBox() {
+		
+		HashMap map_screen = new HashMap();
+		//Set<String> setselected = selectedCheckBox.keySet( );
+		Set<String> setselected = unselectedCheckBox.keySet( );
+		ArrayList<String> listselected = new ArrayList<String>(setselected);
+		Iterator<String>iterator=listselected.iterator();
+		iterator=listselected.iterator();
+		
+		
+		
+		
+		while (iterator.hasNext())
+		{
+	
+			String tab[ ] = new String[2];
+			String value="";
+			int k=0;
+			String cles=(String)iterator.next();
+			Checkbox checkBox=unselectedCheckBox.get(cles);
+			java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(cles, "|");
+
+			 while ( tokenizer.hasMoreTokens() ) {
+			    
+			     tab[k]=tokenizer.nextToken();
+			     k++;
+			     
+			 }
+			 if (map_screen.containsKey(tab[0])){
+				 value=tab[1]+"0"+"|"+ map_screen.get(tab[0]);
+			 }
+			 
+			 else{
+				 value=tab[1]+"0";
+			 }
+			// bean.setCodescreen( tab[0]);
+			
+			 map_screen.put(tab[0], value);
+			 //list_droit.add(bean);	     			
+		}
+		return map_screen;
+	}
+
+	/**
+	 * @param map_droit
+	 * @param tab
+	 */
+	public HashMap  getScreensrights( HashMap map_screen, Integer profile_id) {
+		
+		
+		List list_query= new ArrayList<String>();
+		Set set1 = (map_screen).entrySet(); 
+		Iterator i1 = set1.iterator();
+		String codescreen="";
+		//String delete_profile="delete from droits where id_profile="+profile_id;
+		HashMap map_query= new HashMap();
+		
+		String hide="0";
+		String ecriture="0";
+		String lecture="0";
+		 
+		 while(i1.hasNext()) {
+			 String  insert_profile="update droits set   hide=#hide, ecriture=#ecriture, lecture=#lecture  where id_profile=#id_profile and code_ecran=#code_ecran ";
+			 Map.Entry me1 = (Map.Entry)i1.next();
+			 codescreen=(String)me1.getKey();
+			 
+			 
+			 if (((String)me1.getValue()).contentEquals("hide")){
+				 hide="1";
+			 }
+			 
+			  if (((String)me1.getValue()).contentEquals("ecriture")){
+				 ecriture="1";
+			 }
+			 
+			  if (((String)me1.getValue()).contentEquals("lecture")){
+				 lecture="1";
+			 }
+			  
+			  if (((String)me1.getValue()).contentEquals("hide0")){
+					 hide="0";
+				 }
+				 
+				  if (((String)me1.getValue()).contentEquals("ecriture0")){
+					 ecriture="0";
+				 }
+				 
+				  if (((String)me1.getValue()).contentEquals("lecture0")){
+					 lecture="0";
+				 }
+			 insert_profile = insert_profile.replaceAll("#id_profile", "'"+profile_id+"'");
+			 insert_profile = insert_profile.replaceAll("#code_ecran", "'"+codescreen+"'");
+			 
+			 insert_profile = insert_profile.replaceAll("#ecriture", "'"+ecriture+"'");
+			 insert_profile = insert_profile.replaceAll("#lecture", "'"+lecture+"'");
+			 insert_profile = insert_profile.replaceAll("#hide", "'"+hide+"'");
+			 
+			 map_query.put(codescreen, insert_profile);
+		 
+	  }
+		 
+		return map_query;
+	}
+	
 }

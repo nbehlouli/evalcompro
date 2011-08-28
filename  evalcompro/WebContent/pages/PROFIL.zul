@@ -96,8 +96,8 @@
 					<listheader label="Libelle menu" width="250px" sort="auto" align="center" />
 		  		    <listheader label="Libelle ecran" width="250px" sort="auto" align="left" />
 					<listheader label="Cache" width="80px" align="center" />
-					<listheader label="Ecriture" width="80px" align="center" />
-					<listheader label="Lecture" width="80px" align="center" />
+					<listheader label="Ecriture" width="80px" align="center"  visible="false" />
+					<listheader label="Lecture" width="80px" align="center" visible="false"  />
 					
 			</listhead>
 		
@@ -112,24 +112,17 @@
 					  
 			    	</listcell>
 			    	
-					<listcell  >
+					<listcell  visible="false"  >
 			            <checkbox  name="ecriture" value="@{listcompagne1.code_ecran}"  forward="onCheck=onModifyCheckedBox, onCreate=onCreation"/>
 					</listcell>
 					
-					<listcell  >
+					<listcell visible="false"  >
 			            <checkbox  name="lecture" value="@{listcompagne1.code_ecran}"  forward="onCheck=onModifyCheckedBox, onCreate=onCreation"/>
 					</listcell>
 			
 				
 			</listitem>
 	  </listbox>
-	
-   </tabpanel>
- </tabpanels>
-</tabbox>                      
-	
-	
-
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
 			<button id="valider"    label="Valider" height="25px" width="50px" tooltiptext="Valider"/>
@@ -137,4 +130,11 @@
 		</div>
 			
 	</hbox>
+   </tabpanel>
+ </tabpanels>
+</tabbox>                      
+	
+	
+
+	
 </window>
