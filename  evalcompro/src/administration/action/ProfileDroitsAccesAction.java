@@ -408,20 +408,34 @@ public void onClick$okAdd()throws WrongValueException, ParseException, Interrupt
 		//selectedCheckBox
 	}
    
-	public void onClick$valider() throws SQLException{
+	public void onClick$valider() throws SQLException, InterruptedException{
 		//binder1 = new AnnotateDataBinder(self);
 		ProfileDroitsAccessModel init =new ProfileDroitsAccessModel();
 		Integer profile_id= (Integer) map_profile.get((String)profile.getSelectedItem().getLabel());
 		HashMap map_screen = setCheckedCkedBox();
 		HashMap map_result=setUncheckedBox();
 		
-		if (map_screen.size()!=0){
-			init.execQueriesProfile(getScreensrights( map_screen,profile_id));
+
+		if (Messagebox.show("Voulez vous appliquer les modifications?", "Prompt", Messagebox.YES|Messagebox.NO,
+			    Messagebox.QUESTION) == Messagebox.YES) {
+			if (map_screen.size()!=0){
+				init.execQueriesProfile(getScreensrights( map_screen,profile_id));
+			}
+			if (map_result.size()!=0){
+			init.execQueriesProfile(getScreensrights( map_result,profile_id));
+			}
+			//binder1.loadAll();
+			//binder1.loadAll();
+			return;
 		}
-		if (map_result.size()!=0){
-		init.execQueriesProfile(getScreensrights( map_result,profile_id));
+		
+		else{
+			binder1.loadAll();
+			return;
+			
 		}
-		//binder1.loadAll();
+		
+		
 	}
 
 	/**
