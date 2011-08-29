@@ -10,7 +10,7 @@
 
 	<tabbox id="tb" width="100%"  >
 		<tabs id="tbtabs" >
-			<tab id="defBase" label="définition cotation"  />
+			<tab id="defBase" label="Définition cotation"  />
 			<tab id="baseClient" label="Rattachement IMI Vs Stratégies" />
 			
     	</tabs>
