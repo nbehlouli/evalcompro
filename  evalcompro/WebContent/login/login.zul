@@ -27,12 +27,12 @@
 				<rows>
 					<row>
 						Utilisateur :
-						<textbox id="usertb" width="200px" value="rsaichi" />
+						<textbox id="usertb" width="200px" value="" />
 					</row>
 					<row>
 						 Mot de passe   :
 						<textbox id="pwdtb" width="200px"
-							type="password"  value="12345678"/>
+							type="password"  value=""/>
 					</row>
 				</rows>
 				
