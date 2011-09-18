@@ -4,7 +4,15 @@
 <style>
 .textboxdetail {font-family: Verdana, Arial,Helvetica,sans-serif;
  font-size: 10px;font-weight: ;
-}
+ 
+ }
+ 
+ .z-combobox ,.z-combobox-inp ,.z-comboitem-text, .z-combobox-rounded-pp
+		.z-comboitem-btn, .z-combobox-pp .z-comboitem-text,
+		.z-combobox-pp .z-comboitem-btn {
+		font-family: Verdana, Arial,Helvetica,sans-serif;
+ font-size: 10px;font-weight:;}
+ 
 </style>
 
 	<listbox id="admincomptelb" rows="1" model="@{winCtrl.model}"
@@ -36,9 +44,6 @@
 			<listcell label="@{listcompagne.heure_fin_evaluation}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			<listcell label="@{listcompagne.lieu}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 			<listcell label="@{listcompagne.personne_ressources}" style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;"  />
-			
-			
-			
 		</listitem>
 	</listbox>
 	<grid span="true" sizedByContent="false" width="1500px" height="130px">
@@ -79,15 +84,59 @@
             </row>
         </rows>
     </grid>
+	<popup id="pp_sel_evaluateur">
 	
+			<groupbox id="gb" mold="3d" width="100%" height="500">
+		        <caption label="Envoi planning évaluation" />
+		        	<vlayout spacing="5px">
+		         		<hlayout spacing ="10px">
+							<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/> 				       	
+							<combobox id="comp_list"  autodrop="true"  width="500px" /> 		
+						</hlayout>
+					
+		        	</vlayout>
+		        	
+		            <vlayout  spacing="45px">
+		            
+		            <hlayout spacing ="50px">
+			            
+			           <listbox id="evaluateurlb"  model="@{winCtrl.model1}">
+			                <listhead sizable="true">
+		
+							    <listheader label="Evaluateur" width="180px" align="center"   />
+								<listheader label="Envoyer le planning aux évaluateurs" width="350px"  align="center"   />
+								
+							</listhead>
+							
+					               	<listitem  self="@{each=listevaluateur}">
+
+												<listcell label="@{listevaluateur.evaluateur}"  style="font-family: Verdana, Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+												<listcell> 
+												          <checkbox  value="@{listevaluateur.id_evaluateur}"  forward="onCheck=onModifyCheckedBox, onCreate=onCreation"/>
+												</listcell>
+				
+							        </listitem>
+						</listbox>
+					</hlayout>
+					<hlayout spacing ="35px">
+				 		 <button id="sendemail1"  Label="Envoyer" height="25px" width="60px" tooltiptext="Envoyer les planning aux évaluateurs selectionnés"  />		
+		 	       		 <button id="fermer"  Label="Fermer" height="25px" width="60px" tooltiptext="Fermer la fenêtre"  />
+		 	       	</hlayout>
+		   	        </vlayout>
+		    </groupbox>
+	 
+   </popup>
+
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter un planning"/>
-			<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
-			<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier un planning"/>
-			<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer un planning"/>
-			<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
+			<button id="add"    image="/image/DITEnabled.gif" height="30px" width="50px" tooltiptext="Ajouter un planning"/>
+			<button id="okAdd"  image="/image/OkEnabled.gif" height="30px" width="50px" tooltiptext="Valider"/>
+			<button id="update" image="/image/EDITREDOEnabled.gif" height="30px" width="50px" tooltiptext="Modifier un planning"/>
+			<button id="delete"  image="/image/DeleteEnabled.gif" height="30px" width="50px" tooltiptext="Supprimer un planning"/>
+			<button id="effacer"  image="/image/CancelEnabled.gif" height="30px" width="50px" tooltiptext="Retourner a la selection"/>
+			<button id="sendmail" image="/image/email.gif" height="30px" width="50px" tooltiptext="Télécharger les données de la base de données"  />		
+			
 		</div>
 		<div>
 
