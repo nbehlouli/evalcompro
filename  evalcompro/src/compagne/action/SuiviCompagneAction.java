@@ -66,11 +66,9 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		
 		
 		Set set = (init.getCompagneList()).entrySet(); 
-		Set sec= (init.getStructEntrepriseList()).entrySet();
 		
 		Iterator i = set.iterator();
-		Iterator i1 = sec.iterator();
-		
+	
 		// Display elements
 		while(i.hasNext()) {
 		Map.Entry me = (Map.Entry)i.next();
@@ -165,7 +163,7 @@ public void onModifyCheckedBox(ForwardEvent event){
 	//selectedCheckBox
 }
 
-public void onClick$sendmail() throws SQLException {
+public void onClick$sendmail() throws SQLException, InterruptedException {
 	List employe = new ArrayList<Integer>();
 	List listevalbean=new ArrayList<EmailEvaluateurBean>();
 	//EmailEvaluateurBean evalbean=new EmailEvaluateurBean();
@@ -188,7 +186,17 @@ public void onClick$sendmail() throws SQLException {
 		}
 	}
 	
-	init.sendAlertEvaluateur(listevalbean);
+	if (Messagebox.show("Voulez vous envoyer l'alerte email aux évaluateurs sélectionnés?", "Prompt", Messagebox.YES|Messagebox.NO,
+		    Messagebox.QUESTION) == Messagebox.YES) {
+		init.sendAlertEvaluateur(listevalbean);
+		return;
+	}
+	
+	else{
+		return;
+	}
+	
+	
 				
 	}
 public void onClick$valider() throws SQLException, InterruptedException, ParseException {
