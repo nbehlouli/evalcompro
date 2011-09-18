@@ -341,7 +341,6 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 			
 			monmessage=monmessage+" </TABLE> <P>"+"Cordialement"+	"</P>"+"<P>"+"Administrateur"+	"</P> </body></html>";
 			StringBuilder sb = new StringBuilder();
-			System.out.println(monmessage);
 			sb.append(monmessage);
 			message.setContent(sb.toString(), "text/html");
 
