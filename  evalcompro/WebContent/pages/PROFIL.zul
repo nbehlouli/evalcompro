@@ -95,7 +95,7 @@
 				    <listheader label="Code ecran" width="80px" sort="auto" align="center"   />
 					<listheader label="Libelle menu" width="250px" sort="auto" align="center" />
 		  		    <listheader label="Libelle ecran" width="250px" sort="auto" align="left" />
-					<listheader label="Cache" width="80px" align="center" />
+					<listheader label="Caché" width="80px" align="center" />
 					<listheader label="Ecriture" width="80px" align="center"  visible="false" />
 					<listheader label="Lecture" width="80px" align="center" visible="false"  />
 					
@@ -125,7 +125,7 @@
 	  </listbox>
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="valider"    label="Valider" height="25px" width="50px" tooltiptext="Valider"/>
+			<button id="valider"    label="Valider" height="25px" width="75px" tooltiptext="Valider"/>
 		
 		</div>
 			
