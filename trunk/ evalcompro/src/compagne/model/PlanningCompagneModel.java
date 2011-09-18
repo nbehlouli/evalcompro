@@ -15,7 +15,16 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
@@ -30,8 +39,14 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
+import common.InitContext;
 import common.PwdCrypt;
+import compagne.bean.CompagneListBean;
+import compagne.bean.EmailEvaluateurBean;
+import compagne.bean.PlanningAgendaBean;
 import compagne.bean.PlanningCompagneListBean;
+import compagne.bean.PlanningListEvaluateurBean;
+import compagne.bean.SuiviCompagneBean;
 
 public class PlanningCompagneModel {
 	
@@ -681,6 +696,244 @@ private ListModel strset =null;
 			
 		}
 
+	 
+	 public void sendPlanningToEvaluateur(List recipient,List<PlanningListEvaluateurBean> list_refevaluateur) throws SQLException{
+			final InitContext intctx = new InitContext();
+		    intctx.loadProperties();
+			Properties props = new Properties();
+			props.put("mail.smtp.host", intctx.getHost());
+			props.put("mail.smtp.socketFactory.port", intctx.getPort());
+			props.put("mail.smtp.socketFactory.class",
+					"javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.port", intctx.getPort());
+			List  listcompagne = new ArrayList<CompagneListBean>();
+			//CompagneListBean cmp=new CompagneListBean();
+			
+			
+			
+			Iterator itr=list_refevaluateur.iterator();
+
+			Session session = Session.getDefaultInstance(props,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(intctx.getUser(),intctx.getPassword());
+					}
+				});
+
+			try {
+
+				MimeMessage message = new MimeMessage(session);
+				String reslt="";
+				String monmessage="";
+				String nomevaluateur="";
+
+				message.setFrom(new InternetAddress(intctx.getFrom()));
+				
+				
+				PlanningAgendaBean cpb;
+				PlanningListEvaluateurBean ple;
+				String mail="";
+				while(itr.hasNext()){
+					ple  = (PlanningListEvaluateurBean) itr.next();		
+					Iterator it = recipient.iterator();	
+					monmessage="<html> <body> 	<P>"+" Madame/Monsieur : "+"#nomevaluateur"+"</P>" +
+												"<P>"+" Merci de trouver ci-dessous le planning de l'évaluation des compétences  de votre équipe"+"</P>" +			             
+												" <TABLE BORDER=10>  <TR>  <TH align='center'> Evalué</TH>" +
+												" <TH align='center'> Date</TH> <TH align='center'> Heur debut</TH>" +
+												"<TH align='center'> Heure fin</TH> <TH align='center'> Lieu </TH>  </TR>";
+								
+				
+					while (it.hasNext()){
+						cpb  = (PlanningAgendaBean) it.next();
+						
+						if (cpb.getId_evaluateur()==ple.getId_evaluateur()){
+							
+							mail=cpb.getEmail();
+							nomevaluateur=cpb.getNomevaluateur()+" "+cpb.getPrenomevaluateur();
+							message.setSubject("Planning évaluation des compétences");
+							reslt="<TR>"+"<TD>"+ cpb.getNomevalue() +" "+ cpb.getPrenomevalue()+"</TD>"+
+							               "<TD>"+cpb.getDate_evaluation()+"</TD>"+
+							               "<TD>"+cpb.getHeure_debut_evaluation()+"</TD>"+
+							               "<TD>"+cpb.getHeure_fin_evaluation()+"</TD>"+
+							               "<TD>"+ cpb.getLieu()+"</TD>"+
+							       "</TR>";  
+									      
+							monmessage=monmessage+reslt;
+					   }
+				 }
+					monmessage=monmessage.replaceAll("#nomevaluateur", nomevaluateur);
+					monmessage=monmessage+	" </TABLE> <P>"+"Cordialement"+	"</P>"+"<P>"+"Administrateur"+	"</P> </body></html>";
+					StringBuilder sb = new StringBuilder();
+					sb.append(monmessage);
+					
+					
+					
+					message.setRecipients(Message.RecipientType.TO,
+							InternetAddress.parse(mail));
+					
+					message.setRecipients(Message.RecipientType.CC,
+							InternetAddress.parse(intctx.getCc()));
+					
+					message.setContent(sb.toString(), "text/html");
+
+					Transport.send(message);
+					sb= new StringBuilder();
+					nomevaluateur="";
+					monmessage="";
+					
+				
+			}
+			} catch (MessagingException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+	 
+	 
+	 public List getListEvaluateur(int id_compagne) throws SQLException{
+			
+			
+			List listevaluateur = new ArrayList<SuiviCompagneBean>();
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			String sqlquery="";
+			if  (id_compagne==-1){
+				 sqlquery=	"select distinct id_evaluateur, concat(e.nom,' ',e.prenom) as evaluateur  from planning_evaluation p, employe e" +
+	            " where p.id_evaluateur=e.id_employe order by nom ";
+
+			}
+			else {
+				 sqlquery=	"select distinct id_evaluateur, concat(e.nom,' ',e.prenom) as evaluateur from planning_evaluation p, employe e" +
+	            " where p.id_evaluateur=e.id_employe and id_compagne=#id_compagne order by nom ";
+				sqlquery = sqlquery.replaceAll("#id_compagne", "'"+id_compagne+"'");
+
+
+			}
+
+			
+			try {
+				stmt = (Statement) conn.createStatement();
+				
+				
+				ResultSet rs = (ResultSet) stmt.executeQuery(sqlquery);
+			
+				while(rs.next()){
+					
+					PlanningListEvaluateurBean evalbean=new PlanningListEvaluateurBean();
+					evalbean.setId_evaluateur(rs.getInt("id_evaluateur"));
+					evalbean.setEvaluateur(rs.getString("evaluateur"));
+					
+
+					
+					listevaluateur.add(evalbean);
+					   
+						
+					}
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				stmt.close();
+				conn.close();
+				
+			}
+			return listevaluateur;
+		
+			
+			
+		}
+	 
+	 
+	 public HashMap getCompagneList() throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			HashMap map = new HashMap();
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',date_debut,' Au ',date_fin) as libelle_compagne from compagne_evaluation where now()>= date_debut and now()<=date_fin"; 
+				ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
+				
+				
+				while(rs.next()){
+					map.put( rs.getString("libelle_compagne"),rs.getInt("id_compagne"));
+		        }
+				map.put("Toutes les vagues",-1);
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return map;
+		}
+	 
+	 
+	 public List getPlanningEvaluateur(String evaluateur) throws SQLException{
+			
+			
+			List listevaluateur = new ArrayList<PlanningAgendaBean>();
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			String sqlquery="";
+			
+				 sqlquery=	"select  p.id_evaluateur,e.nom as nomevaluateur,e.prenom as prenomevaluateur,e.email,t.nom as nomevalue,t.prenom as prenomevalue," +
+				 		    " p.date_evaluation,p.heure_debut_evaluation ,p.heure_fin_evaluation,p.lieu,p.personne_ressources" +
+				 		    " from employe e,planning_evaluation p,employe t where e.id_employe in #evaluateur  and p.id_evaluateur=e.id_employe" +
+				 		    " and t.id_employe=p.id_employe";
+				sqlquery = sqlquery.replaceAll("#evaluateur", evaluateur);
+
+
+
+			
+			try {
+				stmt = (Statement) conn.createStatement();
+				
+				
+				ResultSet rs = (ResultSet) stmt.executeQuery(sqlquery);
+			
+				while(rs.next()){
+					
+					PlanningAgendaBean evalbean=new PlanningAgendaBean();
+					evalbean.setNomevaluateur(rs.getString("nomevaluateur"));
+					evalbean.setPrenomevaluateur(rs.getString("prenomevaluateur"));
+					evalbean.setEmail(rs.getString("email"));
+					evalbean.setNomevalue(rs.getString("nomevalue"));
+					evalbean.setPrenomevalue(rs.getString("prenomevalue"));
+					evalbean.setPrenomevalue(rs.getString("prenomevalue"));
+					evalbean.setDate_evaluation(rs.getDate("date_evaluation"));
+					evalbean.setHeure_debut_evaluation(rs.getString("heure_debut_evaluation"));
+					evalbean.setHeure_fin_evaluation(rs.getString("heure_fin_evaluation"));
+					evalbean.setLieu(rs.getString("lieu"));
+					evalbean.setPersonne_ressources(rs.getString("personne_ressources"));
+					evalbean.setId_evaluateur(rs.getInt("id_evaluateur"));
+
+					
+					listevaluateur.add(evalbean);
+					   
+						
+					}
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				stmt.close();
+				conn.close();
+				
+			}
+			return listevaluateur;
+		
+			
+			
+		}
+	 
 
 
 }
