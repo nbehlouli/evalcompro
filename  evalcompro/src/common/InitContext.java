@@ -19,6 +19,7 @@ public class InitContext
     public String jdbcpassword;
     public Properties props;
     public String smtpsubject_alert;
+    public String cc;
     public static final String DIRECTORY_CONNECTION_PARAMETERS = "resources.properties";
     
     public String timerValue ;
@@ -50,6 +51,7 @@ public class InitContext
             
             //information sur la durée d'une evaluation en minutes
             setTimerValue(props.getProperty("timer.value"));
+            setCc(props.getProperty("smtp.cc"));
                         
         }
         catch(IOException e)
@@ -204,6 +206,14 @@ public class InitContext
     	init.loadProperties();
     } */  
     
-    
+	  public String getCc()
+	    {
+	        return cc;
+	    }
+
+	    public void setCc(String cc)
+	    {
+	        this.cc = cc;
+	    }
     
 }
