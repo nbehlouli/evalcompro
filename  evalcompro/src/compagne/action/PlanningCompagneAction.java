@@ -19,21 +19,28 @@ import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 
+import compagne.bean.EmailEvaluateurBean;
 import compagne.bean.PlanningCompagneListBean;
+import compagne.bean.PlanningListEvaluateurBean;
+import compagne.bean.SuiviCompagneBean;
 import compagne.model.CompagneCreationModel;
 import compagne.model.GestionEmployesModel;
 import compagne.model.PlanningCompagneModel;
+import compagne.model.SuiviCompagneModel;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.CompagneCreationBean;
@@ -49,6 +56,8 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 	private static final long serialVersionUID = 1L;
  
 	Listbox admincomptelb;
+	Listbox evaluateurlb;
+	Combobox comp_list;
 	Textbox id_planning;
 	Listbox nom_compagne;
 	Listbox Evaluateur;
@@ -65,9 +74,13 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 	private String lbl_evalue;
 	private String lbl_poste;
 
+
 	AnnotateDataBinder binder;
+	AnnotateDataBinder binder1;
 	List<PlanningCompagneListBean> model = new ArrayList<PlanningCompagneListBean>();
+	List<PlanningListEvaluateurBean> model1 = new ArrayList<PlanningListEvaluateurBean>();
 	PlanningCompagneListBean selected;
+	SuiviCompagneBean selected1;
 	Button add;
 	Button okAdd;
 	Button update;
@@ -83,6 +96,13 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 	Map map_heurefin=null;
 	Map map_poste= new HashMap();
 	Map map_structure=null;
+	Button sendmail;
+	Popup pp_sel_evaluateur;
+	Button fermer;
+	
+	HashMap <String, Checkbox> selectedCheckBox;
+	HashMap <String, Checkbox> unselectedCheckBox;
+	
 	 
 	 
 	public PlanningCompagneAction() {
@@ -180,6 +200,9 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 		return model;
 	}
 
+	public List<PlanningListEvaluateurBean> getModel1() {
+		return model1;
+	}
 
 
 	public PlanningCompagneListBean getSelected() {
@@ -560,6 +583,122 @@ public void setLbl_poste(String lbl_poste) {
 		
   }
 
+  public void onClick$sendmail() throws SQLException{
+	    comp_list.getItems().clear();
+	    PlanningCompagneModel init= new PlanningCompagneModel();
+	  Set set = (init.getCompagneList()).entrySet(); 
+		
+		Iterator i = set.iterator();
+	
+		// Display elements
+		while(i.hasNext()) {
+		Map.Entry me = (Map.Entry)i.next();
+		
+		comp_list.appendItem((String) me.getKey());
+		
+		//profilemodel.add((String) me.getKey());
+		}
+		 comp_list.setSelectedIndex (1);
+	  
+	  //model1=init.uploadListEvaluateur();
+	  pp_sel_evaluateur.open(10, 20);
+  }
+  
+  public void onSelect$comp_list() throws SQLException {
+	  
+	 
+	      PlanningCompagneModel init= new PlanningCompagneModel(); 
+	      binder1 = new AnnotateDataBinder(self);
+	      selectedCheckBox=new HashMap <String, Checkbox>();
+		  unselectedCheckBox=new HashMap <String, Checkbox>();	
+	      Map map = new HashMap();
+	      //Map map_struct = new HashMap();
+	      map=init.getCompagneList();
+	      //map_struct=init.getStructEntrepriseList();
+	     Integer id_compagne=(Integer) map.get(comp_list.getSelectedItem().getLabel());
+	      
+	      //String structure=struct_list.getSelectedItem().getLabel();
+	      model1=init.getListEvaluateur(id_compagne);
+	   	  binder1.loadAll();
+	   
+	  }
+  
+  public void onClick$fermer(){
+	  pp_sel_evaluateur.close();
+  }
   
   
+  public void onCreation(ForwardEvent event){
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
+	
+		
+	}
+
+	public void onModifyCheckedBox(ForwardEvent event){
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
+
+		if (checkbox.isChecked())
+		{
+			//verifier si ça n'a pas encore été unchecked
+			if(unselectedCheckBox.containsValue(checkbox))
+			{
+				unselectedCheckBox.remove(checkbox);
+				
+			}
+			selectedCheckBox.put(checkbox.getValue(), checkbox);
+		}
+		else
+		{
+			//verifier si ça n'a pas encore été checked
+			if(selectedCheckBox.containsValue(checkbox))
+			{
+				selectedCheckBox.remove(checkbox);
+				
+			}
+			unselectedCheckBox.put(checkbox.getValue(), checkbox);
+		}
+		//selectedCheckBox
+	}
+	  public void onClick$sendemail1() throws SQLException, InterruptedException{
+		
+		  
+			PlanningCompagneModel init= new PlanningCompagneModel();
+			Set<String> setselected = selectedCheckBox.keySet( );
+			ArrayList<String> listselected = new ArrayList<String>(setselected);
+			Iterator<String>iterator=listselected.iterator();
+			iterator=listselected.iterator();
+			String list_evaluateur="(";
+			while (iterator.hasNext())
+			{
+				String cles=(String)iterator.next();
+				Checkbox checkBox=selectedCheckBox.get(cles);
+				if (selectedCheckBox.get(cles).isChecked()){
+				  
+					list_evaluateur=list_evaluateur+selectedCheckBox.get(cles).getValue()+",";
+				   
+				}
+			}
+			list_evaluateur=list_evaluateur+")";
+			list_evaluateur = list_evaluateur.replace(",)",")");
+			
+			if (!list_evaluateur.equalsIgnoreCase("()")){
+				
+				if (Messagebox.show("Voulez vous envoyer le planning par email aux évaluateurs sélectionnés?", "Prompt", Messagebox.YES|Messagebox.NO,
+					    Messagebox.QUESTION) == Messagebox.YES) {
+					init.sendPlanningToEvaluateur(init.getPlanningEvaluateur(list_evaluateur),model1);
+					pp_sel_evaluateur.close();
+					return;
+				}
+				
+				else{
+					return;
+				}
+				
+				
+			
+				
+			}
+			
+			//System.out.println(list_evaluateur);
+	  }
 }
