@@ -215,10 +215,9 @@ public List filtrerListEvaluateur(int id_compagne) throws SQLException{
 				evalbean.setId_employe(rs.getInt("id_employe"));
 				evalbean.setEmail(rs.getString("email"));
 				listevaluateur.add(evalbean);
-			
-				   
+   
 					
-				}
+		  }
 			stmt.close();
 			conn.close();
 			
@@ -312,6 +311,14 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 		message.setFrom(new InternetAddress(intctx.getFrom()));
 		String lec;
 		EmailEvaluateurBean cpb;
+		String result="";
+		
+		String monmessage="<html> <body> 	<P>"+" Madame/Monsieur :</P>" +
+		"<P>"+" Vous n'avez pas encore finalisé votre compagne d'évaluation. Voici l'état d'avancement: "+"</P>" +			             
+		" <TABLE BORDER=10 >  <TR>  <TH align='center'> Compagne</TH>" +
+		" <TH align='center'> Etat d'avancement</TH> <TH align='center'> Date de clôture</TH> </TR>";
+
+		
 		while (it.hasNext()){
 			cpb  = (EmailEvaluateurBean) it.next();
 			message.setRecipients(Message.RecipientType.TO,
@@ -320,15 +327,28 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 			listcompagne=getCompagneEmployeList(String.valueOf(cpb.getId_employe()));
 			//System.out.println("employe>>"+cpb.getId_employe()+"email>>"+cpb.getEmail());
 			Iterator itcomp = listcompagne.iterator();
+		
 			while (itcomp.hasNext()){
 				cmp=(CompagneListBean) itcomp.next();
-				message.setText("Attention vous etes à :  "+cpb.getPourcentage()+" % de l'etat d'avancement sur la "+ cmp.getLibelle_compagne()+
-						                        ". La date de cloture aura lieu le: "+cmp.getDate_fin()+"\n"+"\n"+intctx.getText());
+				result="<TR><TD ALIGN='center'>"+ cmp.getLibelle_compagne()+"</TD>"+
+				           "<TD bgcolor='#ff0000' ALIGN='center'>"+ cpb.getPourcentage()+" %"+"</TD>"+
+				           "<TD ALIGN='center'>"+ cmp.getDate_fin()+"</TD></TR>";
+							
+				//message.setText("Attention vous etes à :  "+cpb.getPourcentage()+" % de l'etat d'avancement sur la "+ cmp.getLibelle_compagne()+
+					//	                        ". La date de cloture aura lieu le: "+cmp.getDate_fin()+"\n"+"\n"+intctx.getText());
+				monmessage=monmessage+result;
 			}
 			
+			monmessage=monmessage+" </TABLE> <P>"+"Cordialement"+	"</P>"+"<P>"+"Administrateur"+	"</P> </body></html>";
+			StringBuilder sb = new StringBuilder();
+			System.out.println(monmessage);
+			sb.append(monmessage);
+			message.setContent(sb.toString(), "text/html");
 
 			Transport.send(message);
-	 	}
+			sb= new StringBuilder();
+			monmessage="";
+		}
 	
 		
 
@@ -337,6 +357,10 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 	}
 
 }
+
+
+
+
 
 public boolean validerCompagne(int idcompagne) throws ParseException
 {
