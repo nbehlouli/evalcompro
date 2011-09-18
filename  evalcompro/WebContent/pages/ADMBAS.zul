@@ -10,7 +10,7 @@
 
 	<tabbox id="tb" width="100%" height="100%"  >
 		<tabs id="tbtabs" >
-			<tab id="defBase" label="Définition des bases de données"  />
+			<tab id="defBase" label="Paramétrage des bases de données"  />
 			<tab id="baseClient" label="Rattachement base de données au client" />
 			
     	</tabs>
