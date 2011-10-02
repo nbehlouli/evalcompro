@@ -811,10 +811,10 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		{
 			String selectedNomCompagne=nomCompagne.getSelectedItem().getLabel();
 			
-			System.out.println("compagne selectionné " +selectedNomCompagne);
+			//System.out.println("compagne selectionné " +selectedNomCompagne);
 			selected_id_compagne=map_compagne_idCompagne.get(selectedNomCompagne);
 			
-			System.out.println("selected_id_compagne selectionné " +selected_id_compagne);
+			//System.out.println("selected_id_compagne selectionné " +selected_id_compagne);
 			
 			ResultatEvaluationModel resultatEvaluationModel=new ResultatEvaluationModel();
 			
@@ -946,7 +946,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			//remplissage des colonnes familles et IMI de la ligne employe
 			Label nom=new Label();
 			nom.setValue(nomEmploye);
-			System.out.println("employe= "+ nomEmploye);
+			//System.out.println("employe= "+ nomEmploye);
 			
 			ligne.appendChild(nom);
 			iteratorFamille=setFamilleCompetence.iterator();
@@ -955,7 +955,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			{
 				
 				String nomFamille=iteratorFamille.next();
-				System.out.println("nomFamille=" +nomFamille);
+				//System.out.println("nomFamille=" +nomFamille);
 				String valeurIMI=mapFamilleIMI.get(nomFamille);
 				
 				String[] valeur=valeurIMI.split("#");
@@ -965,7 +965,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				infosFamille.setValue(val);
 					
 				ligne.appendChild(infosFamille);
-				System.out.println("valeur="+ val);
+				//System.out.println("valeur="+ val);
 			}
 			//affichage de la valeur IMI dans le tableau
 			Label infosIMI=new Label();
