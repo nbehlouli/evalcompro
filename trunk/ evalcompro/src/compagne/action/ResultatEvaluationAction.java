@@ -240,7 +240,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 	{
 			 		String clesFamille=iteratorFamilleCompetence.next();
 			 		int nbcompetence=mapFamilleCompetence.get(clesFamille).size();
-			 		System.out.println(clesFamille);
+			 		//System.out.println(clesFamille);
 			 		//creation des secondes cellules associées aux familles
 			 		
 			 		cellStyle = workBook.createCellStyle();
@@ -426,8 +426,10 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 					        HSSFCell cellCompetence = row3.createCell((short)indexColonne);
 						 	
 						 	cellCompetence.setCellStyle(cellStyle1);
-						 	cellCompetence.setCellValue(valeurStat);
-						 	//System.out.println( "valeur stat "+ valeurStat +" indexColonne ="+indexColonne);
+						 	//cellCompetence.setCellValue(valeurStat);
+
+						 	cellCompetence.setCellValue(valeurStat+"");
+						 	//System.out.println( "valeur stat "+ valeurStat +" indexColonne ="+indexColonne +" competence = "+competence);
 						 	indexColonne++;
 				 		}
 				 	}
@@ -458,7 +460,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			        HSSFCell cellCompetence = row3.createCell((short)indexColonne);
 				 	
 				 	cellCompetence.setCellStyle(cellStyle1);
-				 	cellCompetence.setCellValue(IMI);
+				 	cellCompetence.setCellValue(IMI+"");
 				 	
 				 	
 				 	numLigne++;
@@ -509,7 +511,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				 		Double moy_Famille=new Double(v[0]);
 				 		
 				 		
-					 	cell3.setCellValue(moy_Famille);
+					 	cell3.setCellValue(moy_Famille+"");
 					 	cell3.setCellStyle(cellStyle3);	
 					 	
 					 	indexColonne=indexColonne+nbcompetence;
@@ -601,7 +603,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				        HSSFCell cellCompetence = row5.createCell((short)indexColonne);
 					 	
 					 	cellCompetence.setCellStyle(cellStyle1);
-					 	cellCompetence.setCellValue(valeurStat);
+					 	cellCompetence.setCellValue(valeurStat+"");
 					 	
 					 	indexColonne++;
 			 		}
@@ -675,7 +677,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				 	
 				 	Double valIMG=mapFamilleIMG.get(nomOnglet).get(nomFamille);
 			 		
-				 	cell7.setCellValue(valIMG);
+				 	cell7.setCellValue(valIMG+"");
 				 	cell7.setCellStyle(cellStyle7);	
 				 	
 				 	indexColonne=indexColonne+nbcompetence;
@@ -746,7 +748,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 		HSSFCell cell9 = row8.createCell((short)1);
 		 		
 		 		Double IMG=mapPosteIMG.get(nomOnglet);
-			 	cell9.setCellValue(IMG); 
+			 	cell9.setCellValue(IMG+""); 
 			 	cell9.setCellStyle(cellStyle9);	
 			 	
 			 		 	
@@ -963,6 +965,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				infosFamille.setValue(val);
 					
 				ligne.appendChild(infosFamille);
+				System.out.println("valeur="+ val);
 			}
 			//affichage de la valeur IMI dans le tableau
 			Label infosIMI=new Label();
