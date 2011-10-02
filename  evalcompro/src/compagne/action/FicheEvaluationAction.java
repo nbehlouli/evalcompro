@@ -155,6 +155,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		valider.setDisabled(true);
 		
 		//recupération du profil de l'utilisateur
+		
 		CompteBean compteUtilisateur=ApplicationFacade.getInstance().getCompteUtilisateur();
 		
 		//récupération de l'id_employé associé à l'id_compte
@@ -1063,7 +1064,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 
 						 
 						 //remplissage des informations moyenne competence
-						 System.out.println("famille clles" +clles);
+						 //System.out.println("famille clles ..............." +clles);
 						 String code_competence=maprepCompComp.get(id_repertoire_competence);
 						 if(mapFamilleCompetence.containsKey(clles))
 						 {
@@ -1112,11 +1113,17 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				
 				 
 				//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
-				 enregistrerIMIStat(FamilleIMI,statIMI);
-
+				 //cette fonction calcul l'IMi en utilisant les notations des apptitudes observales
+				// enregistrerIMIStat(FamilleIMI,statIMI);
+				 
+				 ////cette fonction calcul l'IMi en utilisant les calculs de smoyennes pâr competence
+				 enregistrerIMIMoyenneFamilleutilisantCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
+				 
 				 //enregistrement dans la base les stats IMI par competence
 				 
 				 enregistrerIMIStatParCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
+				 
+				 //mis eà jour calcul imi en prenant en compte les calculs des moyennes par competence
 				 
 				 //vider le contenu du tableau 
 				 //effacer le nom de l'evalué de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
@@ -1939,4 +1946,77 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 ficheEvaluationModel.insertImiCompetenceStat(requete);
 		 }
 		
+		 
+		 
+		 public void enregistrerIMIMoyenneFamilleutilisantCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
+		 {
+			 
+			 Set <String >listFamille= mapFamilleCompetence.keySet();
+			 
+			 
+			 Iterator<String> iteratorFamille=listFamille.iterator();
+			 int nbFamille=listFamille.size();
+			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+			 String requete="";
+			 Double moyIMI=new Double(0);
+			 while (iteratorFamille.hasNext())
+			 {
+				 String famille=iteratorFamille.next();
+				 
+				 String valeur=ficheEvaluationModel.getIdCompagne_Codefamille(id_planning_evaluation,famille);
+				 
+				 String v[]=valeur.split("#");
+				 String id_compagne=v[0];
+				 String code_famille=v[1];
+				 
+				 HashMap<String , ArrayList<Double>> mapcodeCompetence=mapFamilleCompetence.get(famille);
+				 Set <String> listCompetence=mapcodeCompetence.keySet();
+				 Iterator<String> iteratorCodeCompetence=listCompetence.iterator();
+				 ArrayList<Double > valeurFamilleMoyenne=new ArrayList<Double>();
+				 while(iteratorCodeCompetence.hasNext())
+				 {
+					 String code_competence=iteratorCodeCompetence.next();
+					 
+					 //calcul d ela moyenne par competence
+					 ArrayList<Double> listeCompetence=mapcodeCompetence.get(code_competence);
+					 
+					 int nbCompetence=listeCompetence.size();
+					 Double moyenne=new Double(0);
+					 for(int i=0;i<nbCompetence;i++)
+					 {
+						 moyenne=moyenne+listeCompetence.get(i);
+					 }
+					 moyenne=moyenne/nbCompetence;
+					 valeurFamilleMoyenne.add(moyenne);
+
+				 }
+				 //calcul de la moyenne par famille
+				 Iterator<Double> iterator=valeurFamilleMoyenne.iterator();
+				 Double moyenne=new Double(0);
+				 int nbVal=valeurFamilleMoyenne.size();
+				 while(iterator.hasNext())
+				 {
+					 Double var=iterator.next();
+					 moyenne=moyenne+var;
+				 }
+				 moyenne=moyenne/nbVal;
+				 
+				 moyIMI=moyIMI+moyenne;
+				 requete=requete+ " INSERT INTO imi_stats (id_compagne,id_employe,moy_par_famille,code_famille, imi) VALUES (#id_compagne,#id_employe,#moy_par_famille,#code_famille, #imi) ; ";
+				 requete = requete.replaceAll("#id_compagne", id_compagne);
+				 requete = requete.replaceAll("#id_employe", id_employe);
+				 requete = requete.replaceAll("#moy_par_famille", moyenne+"");
+				 requete = requete.replaceAll("#code_famille", "'"+code_famille+"'");
+				 
+				 
+			 }
+			 
+			 //mise a jour de la requete avec l'IMI;
+			 Double calculIMI=moyIMI/nbFamille;
+			 
+			 requete = requete.replaceAll("#imi", calculIMI+"");
+			 
+			 ficheEvaluationModel.insertImiCompetenceStat(requete);
+			 
+		 }
 }
