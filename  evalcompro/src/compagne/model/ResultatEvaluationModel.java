@@ -1,6 +1,7 @@
 package compagne.model;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -150,7 +151,15 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, round (c.moy_competence,2) as moy_competence  "+
+//			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, round (c.moy_competence,2) as moy_competence  "+
+//			" from poste_travail_description f, imi_competence_stat c, employe e, repertoire_competence r "+
+//			" where c.id_employe=e.id_employe "+
+//			" and c.id_compagne=#id_compagne "+
+//			" and c.code_famille=r.code_famille "+
+//			" and c.code_competence=r.code_competence "+
+//			" and e.code_poste=f.code_poste";
+			
+			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, c.moy_competence,2  "+
 			" from poste_travail_description f, imi_competence_stat c, employe e, repertoire_competence r "+
 			" where c.id_employe=e.id_employe "+
 			" and c.id_compagne=#id_compagne "+
@@ -173,7 +182,17 @@ public class ResultatEvaluationModel {
 					String nom=rs.getString("nom");
 					String prenom=rs.getString("prenom");
 					String libelle_competence=rs.getString("libelle_competence");
+
 					Double moy_competence=rs.getDouble("moy_competence");
+				 	DecimalFormat df = new DecimalFormat("########.00"); 
+					df.setMaximumFractionDigits ( 2 ) ; //arrondi à 2 chiffres apres la virgules
+					df.setMinimumFractionDigits ( 2 ) ;
+					df.setDecimalSeparatorAlwaysShown ( true ) ;
+					String f=df.format(moy_competence);
+					moy_competence= Double.parseDouble(f.replace(',', '.'));
+				 					
+					
+					
 					String employe=nom+" " +prenom;
 					if(mapposteEmployeFamilleCompIMI.containsKey(intitule_poste))
 					{
@@ -266,12 +285,17 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct e.nom, e.prenom, r.famille, round(i.moy_par_famille, 2) as moy_par_famille , round (i.imi, 2) as imi "
+//			String select_structure="select distinct e.nom, e.prenom, r.famille, round(i.moy_par_famille, 2) as moy_par_famille , round (i.imi, 2) as imi "
+//				+" from employe e, repertoire_competence r, imi_stats i "
+//				+" where i.id_employe=e.id_employe  "
+//				+" and r.code_famille=i.code_famille "
+//				+" and id_compagne=#id_compagne ORDER BY imi DESC";
+
+			String select_structure="select distinct e.nom, e.prenom, r.famille, i.moy_par_famille , i.imi "
 				+" from employe e, repertoire_competence r, imi_stats i "
 				+" where i.id_employe=e.id_employe  "
 				+" and r.code_famille=i.code_famille "
 				+" and id_compagne=#id_compagne ORDER BY imi DESC";
-			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -284,8 +308,25 @@ public class ResultatEvaluationModel {
 					String prenom=rs.getString("prenom");
 					String employe=nom+" " +prenom;
 					String famille=rs.getString("famille");
-					String moy_par_famille=rs.getString("moy_par_famille");
-					String imi=rs.getString("imi");
+					
+					
+					
+					Double moy_famille=rs.getDouble("moy_par_famille");
+					Double imiD=rs.getDouble("imi");
+
+					
+					/**************************/
+					DecimalFormat df = new DecimalFormat("########.00"); 
+					df.setMaximumFractionDigits ( 2 ) ; //arrondi à 2 chiffres apres la virgules
+					df.setMinimumFractionDigits ( 2 ) ;
+					df.setDecimalSeparatorAlwaysShown ( true ) ;
+					String moy_par_famille=df.format(moy_famille).replace(',', '.');
+//					Double a=Double.parseDouble(f.replace(',', '.'));
+//					String moy_par_famille= a.toString().replace(',', '.');
+					String f1=df.format(imiD);
+					Double b=Double.parseDouble(f1.replace(',', '.'));
+					String imi=b.toString();
+					/*****************************/
 					
 					String stats=moy_par_famille+"#"+imi;
 					
@@ -351,7 +392,8 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct p.intitule_poste, round(i.img, 2) as img from poste_travail_description p, img_stats i where p.code_poste=i.code_poste and i.id_compagne=#id_compagne";
+			//String select_structure="select distinct p.intitule_poste, round(i.img, 2) as img from poste_travail_description p, img_stats i where p.code_poste=i.code_poste and i.id_compagne=#id_compagne";
+			String select_structure="select distinct p.intitule_poste, i.img from poste_travail_description p, img_stats i where p.code_poste=i.code_poste and i.id_compagne=#id_compagne";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -363,6 +405,17 @@ public class ResultatEvaluationModel {
 				{
 					String intitule_poste=rs.getString("intitule_poste");
 					Double img=rs.getDouble("img");
+					
+					/**************************/
+					DecimalFormat df = new DecimalFormat("########.00"); 
+					df.setMaximumFractionDigits ( 2 ) ; //arrondi à 2 chiffres apres la virgules
+					df.setMinimumFractionDigits ( 2 ) ;
+					df.setDecimalSeparatorAlwaysShown ( true ) ;
+					String f=df.format(img);
+					img= Double.parseDouble(f.replace(',', '.'));
+					
+					/*****************************/
+					
 					mapPosteIMG.put(intitule_poste, img);
 	
 				}
@@ -398,12 +451,17 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct p.intitule_poste, r.famille, round(i.moy_par_famille,2) as moy_par_famille"
+//			String select_structure="select distinct p.intitule_poste, r.famille, round(i.moy_par_famille,2) as moy_par_famille"
+//				+" from poste_travail_description p, repertoire_competence r, moy_poste_famille_stats i"
+//				+" where p.code_poste=i.code_poste "
+//				+" and r.code_famille=i.code_famille"
+//				+" and id_compagne=#id_compagne ";
+
+			String select_structure="select distinct p.intitule_poste, r.famille, i.moy_par_famille"
 				+" from poste_travail_description p, repertoire_competence r, moy_poste_famille_stats i"
 				+" where p.code_poste=i.code_poste "
 				+" and r.code_famille=i.code_famille"
 				+" and id_compagne=#id_compagne ";
-			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -415,6 +473,17 @@ public class ResultatEvaluationModel {
 					String intitule_poste=rs.getString("intitule_poste");
 					String famille=rs.getString("famille");
 					Double moy_par_famille=rs.getDouble("moy_par_famille");
+					
+					/**************************/
+					DecimalFormat df = new DecimalFormat("########.00"); 
+					df.setMaximumFractionDigits ( 2 ) ; //arrondi à 2 chiffres apres la virgules
+					df.setMinimumFractionDigits ( 2 ) ;
+					df.setDecimalSeparatorAlwaysShown ( true ) ;
+					String f=df.format(moy_par_famille);
+					moy_par_famille= Double.parseDouble(f.replace(',', '.'));
+					
+					/*****************************/
+					
 					
 					if(mapIMGPosteFamille.containsKey(intitule_poste))
 					{
@@ -472,13 +541,19 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,   r.libelle_competence, round(c.moy_par_competence,2) as moy_par_competence   " 
+//			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,   r.libelle_competence, round(c.moy_par_competence,2) as moy_par_competence   " 
+//				+" from poste_travail_description f, moy_poste_competence_stats c, employe e, repertoire_competence r "  
+//				+" where c.id_compagne=#id_compagne " 
+//				+" and c.code_famille=r.code_famille  " 
+//				+"  and c.code_competence=r.code_competence " 
+//				+" and e.code_poste=f.code_poste";
+
+			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,   r.libelle_competence, c.moy_par_competence  " 
 				+" from poste_travail_description f, moy_poste_competence_stats c, employe e, repertoire_competence r "  
 				+" where c.id_compagne=#id_compagne " 
 				+" and c.code_famille=r.code_famille  " 
 				+"  and c.code_competence=r.code_competence " 
 				+" and e.code_poste=f.code_poste";
-			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -495,6 +570,16 @@ public class ResultatEvaluationModel {
 					String libelle_competence=rs.getString("libelle_competence");
 					Double moy_par_competence=rs.getDouble("moy_par_competence");
 					
+					
+					/**************************/
+					DecimalFormat df = new DecimalFormat("########.00"); 
+					df.setMaximumFractionDigits ( 2 ) ; //arrondi à 2 chiffres apres la virgules
+					df.setMinimumFractionDigits ( 2 ) ;
+					df.setDecimalSeparatorAlwaysShown ( true ) ;
+					String f=df.format(moy_par_competence);
+					moy_par_competence= Double.parseDouble(f.replace(',', '.'));
+					
+					/*****************************/
 					if(mapPostFamilleCompetenceStats.containsKey(intitule_poste))
 					{
 						HashMap<String, HashMap< String, Double>>mapFamilleCompetence=mapPostFamilleCompetenceStats.get(intitule_poste);
@@ -567,11 +652,17 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct e.nom, e.prenom,  round (i.imi, 2) as imi , p.intitule_poste "
-			 +" from employe e,  imi_stats i , poste_travail_description p "
-			 +" where i.id_employe=e.id_employe "  
-			 +" and p.code_poste=e.code_poste "
-			 +" and id_compagne=#id_compagne  ORDER BY imi DESC";
+//			String select_structure="select distinct e.nom, e.prenom,  round (i.imi, 2) as imi , p.intitule_poste "
+//			 +" from employe e,  imi_stats i , poste_travail_description p "
+//			 +" where i.id_employe=e.id_employe "  
+//			 +" and p.code_poste=e.code_poste "
+//			 +" and id_compagne=#id_compagne  ORDER BY imi DESC";
+			
+			String select_structure="select distinct e.nom, e.prenom,  i.imi,p.intitule_poste "
+				 +" from employe e,  imi_stats i , poste_travail_description p "
+				 +" where i.id_employe=e.id_employe "  
+				 +" and p.code_poste=e.code_poste "
+				 +" and id_compagne=#id_compagne  ORDER BY imi DESC";			
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
