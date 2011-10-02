@@ -236,7 +236,7 @@ public class ExtractRepCompModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select intitule_poste from poste_travail_description";
+			String select_structure="select intitule_poste from poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation)";
 			
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
