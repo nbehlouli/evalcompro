@@ -53,6 +53,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 	HashMap <String, Checkbox> selectedCheckBox;
 	HashMap <String, Checkbox> unselectedCheckBox;
 	boolean compage_termine=true;
+	int profileid;
 
 	
 	@SuppressWarnings("deprecation")
@@ -90,8 +91,18 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
 		
-		int profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
-		 for (int pos=0;pos< this.getModel().size();pos++){
+		 profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
+		 checkPercentageProfile(profileid);
+		 
+		 
+	
+	
+	}
+	/**
+	 * @param profileid
+	 */
+	public void checkPercentageProfile(int profileid) {
+		for (int pos=0;pos< this.getModel().size();pos++){
 		    	
 		    	if (this.getModel().get(pos).getPourcentage()<100 && profileid !=1){
 		    		valider.setDisabled(true);
@@ -100,10 +111,6 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		    	}
 		    	
 		    }
-		 
-		 
-	
-	
 	}
 	public List<SuiviCompagneBean> getModel() {
 		return model;
@@ -241,7 +248,7 @@ SuiviCompagneModel init= new SuiviCompagneModel();
     //map_struct=init.getStructEntrepriseList();
     Integer compagne=(Integer) map.get(comp_list.getSelectedItem().getLabel());
     //String structure=struct_list.getSelectedItem().getLabel();
-    
+  
  
 	    	if (compagne==-1) {
 	        	model=init.uploadListEvaluateur();
@@ -257,6 +264,7 @@ SuiviCompagneModel init= new SuiviCompagneModel();
 	    	}
         }
  	//binder = new AnnotateDataBinder(comp);
+	checkPercentageProfile(profileid);
 	binder.loadAll();
 }
 
