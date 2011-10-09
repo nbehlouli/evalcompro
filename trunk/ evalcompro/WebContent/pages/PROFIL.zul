@@ -17,7 +17,7 @@
 
 	<tabbox id="tb" width="100%"  >
 		<tabs id="tbtabs" >
-			<tab id="defBase" label="Profiles"  />
+			<tab id="defBase" label="Profils"  />
 			<tab id="baseClient" label="Droits d'acces" />
 			
     	</tabs>
@@ -27,7 +27,7 @@
 		    <listhead sizable="true">
 		 
 		    <listheader label="Profile id" width="100px" sort="auto" align="center"  visible="true"  />
-			<listheader label="Libelle profile" width="250px" sort="auto" align="center" />
+			<listheader label="Libelle profil" width="250px" sort="auto" align="center" />
 		
 	
 		</listhead>
@@ -52,10 +52,10 @@
 		               
 		     
 		          <hlayout spacing ="25px">
-		                 <label id="lbl_id_profile"  value="Identifiant profile:"  sclass="textboxdetail"/>
+		                 <label id="lbl_id_profile"  value="Identifiant profil:"  sclass="textboxdetail"/>
 		                 <textbox id="id_profile" width="50px"  value="@{winCtrl.selected.id_profile,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                 
-		                   <label id="lbl_libelle_profile"  value="Labelle profile :"  sclass="textboxdetail"/>
+		                   <label id="lbl_libelle_profile"  value="Labelle profil :"  sclass="textboxdetail"/>
 		                   <textbox id="libelle_profile"   width="250px"  value="@{winCtrl.selected.libelle_profile,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                  
 		          </hlayout>
@@ -65,10 +65,10 @@
    </groupbox>
 			   <hbox pack="center" width="100%" spacing="20">
 					<div>
-						<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter une compagne"/>
+						<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter un profil"/>
 						<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
-						<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier une compagne"/>
-						<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer une compagne"/>
+						<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier un profil"/>
+						<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer un profil"/>
 						<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
 					</div>
 					<div>
