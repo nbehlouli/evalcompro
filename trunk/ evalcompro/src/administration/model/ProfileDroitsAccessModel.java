@@ -116,7 +116,7 @@ private ListModel strset =null;
 			sql_query = sql_query.replaceAll("#libelle_profile", "'"+ addedData.getLibelle_profile().toUpperCase()+"'");
 		
 			String sql_query_droit="insert into droits  (id_profile, code_ecran, hide, ecriture, lecture)" +
-					               " select (select max(id_profile) from profile),code_ecran,1,0,0 from liste_ecran";
+					               " select (select max(id_profile) from profile),code_ecran,0,0,0 from liste_ecran";
 
 			
 			

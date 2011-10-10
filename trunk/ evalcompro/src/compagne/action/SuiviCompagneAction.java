@@ -93,8 +93,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		
 		 profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		 checkPercentageProfile(profileid);
-		 
-		 
+		
 	
 	
 	}
@@ -107,6 +106,7 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		    	if (this.getModel().get(pos).getPourcentage()<100 && profileid !=1){
 		    		valider.setDisabled(true);
 		    		compage_termine=false;
+		    		sendmail.setDisabled(false);
 		    		return;
 		    	}
 		    	
@@ -240,8 +240,9 @@ public void onClick$valider() throws SQLException, InterruptedException, ParseEx
 }
 
 public void onSelect$comp_list() throws SQLException {
-SuiviCompagneModel init= new SuiviCompagneModel(); 	
+	SuiviCompagneModel init= new SuiviCompagneModel(); 	
 	msg.setVisible(false);
+	sendmail.setDisabled(false);
     Map map = new HashMap();
     //Map map_struct = new HashMap();
     map=init.getCompagneList();
@@ -256,15 +257,17 @@ SuiviCompagneModel init= new SuiviCompagneModel();
 	        else {
 	        	model=init.filtrerListEvaluateur(compagne);
 	        	valider.setDisabled(false);
+	        	checkPercentageProfile(profileid);
 	        	
 	        	if (init.isCompagneValidated(compagne)){
 	    			msg.setValue("La vague :"+comp_list.getSelectedItem().getLabel()+ "  a été validée" ); 
 	    			msg.setVisible(true);
 	    			valider.setDisabled(true);
+	    			sendmail.setDisabled(true);
 	    	}
         }
  	//binder = new AnnotateDataBinder(comp);
-	checkPercentageProfile(profileid);
+	//checkPercentageProfile(profileid);
 	binder.loadAll();
 }
 
