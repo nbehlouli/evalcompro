@@ -135,7 +135,7 @@
 			<button id="update" image="/image/EDITREDOEnabled.gif" height="30px" width="50px" tooltiptext="Modifier un planning"/>
 			<button id="delete"  image="/image/DeleteEnabled.gif" height="30px" width="50px" tooltiptext="Supprimer un planning"/>
 			<button id="effacer"  image="/image/CancelEnabled.gif" height="30px" width="50px" tooltiptext="Retourner a la selection"/>
-			<button id="sendmail" image="/image/email.gif" height="30px" width="50px" tooltiptext="Télécharger les données de la base de données"  />		
+			<button id="sendmail" image="/image/email.gif" height="30px" width="50px" tooltiptext="Envoyer planning aux évaluateurs"  />		
 			
 		</div>
 		<div>

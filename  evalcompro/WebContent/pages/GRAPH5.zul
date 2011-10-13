@@ -4,8 +4,7 @@
 closable="true"  onClose="self.visible = false; event.stopPropagation();">
 	<div>	
 		 Selectionner le format : <listbox id="format" mold="select" >
-	        <listitem label="PDF" value="pdf" selected="true" />
-	        <listitem label="Excel" value="Excel"  />
+	        <listitem label="Excel" value="Excel" selected="true"  />
 	          </listbox>
 	    <button id="pdfDownload" label="Exporter"  />
     </div>

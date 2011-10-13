@@ -124,10 +124,10 @@
 
 	<hbox pack="center" width="100%" spacing="20">
 		<div>
-			<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter une compagne"/>
+			<button id="add"    image="/image/DITEnabled.gif" height="25px" width="50px" tooltiptext="Ajouter IMI vs strategie"/>
 			<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider"/>
-			<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier une compagne"/>
-			<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer une compagne"/>
+			<button id="update" image="/image/EDITREDOEnabled.gif" height="25px" width="50px" tooltiptext="Modifier IMI vs strategie"/>
+			<button id="delete"  image="/image/DeleteEnabled.gif" height="25px" width="50px" tooltiptext="Supprimer IMI vs strategie"/>
 			<button id="effacer"  image="/image/CancelEnabled.gif" height="25px" width="50px" tooltiptext="Retourner a la selection"/>
 		</div>
 		<div>
