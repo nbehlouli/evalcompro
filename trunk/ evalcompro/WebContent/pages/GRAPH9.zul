@@ -14,7 +14,7 @@
 </style>
 
 	<groupbox id="gb" mold="3d" width="100%" height="500">
-        <caption label="Sélection d'un employé" />
+        <caption label="Evolution IMG par poste de travail" />
         	<vlayout spacing="5px">
          		<hlayout spacing ="54px">
         			<label value="Poste de travail:   "  sclass="textboxdetail"/>
