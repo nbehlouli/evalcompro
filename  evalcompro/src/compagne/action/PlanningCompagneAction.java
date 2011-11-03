@@ -598,7 +598,7 @@ public void setLbl_poste(String lbl_poste) {
 		
 		//profilemodel.add((String) me.getKey());
 		}
-		 comp_list.setSelectedIndex (1);
+		 //comp_list.setSelectedIndex (1);
 	  
 	  //model1=init.uploadListEvaluateur();
 	  pp_sel_evaluateur.open(10, 20);

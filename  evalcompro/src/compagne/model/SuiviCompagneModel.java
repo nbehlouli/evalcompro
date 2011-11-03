@@ -91,9 +91,9 @@ public List uploadListEvaluateur() throws SQLException{
 		HashMap map = new HashMap();
 		
 		try 
-		{
+		{ 
 			stmt = (Statement) conn.createStatement();
-			String db_list="select id_compagne,libelle_compagne from compagne_evaluation where now()>= date_debut and now()<=date_fin"; 
+			String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',date_debut,' Au ',date_fin) as libelle_compagne from compagne_evaluation where now()>= date_debut and now()<=date_fin"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
 			
 			

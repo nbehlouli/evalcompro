@@ -360,7 +360,7 @@ private ListModel strset =null;
 		{
 			stmt = (Statement) conn.createStatement();
 			String profile_list="select id_compagne,libelle_compagne from compagne_evaluation" +
-					" where date_debut<=now() and date_fin>=now()"; 
+					" where date_debut>=now() order by date_debut"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
@@ -533,8 +533,7 @@ private ListModel strset =null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select id_employe,concat(nom,' ',prenom) as evalue from employe where est_evaluateur='N'" +
-					         "  and code_poste=#code_poste  "; 
+			String sql_query="select id_employe,concat(nom,' ',prenom) as evalue from employe where  code_poste=#code_poste  "; 
 			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
@@ -848,7 +847,7 @@ private ListModel strset =null;
 	 
 	 public HashMap getCompagneList() throws SQLException
 		{
-			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			/*CreateDatabaseCon dbcon=new CreateDatabaseCon();
 			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 			Statement stmt = null;
 			HashMap map = new HashMap();
@@ -856,7 +855,7 @@ private ListModel strset =null;
 			try 
 			{
 				stmt = (Statement) conn.createStatement();
-				String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',date_debut,' Au ',date_fin) as libelle_compagne from compagne_evaluation where now()>= date_debut and now()<=date_fin"; 
+				String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',date_debut,' Au ',date_fin) as libelle_compagne from compagne_evaluation order by date_debut"; 
 				ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
 				
 				
@@ -869,7 +868,9 @@ private ListModel strset =null;
 			catch (SQLException e){
 					e.printStackTrace();
 					stmt.close();conn.close();
-			}
+			}*/
+		 HashMap map = new HashMap();
+		 map.put("Toutes les vagues",-1);
 			
 			return map;
 		}
