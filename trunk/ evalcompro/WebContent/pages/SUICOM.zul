@@ -27,7 +27,7 @@ background-color: #00CC00 ;
  <grid zclass="none">
       <columns>	
 		  	
-				 <column>	Compagne :  <listbox id="comp_list" mold="select"  style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" /> </column>	
+				 <column>	Compagne :  <listbox id="comp_list" mold="select" width="250px"  style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" /> </column>	
 				 <column>	<label id="msg" style="font-family: arial, helvetica, sans-serif ;font-size: 8pt ;color: black ;background-color: #00CC00 ;" visible="false"/> </column>
 				 		   	
 	   </columns>		
