@@ -128,7 +128,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La donnée n'a pas été insérée dans la base car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La donnée n'a pas été insérée dans la base données", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
