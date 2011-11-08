@@ -129,7 +129,8 @@ private ListModel strset =null;
 			sql_query = sql_query.replaceAll("#email", "'"+ addedData.getEmail()+"'");
 			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getEst_evaluateur()+"'");
 			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getEst_responsable_rh()+"'");
-			sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			//sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
 			sql_query = sql_query.replaceAll("#id_compte", "'"+ addedData.getId_compte()+"'");
 		
 				
@@ -141,7 +142,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La donnée n'a pas été insérée dans la base car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La donnée n'a pas été insérée dans la base données", "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -246,7 +247,8 @@ private ListModel strset =null;
 			sql_query = sql_query.replaceAll("#email", "'"+ addedData.getEmail()+"'");
 			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getEst_evaluateur()+"'");
 			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getEst_responsable_rh()+"'");
-			sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			//sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
 			sql_query = sql_query.replaceAll("#id_compte", "'"+ addedData.getId_compte()+"'");
 		
 			
