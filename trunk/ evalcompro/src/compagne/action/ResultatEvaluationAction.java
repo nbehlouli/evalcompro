@@ -847,7 +847,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 				 {
 					 Tab tab=listOnglet.get(i);
 					 Tabpanel panel=listPanel.get(i);
-					 System.out.println("detachement tab  " + tab.getLabel());
+					 //System.out.println("detachement tab  " + tab.getLabel());
 					 panel.detach();
 					 tab.detach();;
 				 }
