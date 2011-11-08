@@ -22,7 +22,7 @@
 			<listheader label="Email" width="80px" align="center"   />
 			<listheader label="Evaluateur" width="80px" align="center"   />
 			<listheader label="Responsable RH" width="80px" align="center"   />
-			<listheader label="Code structure" width="100px" align="center"   />
+			<listheader label="Code structure" width="100px" align="center"  visible="false"  />
 	         
 		</listhead>
 		<listitem self="@{each=listcompagne}">
@@ -61,7 +61,7 @@
 			<column label="Email" width="180px" align="center"   />
 			<column label="Evaluateur" width="80px" align="center"   />
 			<column label="Responsable RH" width="100px" align="center"   />
-			<column label="Structure" width="100px" align="center"   />
+			<column label="Structure" width="100px" align="center"   visible="false"  />
                    
            
         </columns>
@@ -79,7 +79,7 @@
                   <textbox id="email"  width="180px"  sclass="textboxdetail" value="@{winCtrl.selected.email,save-when=none}"   />
                   <listbox id="est_evaluateur"  width="50px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.est_evaluateur,save-when=none}" />
                   <listbox id="est_responsable_rh"  width="50px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.est_responsable_rh,save-when=none}" />
-                   <listbox id="structure"  width="70px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.code_structure,save-when=none}" />
+                   <listbox id="structure"  width="70px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.code_structure,save-when=none}" visible="false"  />
             </row>
             <row>
              <!-- label  id="structure_lbl" width="400px" sclass="textboxdetail" /-->
