@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -805,8 +806,12 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		
 	}
 	
-	public void onSelect$compagne() throws SQLException
+	public void onSelect$nomCompagne() throws SQLException
 	 {
+		
+
+
+		 
 		if(nomCompagne.getItemCount()!=0)
 		{
 			String selectedNomCompagne=nomCompagne.getSelectedItem().getLabel();
@@ -828,6 +833,26 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			
 			 mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
 			 
+			 mapPostEmployeTriIMI =resultatEvaluationModel.getEmployeTriIMI(selected_id_compagne);
+			 //supprimer l'affichage precedant s'il existe
+			 List<Tab> listOnglet=tbtabs.getChildren();
+			 List<Tabpanel> listPanel=tbpanels.getChildren();
+			 if (listOnglet.size()!=0)
+			 {
+				 Iterator<Tab> listeIterator=listOnglet.iterator();
+				// int i=0;
+				 int nbOnglets=listOnglet.size();
+				 nbOnglets=nbOnglets-1;
+				 for(int i=nbOnglets;i>=0;i--)
+				 {
+					 Tab tab=listOnglet.get(i);
+					 Tabpanel panel=listPanel.get(i);
+					 System.out.println("detachement tab  " + tab.getLabel());
+					 panel.detach();
+					 tab.detach();;
+				 }
+			 }
+
 			 AfficherInfosCompagne();
 			
 		}
