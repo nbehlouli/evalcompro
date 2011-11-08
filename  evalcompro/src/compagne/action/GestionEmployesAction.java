@@ -219,9 +219,12 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		addedData.setCode_poste(getSelectPosteTravail());
 		addedData.setEmail(getSelectedEmail());
 		addedData.setEst_evaluateur(getSelectIsEvaluateur());
+		//addedData.setEst_evaluateur(getIs_evaluateur());
+		
 		addedData.setEst_responsable_rh(getSelectIsResRH());
 		addedData.setId_compte(getIdcompte());
-		addedData.setCode_structure(getSelectStructure());
+		//addedData.setCode_structure(getSelectStructure());
+		selected.setCode_structure("S0000");
 		addedData.setNom_complet(getNom_complet());
 		addedData.setIntitule_poste(getLbl_poste());
 		addedData.setLibelle_formation(getLbl_formation());
@@ -292,10 +295,12 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		selected.setCode_formation(getSelectedFormation());
 		selected.setCode_poste(getSelectPosteTravail());
 		selected.setEmail(getSelectedEmail());
-		selected.setEst_evaluateur(getSelectIsEvaluateur());
+		//selected.setEst_evaluateur(getSelectIsEvaluateur());
+		selected.setEst_evaluateur(getIs_evaluateur());
 		selected.setEst_responsable_rh(getSelectIsResRH());
 		selected.setId_compte(getIdcompte());
-		selected.setCode_structure(getSelectStructure());
+		//selected.setCode_structure(getSelectStructure());
+		selected.setCode_structure("S0000");
 		selected.setNom_complet(getNom_complet());
 		selected.setIntitule_poste(getLbl_poste());
 		selected.setLibelle_formation(getLbl_formation());
@@ -472,6 +477,7 @@ public class GestionEmployesAction extends GenericForwardComposer {
 	
 	private String getSelectIsEvaluateur() throws WrongValueException {
 		String name = (String) map_evaluateur.get((String)est_evaluateur.getSelectedItem().getLabel());
+		setIs_evaluateur((String)est_evaluateur.getSelectedItem().getLabel());
 		
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(est_evaluateur, "Merci de preciser si l'employe est un evaluateur !");
