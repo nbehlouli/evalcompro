@@ -75,7 +75,7 @@
                  <listbox id="code_poste"  width="150px"  sclass="textboxdetail" mold="select" selectedItem="@{winCtrl.selected.intitule_poste,save-when=none}" />
                  <listbox id="evalue"  width="180px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.evalue,save-when=none}" />
                  <listbox id="code_structure"  width="80px" sclass="textboxdetail"  mold="select" selectedItem="@{winCtrl.selected.code_structure,save-when=none}" />
-                 <datebox id="date_evaluation"  cols="100"  sclass="textboxdetail" value="@{winCtrl.selected.date_evaluation,save-when=none}" format="yyyy/MM/dd"/>
+                 <datebox id="date_evaluation"  sclass="textboxdetail" value="@{winCtrl.selected.date_evaluation,save-when=none}" format="yyyy/MM/dd"/>
                  <listbox id="heure_debut_evaluation" sclass="textboxdetail"  width="80px" mold="select" selectedItem="@{winCtrl.selected.heure_debut_evaluation,save-when=none}"  />
                  <listbox id="heure_fin_evaluation"  sclass="textboxdetail" width="80px"  mold="select" selectedItem="@{winCtrl.selected.heure_fin_evaluation,save-when=none}"  />
                  <textbox id="lieu" width="100px"  sclass="textboxdetail" value="@{winCtrl.selected.lieu,save-when=none}"  />
