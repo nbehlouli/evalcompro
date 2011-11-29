@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.lang.Strings;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -48,36 +50,39 @@ public class FormationAction
     private static final long serialVersionUID = 1L;
 
     Listbox formationlb;
-
+    Listbox libelleFormationlb;
     Textbox codeFormationtb;
-
     Textbox libelleFormationtb;
-
     Textbox libelleDiplometb;
-
     AnnotateDataBinder binder;
-
-    Window win;
-
+    private String lbl_formation;
+    
+	Window win;
     Div divupdown;
-
     List<Formation> model = new ArrayList<Formation>();
-
     Formation selected;
-
     Button okAdd;
-
     Button effacer;
-
     Button add;
-
     Button update;
-
     Button delete;
+    Map map_formation=null;
 
     public FormationAction()
     {
     }
+    
+    public String getLbl_formation() {
+		return lbl_formation;
+	}
+
+
+
+	public void setLbl_formation(String lbl_formation) {
+		this.lbl_formation = lbl_formation;
+	}
+
+    
 
     @SuppressWarnings("deprecation")
     public void doAfterCompose( Component comp )
@@ -93,6 +98,15 @@ public class FormationAction
         okAdd.setVisible( false );
         effacer.setVisible( false );
         codeFormationtb.setDisabled(true);
+        
+        map_formation=formationModel.getListFormation();
+		Set set = (map_formation).entrySet(); 
+		Iterator i = set.iterator();
+		
+		while(i.hasNext()) {
+			Map.Entry me = (Map.Entry)i.next();
+			libelleFormationlb.appendItem((String) me.getKey(),(String) me.getKey());
+			}
 
         binder = new AnnotateDataBinder( comp );
 
@@ -143,7 +157,7 @@ public class FormationAction
         return code;
     }
 
-    private String getSelectedlibelleFormation()
+   /* private String getSelectedlibelleFormation()
         throws WrongValueException
     {
         String code = libelleFormationtb.getValue();
@@ -152,7 +166,18 @@ public class FormationAction
             throw new WrongValueException( libelleFormationtb, "le libelle Formation ne doit pas etre vide!" );
         }
         return code;
-    }
+    }*/
+    
+    private int getSelectedFormation() throws WrongValueException {
+		
+		int name=(Integer) map_formation.get((String)libelleFormationlb.getSelectedItem().getLabel());
+		setLbl_formation((String)libelleFormationlb.getSelectedItem().getLabel());
+		if (name== 0) {
+			throw new WrongValueException(libelleFormationlb, "Merci de saisir une formation!");
+		}
+		return name;
+	}
+    
 
     public void onClick$delete()
         throws InterruptedException
@@ -183,171 +208,7 @@ public class FormationAction
 
     }
 
-    public void processMedia( Media med )
-    {
-
-        if ( ( med != null ) && ( med.getName() != null ) )
-        {
-            String filename = med.getName();
-
-            if ( filename.indexOf( ".xls" ) == -1 )
-            {
-                alert( filename + " n'est pas un fichier excel" );
-            }
-            else
-            {
-
-                // process the file...
-                FormationModel formationModel = new FormationModel();
-                if ( filename.endsWith( ".xls" ) )
-                {
-                    //lecture et upload de fichiers OLE2 Office Documents 
-                    List<Formation> liste = formationModel.uploadXLSFile( med.getStreamData() );
-                    List<Formation> donneeRejetes;
-                    try
-                    {
-                        HashMap<String, List<Formation>> listeDonnees = formationModel.ChargementDonneedansBdd( liste );
-                        donneeRejetes = listeDonnees.get( "supprimer" );
-                        liste = null;
-                        liste = listeDonnees.get( "inserer" );;
-
-                        //raffrechissement de l'affichage
-                        Iterator<Formation> index = liste.iterator();
-                        while ( index.hasNext() )
-                        {
-                            Formation donnee = index.next();
-                            model.add( donnee );
-                        }
-
-                        binder.loadAll();
-                        if ( donneeRejetes.size() != 0 )
-                        {
-                            String listeRejet = new String( "-->" );
-                            //Afficharge de la liste des donn�es rejet�es
-                            Iterator<Formation> index1 = donneeRejetes.iterator();
-                            while ( index1.hasNext() )
-                            {
-                                Formation donnee = index1.next();
-                                String donneeString = donnee.getCodeFormation() + ";" + donnee.getLibelleFormation()
-                                    + ";" + donnee.getLibelleDiplome();
-                                listeRejet = listeRejet + System.getProperty( "line.separator" ) + donneeString;//saut de ligne
-
-                            }
-                            AfficherFenetreRejet( listeRejet );
-
-                        }
-                    }
-                    catch ( Exception e )
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-                else if ( filename.endsWith( ".xlsx" ) )
-                {
-
-                    // lecture de fichiers Office 2007+ XML
-                    List<Formation> liste = formationModel.uploadXLSXFile( med.getStreamData() );
-                    List<Formation> donneeRejetes;
-                    try
-                    {
-                        HashMap<String, List<Formation>> listeDonnees = formationModel.ChargementDonneedansBdd( liste );
-                        donneeRejetes = listeDonnees.get( "supprimer" );
-                        liste = null;
-                        liste = listeDonnees.get( "inserer" );;
-
-                        //raffrechissement de l'affichage
-                        Iterator<Formation> index = liste.iterator();
-                        while ( index.hasNext() )
-                        {
-                            Formation donnee = index.next();
-                            model.add( donnee );
-                        }
-
-                        binder.loadAll();
-                        if ( donneeRejetes.size() != 0 )
-                        {
-                            String listeRejet = new String( "-->" );
-                            //Afficharge de la liste des donn�es rejet�es
-                            Iterator<Formation> index1 = donneeRejetes.iterator();
-                            while ( index1.hasNext() )
-                            {
-                                Formation donnee = index1.next();
-                                String donneeString = donnee.getCodeFormation() + ";" + donnee.getLibelleFormation()
-                                    + ";" + donnee.getLibelleDiplome();
-                                listeRejet = listeRejet + System.getProperty( "line.separator" ) + donneeString;//saut de ligne
-
-                            }
-                            AfficherFenetreRejet( listeRejet );
-
-                        }
-                    }
-                    catch ( Exception e )
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }
-        }
-    }
-
-    public void onClick$upload()
-    {
-        Executions.getCurrent().getDesktop().setAttribute( "org.zkoss.zul.Fileupload.target", divupdown );
-
-        try
-        {
-            Fileupload fichierupload = new Fileupload();
-
-            Media me = fichierupload.get( "Merci de selectionner le fichier qui doit etre charge",
-                                          "Chargement de fichier", true );
-
-            processMedia( me );
-        }
-        catch ( InterruptedException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    public void onClick$download()
-    {
-        //chargement du contenu de la table formation et creation du fichier excel
-        FormationModel formationModel = new FormationModel();
-
-        formationModel.downloadFormationDataToXls();
-
-    }
-
-    public void AfficherFenetreRejet( String listeRejet )
-    {
-        Map<String, String> listDonne = new HashMap<String, String>();
-        listDonne.put( "rejet", listeRejet );
-
-        final Window win = (Window) Executions.createComponents( "../pages/REJDATA.zul", self, listDonne );
-        // We send a message to the Controller of the popup that it works in popup-mode.
-        win.setAttribute( "popup", true );
-
-        //decoratePopup(win);
-        try
-        {
-            win.doModal();
-
-        }
-        catch ( InterruptedException ex )
-        {
-            ex.printStackTrace();
-        }
-        catch ( SuspendNotAllowedException ex )
-        {
-            ex.printStackTrace();
-        }
-    }
+   
 
     public void onClick$add()
         throws WrongValueException, ParseException, SQLException
@@ -374,7 +235,7 @@ public class FormationAction
 
         addedData.setCodeFormation( getSelectedcodeFormation() );
         addedData.setLibelleDiplome( getSelectedlibelleDiplome() );
-        addedData.setLibelleFormation( getSelectedlibelleFormation() );
+        addedData.setNiv_for_id( getSelectedFormation() );
 
         //controle d'integrite 
         FormationModel formationModel = new FormationModel();
@@ -409,7 +270,7 @@ public class FormationAction
             return;
         }
         selected.setCodeFormation( getSelectedcodeFormation() );
-        selected.setLibelleFormation( getSelectedlibelleFormation() );
+        selected.setNiv_for_id( getSelectedFormation() );
         selected.setLibelleDiplome( getSelectedlibelleDiplome() );
 
         //controle d'integrite 
@@ -444,8 +305,20 @@ public class FormationAction
     public void clearFields()
     {
         codeFormationtb.setText( "" );
-        libelleFormationtb.setText( "" );
+        //libelleFormationtb.setText( "" );
         libelleDiplometb.setText( "" );
     }
+    
+    public void onSelect$admincomptelb() {
+		closeErrorBox(new Component[] { codeFormationtb, libelleFormationlb,libelleDiplometb});
+	}
+	
+	
+	private void closeErrorBox(Component[] comps){
+		for(Component comp:comps){
+			Executions.getCurrent().addAuResponse(null,new AuClearWrongValue(comp));
+		}
+	}
+	
 
 }
