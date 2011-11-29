@@ -41,11 +41,11 @@ import common.CreateDatabaseCon;
 public class FormationModel
 {
 
-    private static final String SEL_FORMATION = "SELECT code_formation,libelle_formation,libelle_diplome FROM formation";
+    private static final String SEL_FORMATION = "SELECT code_formation,d.niv_for_libelle as libelle_formation ,libelle_diplome FROM formation f, def_niv_formation d where f.niv_for_id=d.niv_for_id order by code_formation";
 
-    private static final String INS_FORMATION = "INSERT INTO formation (code_formation,libelle_formation,libelle_diplome) VALUES (#code_formation,#libelle_formation,#libelle_diplome)";
+    private static final String INS_FORMATION = "INSERT INTO formation (code_formation,niv_for_id,libelle_diplome) VALUES (#code_formation,#niv_for_id,#libelle_diplome)";
 
-    private static final String UPD_FORMATION = "UPDATE formation SET libelle_formation = #libelle_formation ,"
+    private static final String UPD_FORMATION = "UPDATE formation SET niv_for_id = #niv_for_id ,"
         + "libelle_diplome = #libelle_diplome WHERE code_formation = #code_formation";
 
     private static final String DEL_FORMATION = "DELETE FROM formation WHERE code_formation = #code_formation";
@@ -150,7 +150,7 @@ public class FormationModel
             String ins_formation = INS_FORMATION;
             ins_formation = ins_formation.replaceAll( "#code_formation", "'" + addedData.getCodeFormation() + "'" );
             ins_formation = ins_formation
-                .replaceAll( "#libelle_formation", "'" + addedData.getLibelleFormation() + "'" );
+                .replaceAll( "#niv_for_id", "'" + addedData.getNiv_for_id() + "'" );
             ins_formation = ins_formation.replaceAll( "#libelle_diplome", "'" + addedData.getLibelleDiplome() + "'" );
 
             stmt.execute( ins_formation );
@@ -191,7 +191,7 @@ public class FormationModel
             stmt = (Statement) conn.createStatement();
             String upd_formation = UPD_FORMATION;
             upd_formation = upd_formation.replaceAll( "#code_formation", "'" + data.getCodeFormation() + "'" );
-            upd_formation = upd_formation.replaceAll( "#libelle_formation", "'" + data.getLibelleFormation() + "'" );
+            upd_formation = upd_formation.replaceAll( "#niv_for_id", "'" + data.getNiv_for_id() + "'" );
             upd_formation = upd_formation.replaceAll( "#libelle_diplome", "'" + data.getLibelleDiplome() + "'" );
 
             stmt.execute( upd_formation );
@@ -624,4 +624,33 @@ public class FormationModel
     	return nextvalue;
 
     	}
+    
+    public HashMap getListFormation() throws SQLException
+    {
+    	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+    	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+    	Statement stmt = null;
+    	HashMap map = new HashMap();
+    	
+    	try 
+    	{
+    		stmt = (Statement) conn.createStatement();
+    		String profile_list="select niv_for_id , niv_for_libelle from def_niv_formation"; 
+    		ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+    		
+    		
+    		while(rs.next()){
+    			map.put(rs.getString("niv_for_libelle"), rs.getInt("niv_for_id"));
+    			//list_profile.add(rs.getString("libelle_profile"));
+            }
+    		stmt.close();conn.close();
+    	} 
+    	catch (SQLException e){
+    			e.printStackTrace();
+    			stmt.close();conn.close();
+    	}
+    	
+    	return map;
+    }	
+    
 }
