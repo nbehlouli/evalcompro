@@ -2,33 +2,60 @@ package compagne.bean;
 
 public class CompagneListBean {
 
+
+
+	
 	
 	private int id_compagne;
 	private String libelle_compagne;
-	private String date_debut;
+	private String date_evaluation;
 	private String date_fin;
 	private String compagne_type;
+	private String evalue;
+	private String heure;
+	private String lieu;
 	
 	
-
+	
+	
 	public CompagneListBean(int id_compagne, String libelle_compagne,
-			String date_debut, String date_fin, String compagne_type) {
+			String date_evaluation, String date_fin, String compagne_type,
+			String evalue, String heure, String lieu) {
 		super();
 		this.id_compagne = id_compagne;
 		this.libelle_compagne = libelle_compagne;
-		this.date_debut = date_debut;
+		this.date_evaluation = date_evaluation;
 		this.date_fin = date_fin;
 		this.compagne_type = compagne_type;
+		this.evalue = evalue;
+		this.heure = heure;
+		this.lieu = lieu;
 	}
-	
-	
-	
-	
+
+
+	public String getHeure() {
+		return heure;
+	}
+
+
+	public void setHeure(String heure) {
+		this.heure = heure;
+	}
+
+
+	public String getLieu() {
+		return lieu;
+	}
+
+
+	public void setLieu(String lieu) {
+		this.lieu = lieu;
+	}
+
+
 	public CompagneListBean() {
 		super();
 	}
-
-
 
 
 	public int getId_compagne() {
@@ -43,11 +70,11 @@ public class CompagneListBean {
 	public void setLibelle_compagne(String libelle_compagne) {
 		this.libelle_compagne = libelle_compagne;
 	}
-	public String getDate_debut() {
-		return date_debut;
+	public String getDate_evaluation() {
+		return date_evaluation;
 	}
-	public void setDate_debut(String date_debut) {
-		this.date_debut = date_debut;
+	public void setDate_evaluation(String date_evaluation) {
+		this.date_evaluation = date_evaluation;
 	}
 	public String getDate_fin() {
 		return date_fin;
@@ -62,7 +89,13 @@ public class CompagneListBean {
 		this.compagne_type = compagne_type;
 	}
 	
-	
+	public String getEvalue() {
+		return evalue;
+	}
+
+	public void setEvalue(String evalue) {
+		this.evalue = evalue;
+	}
 	
 	
 
