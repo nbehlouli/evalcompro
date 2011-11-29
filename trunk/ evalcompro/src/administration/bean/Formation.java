@@ -24,6 +24,8 @@ public class Formation
     private String libelleFormation;
 
     private String libelleDiplome;
+    
+	private int niv_for_id;
 
     /**
      * 
@@ -70,6 +72,14 @@ public class Formation
     {
         this.libelleDiplome = libelleDiplome;
     }
+    
+    public int getNiv_for_id() {
+		return niv_for_id;
+	}
+
+	public void setNiv_for_id(int niv_for_id) {
+		this.niv_for_id = niv_for_id;
+	}
 
     @Override
     public int compareTo( Object o )
