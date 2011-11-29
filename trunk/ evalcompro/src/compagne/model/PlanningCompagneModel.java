@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -359,8 +360,10 @@ private ListModel strset =null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select id_compagne,libelle_compagne from compagne_evaluation" +
-					" where date_debut>=now() order by date_debut"; 
+		//	String profile_list="select id_compagne,libelle_compagne from compagne_evaluation" +
+			//		" where date_debut>=now() order by date_debut"; 
+			
+            String profile_list="select id_compagne,libelle_compagne from compagne_evaluation order by date_debut"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
@@ -577,70 +580,7 @@ private ListModel strset =null;
 	}	
 	
 	
-	
-	
-	/*
-	
-	public HashMap getDatabaseList() throws SQLException
-	{
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
-		Statement stmt = null;
-		HashMap map = new HashMap();
-		
-		try 
-		{
-			stmt = (Statement) conn.createStatement();
-			String db_list="select  database_id, nom_base from liste_db"; 
-			ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
-			
-			
-			while(rs.next()){
-				map.put( rs.getString("nom_base"),rs.getInt("database_id"));
-	        }
-			stmt.close();conn.close();
-		} 
-		catch (SQLException e){
-				e.printStackTrace();
-				stmt.close();conn.close();
-		}
-		
-		return map;
-	}	
-	
-	
-	public String getCurrentDatetime(){
-		Date today = Calendar.getInstance().getTime();
-	    // (2) create our "formatter" (our custom format)
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	    // (3) create a new String in the format we want
-	    String todaydate = formatter.format(today);
-	    
-	    return todaydate;
-		
-	}
-	
-	public  Integer getKeyMap(String key) throws SQLException{
-		Integer idprofile=(Integer)gerProfileList() .get(key);
-		return idprofile;
-	}
-	
-	public static boolean isValidDateStr(String date) {
-	    try {
-	      String format="yyyy/MM/dd";
-	    	SimpleDateFormat sdf = new SimpleDateFormat(format);
-	      sdf.setLenient(false);
-	      sdf.parse(date);
-	    }
-	    catch (ParseException e) {
-	      return false;
-	    }
-	    catch (IllegalArgumentException e) {
-	      return false;
-	    }
-	    return true;
-	    }*/
 	
 	
 	 private static Map sortByComparator(Map unsortMap) {
@@ -935,6 +875,239 @@ private ListModel strset =null;
 			
 		}
 	 
+	 public List getPlanningAllEvaluateur() throws SQLException{
+			
+			
+			List listevaluateur = new ArrayList<PlanningAgendaBean>();
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			String sqlquery="";
+			
+				 sqlquery="select  p.id_evaluateur,e.nom as nomevaluateur,e.prenom as prenomevaluateur," +
+				 		  " e.email,t.nom as nomevalue,t.prenom as prenomevalue," +
+				 		  " p.date_evaluation,p.heure_debut_evaluation ,p.heure_fin_evaluation,p.lieu,p.personne_ressources" +
+				 		  " from employe e,planning_evaluation p,employe t" +
+				 		  " where p.id_evaluateur=e.id_employe 	and t.id_employe=p.id_employe" +
+				 		  " and date_evaluation > now() order by p.id_evaluateur";
+				
+
+
+
+			
+			try {
+				stmt = (Statement) conn.createStatement();
+				
+				
+				ResultSet rs = (ResultSet) stmt.executeQuery(sqlquery);
+			
+				while(rs.next()){
+					
+					PlanningAgendaBean evalbean=new PlanningAgendaBean();
+					evalbean.setNomevaluateur(rs.getString("nomevaluateur"));
+					evalbean.setPrenomevaluateur(rs.getString("prenomevaluateur"));
+					evalbean.setEmail(rs.getString("email"));
+					evalbean.setNomevalue(rs.getString("nomevalue"));
+					evalbean.setPrenomevalue(rs.getString("prenomevalue"));
+					evalbean.setPrenomevalue(rs.getString("prenomevalue"));
+					evalbean.setDate_evaluation(rs.getDate("date_evaluation"));
+					evalbean.setHeure_debut_evaluation(rs.getString("heure_debut_evaluation"));
+					evalbean.setHeure_fin_evaluation(rs.getString("heure_fin_evaluation"));
+					evalbean.setLieu(rs.getString("lieu"));
+					evalbean.setPersonne_ressources(rs.getString("personne_ressources"));
+					evalbean.setId_evaluateur(rs.getInt("id_evaluateur"));
+
+					
+					listevaluateur.add(evalbean);
+					   
+						
+					}
+				stmt.close();
+				conn.close();
+				
+			} catch (SQLException e) {
+				stmt.close();
+				conn.close();
+				
+			}
+			return listevaluateur;
+		
+			
+			
+		}
+	 public void sendPlanningToDRH(List recipient) throws SQLException{
+			final InitContext intctx = new InitContext();
+		    intctx.loadProperties();
+			Properties props = new Properties();
+			props.put("mail.smtp.host", intctx.getHost());
+			props.put("mail.smtp.socketFactory.port", intctx.getPort());
+			props.put("mail.smtp.socketFactory.class",
+					"javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.port", intctx.getPort());
+			List  listcompagne = new ArrayList<CompagneListBean>();
+			
+						
+			Map map_evaluateurs = new HashMap();
+			Map map_drh=new HashMap();
+			
+			map_evaluateurs=getListAllEvaluateurs();
+	  		Set set = (map_evaluateurs).entrySet(); 
+	  		Iterator itr = set.iterator();
+			map_drh=getListDRHs();
+			
+			Set set1 = (map_drh).entrySet(); 
+	  		Iterator itr_drh = set1.iterator();
+	  		
+			
+			Session session = Session.getDefaultInstance(props,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(intctx.getUser(),intctx.getPassword());
+					}
+				});
+
+			try {
+
+				MimeMessage message = new MimeMessage(session);
+				String reslt="";
+				String monmessage="";
+				String nomevaluateur="";
+				message.setSubject("Planning évaluation des compétences");
+				message.setFrom(new InternetAddress(intctx.getFrom()));
+				String nomdrh="";
+				String emaildrh="";
+				
+				while(itr_drh.hasNext()){
+					
+						Map.Entry me = (Map.Entry)itr_drh.next();
+						nomdrh=nomdrh+(String)me.getKey()+",";
+						emaildrh=emaildrh+(String)me.getValue()+",";
+						PlanningAgendaBean cpb;
+						PlanningAgendaBean ple;
+						String mail="";
+						monmessage="<html> <body> 	<P>"+" Madames/Monsieurs : "+nomdrh+"</P>" +
+						"<P>"+" Merci de trouver ci-dessous le planning complet des évaluations des compétences "+"</P>" ;
+						while(itr.hasNext()){
+							Map.Entry me1 = (Map.Entry)itr.next();
+							monmessage=monmessage+"<P>"+" Evaluateur M,Mme : "+(String)me1.getKey() +"</P>";
+							monmessage=monmessage+" <TABLE BORDER=10>"+" <TR>  <TH align='center'> Evalué</TH>" +
+							" <TH align='center'> Date</TH> <TH align='center'> Heur debut</TH>" +
+							"<TH align='center'> Heure fin</TH> <TH align='center'> Lieu </TH>  </TR>";;
+							
+								Iterator it = recipient.iterator();	
+											
+							
+									while (it.hasNext()){
+										cpb  = (PlanningAgendaBean) it.next();
+										
+											if (cpb.getId_evaluateur()==(Integer) me1.getValue()){					
+												 			             
+												reslt="<TR>"+"<TD>"+ cpb.getNomevalue() +" "+ cpb.getPrenomevalue()+"</TD>"+
+												               "<TD>"+cpb.getDate_evaluation()+"</TD>"+
+												               "<TD>"+cpb.getHeure_debut_evaluation()+"</TD>"+
+												               "<TD>"+cpb.getHeure_fin_evaluation()+"</TD>"+
+												               "<TD>"+ cpb.getLieu()+"</TD>"+
+												       "</TR>";  								      
+												monmessage=monmessage+reslt;
+										   }
+						      }
+							
+								monmessage=monmessage+" </TABLE>";
+						
+					   }
+					
+				
+					
+				}
+				//monmessage=monmessage.replaceAll("#nomevaluateur", nomevaluateur);
+				monmessage=monmessage+"<P>"+"Cordialement"+	"</P>"+"<P>"+"Administrateur"+	"</P> </body></html>";
+				//System.out.println(monmessage);
+				StringBuilder sb = new StringBuilder();
+				sb.append(monmessage);
+				
+				
+				
+				message.setRecipients(Message.RecipientType.TO,
+						InternetAddress.parse(emaildrh));
+				
+				message.setRecipients(Message.RecipientType.CC,
+						InternetAddress.parse(intctx.getCc()));
+				
+				message.setContent(sb.toString(), "text/html");
+
+				Transport.send(message);
+				sb= new StringBuilder();
+				nomevaluateur="";
+				monmessage="";
+			} catch (MessagingException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+	 
+	 public HashMap getListAllEvaluateurs() throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			HashMap map = new HashMap();
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String profile_list="select  distinct p.id_evaluateur ,concat(e.nom,' ',e.prenom) as nom  from planning_evaluation p,employe e" +
+						            " where e.id_employe =p.id_evaluateur  and date_evaluation > now() order by p.id_evaluateur "; 
+				ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+				
+				
+				while(rs.next()){
+					map.put(rs.getString("nom"), rs.getInt("p.id_evaluateur"));
+					//list_profile.add(rs.getString("libelle_profile"));
+		        }
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return map;
+		}
+	 
+	 
+	 public HashMap getListDRHs() throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			HashMap map = new HashMap();
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String profile_list="select  distinct concat(nom,' ',prenom) as nom,email  from employe" +
+						            " where  est_responsable_rh='Y'"; 
+				ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
+				
+				
+				while(rs.next()){
+					map.put(rs.getString("nom"), rs.getString("email"));
+					//list_profile.add(rs.getString("libelle_profile"));
+		        }
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return map;
+		}	
+		
+
+
+
 
 
 }
