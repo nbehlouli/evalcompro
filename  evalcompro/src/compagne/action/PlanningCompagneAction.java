@@ -26,6 +26,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -58,6 +59,7 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 	Listbox admincomptelb;
 	Listbox evaluateurlb;
 	Combobox comp_list;
+	Combobox chbox_drh;
 	Textbox id_planning;
 	Listbox nom_compagne;
 	Listbox Evaluateur;
@@ -69,6 +71,10 @@ public class PlanningCompagneAction extends GenericForwardComposer {
 	Listbox heure_fin_evaluation;
 	Textbox lieu;
 	Textbox  personne_ressources;
+	
+	Label comp_list_label;
+
+	
 	private String lbl_compagne;
 	private String lbl_evaluateur;
 	private String lbl_evalue;
@@ -701,4 +707,49 @@ public void setLbl_poste(String lbl_poste) {
 			
 			//System.out.println(list_evaluateur);
 	  }
+	  
+	  public void onModifyChbox_drh(ForwardEvent event) throws InterruptedException, SQLException{
+			Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
+
+			if (checkbox.isChecked())
+			{
+				PlanningCompagneModel init= new PlanningCompagneModel();
+				
+				if (Messagebox.show("Voulez vous envoyer le planning complet validé au DRH ?", "Prompt", Messagebox.YES|Messagebox.NO,
+					    Messagebox.QUESTION) == Messagebox.YES) {
+					init.sendPlanningToDRH(init.getPlanningAllEvaluateur());
+					//pp_sel_evaluateur.close();
+					return;
+				}
+				
+				else{
+					return;
+				}
+			}
+			
+			//selectedCheckBox
+		}
+	  
+	  public void onModifyChbox_val_drh(ForwardEvent event){
+			Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();		
+
+			if (checkbox.isChecked())
+			{
+				evaluateurlb.setVisible(true);
+				comp_list.setVisible(true);
+				comp_list_label.setVisible(true);
+			}
+			else
+			{
+				evaluateurlb.setVisible(false);
+				comp_list.setVisible(false);
+				comp_list_label.setVisible(false);
+				
+			}
+			//selectedCheckBox
+		}
+	 
+	 
+	  
+	  
 }
