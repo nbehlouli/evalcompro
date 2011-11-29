@@ -223,8 +223,8 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		
 		addedData.setEst_responsable_rh(getSelectIsResRH());
 		addedData.setId_compte(getIdcompte());
-		//addedData.setCode_structure(getSelectStructure());
-		selected.setCode_structure("S0000");
+		addedData.setCode_structure(getSelectStructure());
+		//selected.setCode_structure("S0000");
 		addedData.setNom_complet(getNom_complet());
 		addedData.setIntitule_poste(getLbl_poste());
 		addedData.setLibelle_formation(getLbl_formation());
@@ -299,8 +299,8 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		selected.setEst_evaluateur(getIs_evaluateur());
 		selected.setEst_responsable_rh(getSelectIsResRH());
 		selected.setId_compte(getIdcompte());
-		//selected.setCode_structure(getSelectStructure());
-		selected.setCode_structure("S0000");
+		selected.setCode_structure(getSelectStructure());
+		//selected.setCode_structure("S0000");
 		selected.setNom_complet(getNom_complet());
 		selected.setIntitule_poste(getLbl_poste());
 		selected.setLibelle_formation(getLbl_formation());
