@@ -113,7 +113,7 @@ public class Login extends GenericForwardComposer{
 			} 
 			else if (result==1) 
 			{ 
-				msg.setValue("utilisateur out mot de passe erroné");
+				msg.setValue("utilisateur ou mot de passe erroné");
 			}
 			else if (result==2) 
 			{ 
