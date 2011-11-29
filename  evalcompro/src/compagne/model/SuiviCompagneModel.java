@@ -115,7 +115,6 @@ public List uploadListEvaluateur() throws SQLException{
 public List getCompagneEmployeList(String id_employe ) throws SQLException
 {
 	ArrayList<CompagneListBean> listcompagne = new ArrayList<CompagneListBean>();
-	CompagneListBean cbn=new CompagneListBean();
 	CreateDatabaseCon dbcon=new CreateDatabaseCon();
 	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 	Statement stmt = null;
@@ -124,21 +123,31 @@ public List getCompagneEmployeList(String id_employe ) throws SQLException
 	try 
 	{
 		stmt = (Statement) conn.createStatement();
-		String sql_query="select  distinct e.id_compagne ,libelle_compagne,date_format(date_debut,'%d-%m-%Y') as date_debut,date_format(date_fin,'%d-%m-%Y') as date_fin,compagne_type" +
-				     " from compagne_evaluation e , compagne_type t,planning_evaluation r" +
-				     " where e.id_compagne_type=t.id_compagne_type and   r.id_compagne=e.id_compagne" +
-				     " and   r.id_evaluateur =#idemploye"; 
+		String sql_query="select  distinct e.id_compagne ,libelle_compagne,concat (d.nom, '',d.prenom) as evalue," +
+				         " date_format(r.date_evaluation,'%d-%m-%Y') as date_evaluation,concat (r.heure_debut_evaluation,'-' ,r.heure_fin_evaluation) as heure," +
+				         " r.lieu,date_format(date_fin,'%d-%m-%Y') as date_fin,compagne_type" +
+				         " from compagne_evaluation e , compagne_type t,planning_evaluation r ,employe d" +
+				         " where e.id_compagne_type=t.id_compagne_type and   r.id_compagne=e.id_compagne " +
+				         " and    r.id_evaluateur =#idemploye and    d.id_employe=r.id_employe";
+		
+		
 		sql_query = sql_query.replaceAll("#idemploye", id_employe);
+		//System.out.println(sql_query);
 		ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 		//System.out.println(sql_query);
 		
 		while(rs.next()){
 			//map.put( rs.getString("libelle_compagne"),rs.getInt("id_compagne"));
+			CompagneListBean cbn=new CompagneListBean();
 			cbn.setId_compagne(rs.getInt("id_compagne"));
 			cbn.setLibelle_compagne(rs.getString("libelle_compagne"));
-			cbn.setDate_debut(rs.getString("date_debut"));
+			cbn.setDate_evaluation(rs.getString("date_evaluation"));
 			cbn.setDate_fin(rs.getString("date_fin"));
 			cbn.setCompagne_type(rs.getString("compagne_type"));
+			cbn.setEvalue(rs.getString("evalue"));
+			cbn.setHeure(rs.getString("heure"));
+			cbn.setLieu(rs.getString("lieu"));
+			
 			listcompagne.add(cbn);
         }
 		
@@ -197,9 +206,7 @@ public List filtrerListEvaluateur(int id_compagne) throws SQLException{
 						" from planning_evaluation t where   t.id_compagne=#compgane  group by id_evaluateur" +
 						" ) as t2,employe where id_employe=evaluateur group by 1,2,3";
 		sqlquery = sqlquery.replaceAll("#compgane", Integer.toString(id_compagne));
-		//sqlquery = sqlquery.replaceAll("#structure","'"+ structure+"'");
 		
-        // System.out.println(sqlquery);
 		
 		try {
 			stmt = (Statement) conn.createStatement();
@@ -316,7 +323,9 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 		String monmessage="<html> <body> 	<P>"+" Madame/Monsieur :</P>" +
 		"<P>"+" Vous n'avez pas encore finalisé votre compagne d'évaluation. Voici l'état d'avancement: "+"</P>" +			             
 		" <TABLE BORDER=10 >  <TR>  <TH align='center'> Compagne</TH>" +
-		" <TH align='center'> Etat d'avancement</TH> <TH align='center'> Date de clôture</TH> </TR>";
+		" <TH align='center'> Nom & Prénom évalue </TH> <TH align='center'> Date prévue de l'évaluation</TH> " +
+		" <TH align='center'> Heure d'évaluation</TH> "+"<TH align='center'> lieu</TH> "+
+		"<TH align='center'> Date de clôture Compagne</TH> </TR>";
 
 		
 		while (it.hasNext()){
@@ -331,14 +340,17 @@ public void sendAlertEvaluateur(List recipient) throws SQLException{
 			while (itcomp.hasNext()){
 				cmp=(CompagneListBean) itcomp.next();
 				result="<TR><TD ALIGN='center'>"+ cmp.getLibelle_compagne()+"</TD>"+
-				           "<TD bgcolor='#ff0000' ALIGN='center'>"+ cpb.getPourcentage()+" %"+"</TD>"+
+				           "<TD  ALIGN='center'>"+ cmp.getEvalue()+"</TD>"+
+				           "<TD  ALIGN='center'>"+ cmp.getDate_evaluation()+"</TD>"+
+				           "<TD  ALIGN='center'>"+ cmp.getHeure()+"</TD>"+
+				           "<TD  ALIGN='center'>"+ cmp.getLieu()+"</TD>"+
 				           "<TD ALIGN='center'>"+ cmp.getDate_fin()+"</TD></TR>";
 							
 				//message.setText("Attention vous etes à :  "+cpb.getPourcentage()+" % de l'etat d'avancement sur la "+ cmp.getLibelle_compagne()+
 					//	                        ". La date de cloture aura lieu le: "+cmp.getDate_fin()+"\n"+"\n"+intctx.getText());
 				monmessage=monmessage+result;
 			}
-			
+			//System.out.println(monmessage);
 			monmessage=monmessage+" </TABLE> <P>"+"Cordialement"+	"</P>"+"<P>"+"Administrateur"+	"</P> </body></html>";
 			StringBuilder sb = new StringBuilder();
 			sb.append(monmessage);
