@@ -32,7 +32,7 @@
 		<rows>
 			<row>
 				<textbox id="codeFormationtb" maxlength="4" sclass="textboxdetail"  width="300px" value="@{winCtrl.selected.codeFormation,save-when=none}" />
-				<textbox id="libelleFormationtb" maxlength="100" sclass="textboxdetail" width="300px" value="@{winCtrl.selected.libelleFormation,save-when=none}" />
+		                <listbox id="libelleFormationlb" mold="select" selectedItem="@{winCtrl.selected.libelleFormation,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 				<textbox id="libelleDiplometb" maxlength="100"  sclass="textboxdetail" width="300px" value="@{winCtrl.selected.libelleDiplome,save-when=none}" />
 			</row>
 		</rows>
