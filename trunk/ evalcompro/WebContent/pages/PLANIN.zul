@@ -88,10 +88,24 @@
 	
 			<groupbox id="gb" mold="3d" width="100%" height="500">
 		        <caption label="Envoi planning évaluation" />
+		        <vlayout spacing="5px">
+		           <hlayout spacing ="5px">
+						<label value="Envoi Planning compagne au DRH:   "  sclass="textboxdetail"/> 				       	
+					    <checkbox  id="chbox_drh"  forward="onCheck=onModifyChbox_drh, onCreate=onCreation_chbox_drh"/>
+				   </hlayout>
+				 </vlayout>
+				  <vlayout spacing=" 50px"> 
+				   <hlayout spacing ="15px">
+						<label value="Planning compagne validé par le DRH:   "  sclass="textboxdetail"/> 				       	
+					    <checkbox  id="chbox_plan_val"  forward="onCheck=onModifyChbox_val_drh, onCreate=onCreation_chbox_drh"/>
+				   </hlayout>
+				   </vlayout>
+					
+					
 		        	<vlayout spacing="5px">
 		         		<hlayout spacing ="10px">
-							<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/> 				       	
-							<combobox id="comp_list"  autodrop="true"  width="500px" /> 		
+							<label id="comp_list_label" value="Compagne d'évaluation:   "  sclass="textboxdetail" visible="false"/> 				       	
+							<combobox id="comp_list"  autodrop="true"  width="500px"  visible="false" /> 		
 						</hlayout>
 					
 		        	</vlayout>
@@ -100,7 +114,7 @@
 		            
 		            <hlayout spacing ="50px">
 			            
-			           <listbox id="evaluateurlb"  model="@{winCtrl.model1}">
+			           <listbox id="evaluateurlb"  model="@{winCtrl.model1}" visible="false">
 			                <listhead sizable="true">
 		
 							    <listheader label="Evaluateur" width="180px" align="center"   />
@@ -118,6 +132,9 @@
 							        </listitem>
 						</listbox>
 					</hlayout>
+					
+					
+					
 					<hlayout spacing ="35px">
 				 		 <button id="sendemail1"  Label="Envoyer" height="25px" width="60px" tooltiptext="Envoyer les planning aux évaluateurs selectionnés"  />		
 		 	       		 <button id="fermer"  Label="Fermer" height="25px" width="60px" tooltiptext="Fermer la fenêtre"  />
