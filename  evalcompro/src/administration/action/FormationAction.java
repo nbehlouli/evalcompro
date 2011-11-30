@@ -236,6 +236,7 @@ public class FormationAction
         addedData.setCodeFormation( getSelectedcodeFormation() );
         addedData.setLibelleDiplome( getSelectedlibelleDiplome() );
         addedData.setNiv_for_id( getSelectedFormation() );
+        addedData.setLibelleFormation(getLbl_formation());
 
         //controle d'integrite 
         FormationModel formationModel = new FormationModel();
@@ -272,6 +273,7 @@ public class FormationAction
         selected.setCodeFormation( getSelectedcodeFormation() );
         selected.setNiv_for_id( getSelectedFormation() );
         selected.setLibelleDiplome( getSelectedlibelleDiplome() );
+        selected.setLibelleFormation(getLbl_formation());
 
         //controle d'integrite 
         FormationModel formationModel = new FormationModel();
@@ -309,7 +311,7 @@ public class FormationAction
         libelleDiplometb.setText( "" );
     }
     
-    public void onSelect$admincomptelb() {
+    public void onSelect$formationlb() {
 		closeErrorBox(new Component[] { codeFormationtb, libelleFormationlb,libelleDiplometb});
 	}
 	
