@@ -95,6 +95,7 @@ public class FichePosteAction extends GenericForwardComposer {
 	
 	private String lbl_formation;
 	private String lbl_poste;
+	private String lbl_gsp;
 	
 	public FichePosteAction() {
 	}
@@ -198,7 +199,6 @@ public class FichePosteAction extends GenericForwardComposer {
 		
 		addedData.setCode_poste(getSelectedcode_poste());
 		addedData.setIntitule_poste(getSelectedintitule_poste());
-		addedData.setFormation_general(getSelectedFormation());
 		addedData.setFormation_professionnelle(getSelectedformation_professionnelle());
 		addedData.setExperience(getSelectedexperience());
 		addedData.setProfile_poste(getSelectedprofile_poste());
@@ -208,9 +208,12 @@ public class FichePosteAction extends GenericForwardComposer {
 		addedData.setSommaire_poste(getSelectedsommaire_poste());
 		addedData.setTache_responsabilite(getSelectedtache_responsabilite());
 		addedData.setEnvironement_perspectif(getSelectedenvironement_perspectif());
-		addedData.setLibelle_formation(getLbl_formation());
+		addedData.setLibelle_formation(getSelectedFormation());
+		addedData.setFormation_general(getLbl_formation());
 		addedData.setLibelle_poste(getLbl_poste());
-		addedData.setIs_cadre(getSelectIsCadre());
+		addedData.setCode_gsp(getSelectIsCadre());
+		addedData.setIs_cadre(getLbl_gsp());
+	
 	
 		//controle d'intégrité 
 		
@@ -254,7 +257,6 @@ public class FichePosteAction extends GenericForwardComposer {
 		
 		selected.setCode_poste(getSelectedcode_poste());
 		selected.setIntitule_poste(getSelectedintitule_poste());
-		selected.setFormation_general(getSelectedFormation());
 		selected.setFormation_professionnelle(getSelectedformation_professionnelle());
 		selected.setExperience(getSelectedexperience());
 		selected.setProfile_poste(getSelectedprofile_poste());
@@ -264,10 +266,13 @@ public class FichePosteAction extends GenericForwardComposer {
 		selected.setSommaire_poste(getSelectedsommaire_poste());
 		selected.setTache_responsabilite(getSelectedtache_responsabilite());
 		selected.setEnvironement_perspectif(getSelectedenvironement_perspectif());
-		selected.setLibelle_formation(getLbl_formation());
+		selected.setLibelle_formation(getSelectedFormation());
+		selected.setFormation_general(getLbl_formation());
 		selected.setLibelle_poste(getLbl_poste());
-		selected.setIs_cadre(getSelectIsCadre());
+		selected.setCode_gsp(getSelectIsCadre());
+		selected.setIs_cadre(getLbl_gsp());
 		
+	
 		//controle d'intégrité 
 		FichePosteModel admin_model =new FichePosteModel();
 		//Boolean donneeValide=admini_login_model.controleIntegrite(selected);
@@ -460,6 +465,7 @@ public class FichePosteAction extends GenericForwardComposer {
 	
 	private String getSelectIsCadre() throws WrongValueException {
 		String name = (String) map_cadre.get((String)is_cadre.getSelectedItem().getLabel());
+		setLbl_gsp((String)is_cadre.getSelectedItem().getLabel());
 		
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(is_cadre, "Merci de preciser si l'employe est un evaluateur !");
@@ -469,199 +475,7 @@ public class FichePosteAction extends GenericForwardComposer {
 
  
 
-   /*
   
-  public void onClick$upload() throws BiffException, InvalidFormatException, IOException {
-		Executions.getCurrent().getDesktop().setAttribute("org.zkoss.zul.Fileupload.target", divupdown);
-		
-		try 
-		{
-			
-			Fileupload fichierupload=new Fileupload();
-			
-			//Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
-			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier");
-			
-			processMedia(me);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-  
-  public void onClick$download() {
-		//chargement du contenu de la table structure_entreprise et creation du fichier excel
-		RepCompetenceModel repcommodel =new RepCompetenceModel();
-		repcommodel.downloadStructureEntrepriseDataToXls();
-		
-		
-	}
-  
-public void processMedia(Media med) throws BiffException, InvalidFormatException, IOException
-	{
-		
-		//Media med=event.getMedia();
-		
-		if ((med != null)&&(med.getName()!=null)) 
-		{
-			String filename = med.getName();
-			
-			if ( filename.indexOf(".xls") == -1 ) 
-			{
-			  alert(filename + " n'est pas un fichier excel");
-			} 
-			else 
-			{
-				
-			  // process the file...
-				RepCompetenceModel repcomModel =new RepCompetenceModel();
-				if ( filename.endsWith(".xls") ) 
-				{
-					//lecture et upload de fichiers OLE2 Office Documents 
-					//InputStream ss=med.getStreamData();
-					List<RepCompetenceBean> liste=repcomModel.uploadXLSFile(med.getStreamData());
-					//List<RepCompetenceBean> liste=repcomModel.uploadXLSFileS(filename);
-					List<RepCompetenceBean> donneeRejetes;
-					try 
-					{
-						 HashMap <String,List<RepCompetenceBean>> listeDonnees=repcomModel.ChargementDonneedansBdd(liste);
-						 donneeRejetes =listeDonnees.get("supprimer");
-						 liste=null;
-						 liste=listeDonnees.get("inserer");;
-						
-					
-						//raffrechissement de l'affichage
-						Iterator<RepCompetenceBean> index=liste.iterator();
-						while(index.hasNext())
-						{
-							RepCompetenceBean donnee=index.next();
-							model.add(donnee);
-							
-						}
-				
-						binder.loadAll();
-						if(donneeRejetes.size()!=0)
-						{
-							String listeRejet=new String("-->");
-							//Afficharge de la liste des données rejetées
-							Iterator<RepCompetenceBean> index1 =donneeRejetes.iterator();
-							while(index1.hasNext())
-							{
-							
-
-								RepCompetenceBean donnee=index1.next();
-								String donneeString=donnee.getCode_famille()+";"+donnee.getFamille()
-								+";"+donnee.getCode_groupe()
-								 +";"+donnee.getGroupe()
-								+";"+donnee.getCode_competence()
-								+";"+donnee.getLibelle_competence()
-								+";"+donnee.getDefinition_competence()
-								+";"+donnee.getAptitude_observable()
-								+ ";"+donnee.getAffichable();
-								
-								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-								
-							}
-							AfficherFenetreRejet(listeRejet);
-
-						}
-					} 
-					catch (Exception e) 
-					{
-							// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				else
-					if(filename.endsWith(".xlsx"))
-					{
-						
-						// lecture de fichiers Office 2007+ XML
-						InputStream ss=med.getStreamData();
-						List<RepCompetenceBean> liste=repcomModel.uploadXLSXFile(ss);
-						List<RepCompetenceBean> donneeRejetes;
-						try 
-						{
-							 HashMap <String,List<RepCompetenceBean>> listeDonnees=repcomModel.ChargementDonneedansBdd(liste);
-							 donneeRejetes =listeDonnees.get("supprimer");
-							 liste=null;
-							 liste=listeDonnees.get("inserer");;
-							
-						
-							//raffrechissement de l'affichage
-							Iterator<RepCompetenceBean> index=liste.iterator();
-							while(index.hasNext())
-							{
-								RepCompetenceBean donnee=index.next();
-								model.add(donnee);
-								
-							}
-					
-							binder.loadAll();
-							if(donneeRejetes.size()!=0)
-							{
-								String listeRejet=new String("-->");
-								//Afficharge de la liste des données rejetées
-								Iterator<RepCompetenceBean> index1 =donneeRejetes.iterator();
-								while(index1.hasNext())
-								{
-									RepCompetenceBean donnee=index1.next();
-									String donneeString=donnee.getCode_famille()+";"+donnee.getFamille()
-									+";"+donnee.getCode_groupe()
-									 +";"+donnee.getGroupe()
-									+";"+donnee.getCode_competence()
-									+";"+donnee.getLibelle_competence()
-									+";"+donnee.getDefinition_competence()
-									+";"+donnee.getAptitude_observable()
-									+ ";"+donnee.getAffichable();
-									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-									
-								}
-								AfficherFenetreRejet(listeRejet);
-
-							}
-						} 
-						catch (Exception e) 
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-					}
-				
-				} 				
-			}
-		}	
-  
-  
-  public void AfficherFenetreRejet(String listeRejet)
-  {
-  	Map<String, String> listDonne=new HashMap <String, String>();
-		listDonne.put("rejet", listeRejet);
-		
-		
-
-  	final Window win = (Window) Executions.createComponents("../pages/REJDATA.zul", self, listDonne);
-     
-      win.setAttribute("popup", true);
-      
-      //decoratePopup(win);
-      try 
-      {
-          win.doModal();
-         
-      } 
-      catch (InterruptedException ex) 
-      {
-         ex.printStackTrace();
-      } 
-      catch (SuspendNotAllowedException ex) 
-      {
-          ex.printStackTrace();
-      }
-  }*/
 	
 	 public void clearFields(){
 		
@@ -697,7 +511,18 @@ public void processMedia(Media med) throws BiffException, InvalidFormatException
 	public void setLbl_poste(String lbl_poste) {
 		this.lbl_poste = lbl_poste;
 	}
+	
+	
 	 
+	
+	public String getLbl_gsp() {
+		return lbl_gsp;
+	}
+
+	public void setLbl_gsp(String lbl_gsp) {
+		this.lbl_gsp = lbl_gsp;
+	}
+
 	public void onSelect$code_structure() throws SQLException, InterruptedException {
 		  FichePosteModel init =new FichePosteModel();
 		   Map map_sorted;
