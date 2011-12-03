@@ -14,6 +14,7 @@ import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Flashchart;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleCategoryModel;
@@ -35,7 +36,8 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Chart mychart;
+	//Chart mychart;
+	Flashchart mychart;
 	byte[] image;
 	Combobox nom_employe;
 	Combobox compagne;
@@ -103,17 +105,17 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 		 		catmodel.setValue("",cpb.getDate_evol(),cpb.getImi());
 		 		
 		 		//catmodel.setValue("IMI","indice de maitrise individuel",3);
-		 		mychart.setModel(catmodel);
+		 		//mychart.setModel(catmodel);
 		 		
 		 		
 				
 			}
 			
 			mychart.setModel(catmodel);
-			mychart.setYAxis("IMI"); 
-			
-			ChartEngine d=mychart.getEngine();
-			image=d.drawChart(mychart);
+			//mychart.setYAxis("IMI"); 
+			//ChartEngine d=mychart.getEngine();
+			//image=d.drawChart(mychart);
+			  mychart.setType("line");
 		
 	 }
 	 

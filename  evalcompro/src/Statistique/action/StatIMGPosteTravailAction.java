@@ -73,34 +73,7 @@ public class StatIMGPosteTravailAction extends  GenericForwardComposer{
 		poste_travail.setVisible(false);
 		compagne.setSelectedIndex(0);
 		
-		
-		//selection des données associées à la dernière compagne
-		// et affichage du graphe
-		/*CategoryModel catmodel = new SimpleCategoryModel();
-		HashMap<String , Double> listeStat=compagnes.get(selectedCompagne);
-		Set<String> listekey=listeStat.keySet();
-		Iterator indexkey=listekey.iterator();
-		while(indexkey.hasNext())
-		{
-			String valeurcles=(String)indexkey.next();
-			Double valeurStat=listeStat.get(valeurcles);
-			catmodel.setValue("IMI", valeurcles, valeurStat);
-		}
-		
-		
-//		//catmodel.setValue("poste", "entre 18 et 30 ans", new Integer(pourcentage));
-//        catmodel.setValue("IMI", "Affaire", new Double(2));
-//        catmodel.setValue("IMI", "Relationnelle", new Double(3.5));
-//        catmodel.setValue("IMI", "Personnelle", new Double(1.3));
-//        catmodel.setValue("IMI", "Opérationnelle", new Double(1));
-		mychart.setTitle("Cotation moyenne de l'employé " +selectedEmploye+" pour la compagne "+ selectedCompagne);
-        mychart.setModel(catmodel);
-        
-        //ces instructions permettent de récuperer l'objet image pour l'export
-        
-        ChartEngine d=mychart.getEngine();
-		image=d.drawChart(mychart);		
-*/
+	
 	}
 	
 	 @SuppressWarnings("static-access")

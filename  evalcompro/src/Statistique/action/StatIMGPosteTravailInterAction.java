@@ -14,43 +14,38 @@ import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Flashchart;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.SimpleXYModel;
-import org.zkoss.zul.XYModel;
 import org.zkoss.zul.impl.ChartEngine;
 
 import Statistique.bean.EmployeMoyFamBean;
 import Statistique.bean.StatCotationEmployeBean;
-import Statistique.bean.StatEvolIMGBean;
-import Statistique.bean.StatEvolIMIEmployeBean;
+import Statistique.bean.StatMoyFamillePosteBean;
 import Statistique.bean.StatTrancheAgePosteBean;
-import Statistique.model.LineChartEngine;
 import Statistique.model.StatCotationEmployeModel;
 
-public class StatEvolIMGPosteTravailAction extends  GenericForwardComposer{
+public class StatIMGPosteTravailInterAction extends  GenericForwardComposer{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//Chart mychart;
-	Flashchart mychart;
+	Chart mychart;
 	byte[] image;
 	Combobox poste_travail;
+	Combobox compagne;
 	ArrayList<StatCotationEmployeBean> ListeCotationEmploye;
 	String selectedEmploye;
 	String selectedCompagne;
 	StatCotationEmployeBean selectedBean;
-	LineChartEngine lce =new LineChartEngine();
 	
 	Map map_poste=null;
+	Map map_compagne=null;
 
 	
-	public StatEvolIMGPosteTravailAction()
+	public StatIMGPosteTravailInterAction()
 	{
 		
 	}
@@ -62,23 +57,24 @@ public class StatEvolIMGPosteTravailAction extends  GenericForwardComposer{
 		StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
 		//ListeCotationEmploye=cotationMoel.InitialiserStatCotationEmploye();
 		
-		map_poste=cotationMoel.getListPostTravailValid();
-		Set set = (map_poste).entrySet(); 
-		Iterator i = set.iterator();
 		
+		
+		
+		map_compagne=cotationMoel.getListCompagneInter();
+		
+	  	Set set = (map_compagne).entrySet(); 
+	  	Iterator i = set.iterator();
+		// Display elements
 		while(i.hasNext()) {
-			Map.Entry me = (Map.Entry)i.next();
-			poste_travail.appendItem((String) me.getKey());
-			}
+		  Map.Entry me = (Map.Entry)i.next();
+		  compagne.appendItem((String) me.getKey());
+	   }
+		// forcer la selection de la permiere ligne
+		poste_travail.setVisible(false);
+		compagne.setSelectedIndex(0);
 		
-		poste_travail.setSelectedIndex(0);
-		
-	 
-	 
- }
-		
-		
-
+	
+	}
 	
 	 @SuppressWarnings("static-access")
 	 public void onClick$downloadimage() 
@@ -93,43 +89,53 @@ public class StatEvolIMGPosteTravailAction extends  GenericForwardComposer{
 	 
 	public void onSelect$poste_travail() throws SQLException	 {
 		
-		     String code_poste= (String) map_poste.get((String)poste_travail.getSelectedItem().getLabel());
+		     String poste= (String) map_poste.get((String)poste_travail.getSelectedItem().getLabel());
 		     
-		     SimpleCategoryModel catmodel = new SimpleCategoryModel();
-	       
-		     StatEvolIMGBean cpb;
+		     CategoryModel catmodel = new SimpleCategoryModel();
+		     List charts=new ArrayList<CategoryModel>();
+		     StatMoyFamillePosteBean cpb;
 			 Iterator it;
 			 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-			 List sect_items=cotationMoel.getEvolIMGPoste(code_poste);
+			 List sect_items=cotationMoel.getListPosteMoyFam(poste);
 	         it = sect_items.iterator();
-	         float imi=0;
-			while (it.hasNext()){
-		 		cpb  = (StatEvolIMGBean)it.next();
-		 		catmodel.setValue("",cpb.getDate_evol(),cpb.getImg());
+	         while (it.hasNext()){
+		 		cpb  = (StatMoyFamillePosteBean) it.next();
 		 		
+		 		 catmodel.setValue(cpb.getFamille(),"Familles de compétence",cpb.getMoy_famille());
 		 		//catmodel.setValue("IMI","indice de maitrise individuel",3);
-		 		//mychart.setModel(catmodel);
+		 		mychart.setModel(catmodel);
 		 		
 		 		
 				
 			}
 			
-			mychart.setModel(catmodel);
-			/*mychart.setType(Chart.LINE);
-			mychart.setYAxis("IMG"); 
-			lce.setLineShape(false);
-			//lce.setShowLine(true);
-			 lce.setStroke(4);
-             mychart.setEngine(lce);
+			catmodel.setValue("IMG","Indice de maitrise global",cotationMoel.getIMGParPoste(poste));
+	 		mychart.setModel(catmodel);
 			
 			ChartEngine d=mychart.getEngine();
-			image=d.drawChart(mychart);*/
-			
-	            mychart.setType("line");
+			image=d.drawChart(mychart);
 		
 	 }
-	
-	
 	 
+	 public void onSelect$compagne() throws SQLException
+	 {
 	
+		 poste_travail.getItems().clear();
+		 poste_travail.setVisible(true);
+		 String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
+		 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
+		    map_poste=cotationMoel.getListPostTravailValid(compagne_id);
+			Set set = (map_poste).entrySet(); 
+			Iterator i = set.iterator();
+			
+			while(i.hasNext()) {
+				Map.Entry me = (Map.Entry)i.next();
+				poste_travail.appendItem((String) me.getKey());
+				}
+			
+			poste_travail.setSelectedIndex(0);
+			
+		 
+		 
+	 }
 }
