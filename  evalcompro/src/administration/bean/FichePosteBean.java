@@ -22,6 +22,7 @@ public class FichePosteBean implements  Serializable {
     private String libelle_formation;
     private String libelle_poste;
     private String is_cadre;
+    private String code_gsp;
 	
 	public FichePosteBean(){
 		
@@ -29,14 +30,14 @@ public class FichePosteBean implements  Serializable {
 
 	
 
-	
 	public FichePosteBean(String code_poste, String intitule_poste,
 			String sommaire_poste, String tache_responsabilite,
 			String environement_perspectif, String formation_general,
 			String formation_professionnelle, String experience,
 			String profile_poste, String code_poste_hierarchie,
 			String code_structure, Date date_maj_poste,
-			String libelle_formation, String libelle_poste, String is_cadre) {
+			String libelle_formation, String libelle_poste, String is_cadre,
+			String code_gsp) {
 		super();
 		this.code_poste = code_poste;
 		this.intitule_poste = intitule_poste;
@@ -53,7 +54,13 @@ public class FichePosteBean implements  Serializable {
 		this.libelle_formation = libelle_formation;
 		this.libelle_poste = libelle_poste;
 		this.is_cadre = is_cadre;
+		this.code_gsp = code_gsp;
 	}
+
+
+
+
+
 
 
 
@@ -186,6 +193,30 @@ public class FichePosteBean implements  Serializable {
 
 	public void setLibelle_formation(String libelle_formation) {
 		this.libelle_formation = libelle_formation;
+	}
+
+
+
+
+
+
+
+
+
+	public String getCode_gsp() {
+		return code_gsp;
+	}
+
+
+
+
+
+
+
+
+
+	public void setCode_gsp(String code_gsp) {
+		this.code_gsp = code_gsp;
 	}
 
 
