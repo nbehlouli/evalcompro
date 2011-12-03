@@ -228,8 +228,8 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 				//controle d'intégrité 
 				CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
 				//compagne_model.addCompagne(addedData);
-				Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
-				//Boolean donneeValide=true;
+				//Boolean donneeValide=compagne_model.controleIntegriteImi(addedData);
+				Boolean donneeValide=true;
 				
 			if (donneeValide)
 				{
@@ -288,7 +288,8 @@ public class CotationIMIvsStrategieAction extends GenericForwardComposer {
 		
 			//controle d'intégrité 
 			CotationIMIvsStrategieModel compagne_model =new CotationIMIvsStrategieModel();
-			Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+			//Boolean donneeValide=compagne_model.controleIntegrite(addedData);
+			Boolean donneeValide=true;
 				if (donneeValide)
 			{
 				//insertion de la donnée ajoutée dans la base de donnée
