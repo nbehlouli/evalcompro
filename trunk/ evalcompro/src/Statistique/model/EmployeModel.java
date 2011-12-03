@@ -177,8 +177,9 @@ public class EmployeModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select CASE WHEN p.is_cadre='N' THEN 2 ELSE 1 END as is_cadre,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
-					" from employe e,poste_travail_description p where p.code_poste=e.code_poste group by is_cadre ";
+			String sql_query="select d.gsp_libelle as is_cadre,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
+					         "  from employe e,poste_travail_description p, def_gsp d where p.code_poste=e.code_poste and p.gsp_id=d.gsp_id" +
+					         "  group by gsp_libelle";
 			//System.out.println(select_structure);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
@@ -224,7 +225,7 @@ public class EmployeModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select p.intitule_poste, if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>1  and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<16 ,'1', if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>16 and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<31 ,'2','3')) as tranche," +
+			String sql_query="select p.intitule_poste, if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>1  and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<11 ,'1', if ((round( DATEDIFF(curdate(),e.date_recrutement)/365))>11 and (round( DATEDIFF(curdate(),e.date_recrutement)/365))<21 ,'2','3')) as tranche," +
 					         " round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage from employe e ,poste_travail_description p" +
 					         " where p.code_poste=e.code_poste group by intitule_poste,tranche order by tranche" ;
 			
@@ -274,8 +275,9 @@ public class EmployeModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select f.libelle_formation,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
-					         " 	from employe e,formation f 	where f.code_formation=e.code_formation group by libelle_formation" ;
+			String sql_query="select d.niv_for_libelle as libelle_formation,round(count(e.code_poste)*100/(select count(*) from employe)) as pourcentage" +
+					         " from employe e,formation f, def_niv_formation d where f.code_formation=e.code_formation" +
+					         " and   d.niv_for_id=f.niv_for_id group by niv_for_libelle" ;
 			//System.out.println(select_structure);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);

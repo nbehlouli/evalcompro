@@ -264,7 +264,7 @@ public class StatCotationEmployeModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			String sql_query="select DATE_FORMAT(c.date_fin ,' %b %Y ')as date_eval, round(imi,2) imi from imi_stats s  ,compagne_evaluation c" +
-					         " where s.id_compagne=c.id_compagne  and id_employe=#id_employe group by 1,id_employe";
+					         " where s.id_compagne=c.id_compagne  and id_employe=#id_employe group by c.date_fin";
 
 			
 			sql_query = sql_query.replaceAll("#id_employe", "'"+id_employe+"'");
@@ -301,7 +301,7 @@ public class StatCotationEmployeModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			String sql_query=" select DATE_FORMAT(c.date_fin ,' %b %Y ')as date_eval, round(img,2) img from img_stats s  ,compagne_evaluation c" +
-					         "  where s.id_compagne=c.id_compagne  and code_poste=#code_poste group by 1 ";
+					         "  where s.id_compagne=c.id_compagne  and code_poste=#code_poste group by c.date_fin ";
 			
 			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
 			
@@ -584,6 +584,37 @@ public class StatCotationEmployeModel {
 			return result;
 		}
 	 
+	 public HashMap getListCompagneInter() throws SQLException
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+			Statement stmt = null;
+			HashMap map = new HashMap();
+			
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				String sql_query=" select  id_compagne,concat(e.libelle_compagne,'->', 'Du ',e.date_debut,' Au ',e.date_fin) nomcompagne" +
+						         " from compagne_evaluation e where now() between e.date_debut and e.date_fin";
+			     
+				ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+				
+				
+				while(rs.next()){
+					map.put(rs.getString("nomcompagne"), rs.getString("id_compagne"));
+					//list_profile.add(rs.getString("libelle_profile"));
+		        }
+				stmt.close();conn.close();
+			} 
+			catch (SQLException e){
+					e.printStackTrace();
+					stmt.close();conn.close();
+			}
+			
+			return map;
+		}
+	 
 	
+     
 	
 }

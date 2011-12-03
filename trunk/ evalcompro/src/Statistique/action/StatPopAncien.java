@@ -49,14 +49,14 @@ public class StatPopAncien extends  GenericForwardComposer{
 		while (it.hasNext()){
 	 		cpb  = (StatTrancheAgePosteBean) it.next();
 	 		if (cpb.getTranche().equalsIgnoreCase("1")){
-	 			typetranche="entre 1 et 15 ans";
+	 			typetranche="entre 1 et 10 ans";
 	 		}
 	 		else if (cpb.getTranche().equalsIgnoreCase("2")){
-	 			typetranche="entre 16 et 30 ans";
+	 			typetranche="entre 10 et 20 ans";
 	 		}
 	 		
 	 		else{
-	 			typetranche="Superieur à 31 ans";
+	 			typetranche="Superieur à 20 ans";
 	 		}
 	 		 catmodel.setValue(cpb.getIntitule_poste(),typetranche,cpb.getPourcentage());
 	 		mychart.setModel(catmodel);

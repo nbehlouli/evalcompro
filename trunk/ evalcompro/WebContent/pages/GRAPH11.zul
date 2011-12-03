@@ -1,4 +1,4 @@
-<window id="winGraph2" border="normal" height="100%" apply="Statistique.action.StatEvolIMGPosteTravailAction" contentStyle="overflow:auto">
+<window id="winGraph2" border="normal" height="100%" apply="Statistique.action.StatIMGPosteTravailInterAction" contentStyle="overflow:auto">
 
 <style>
 .textboxdetail  {font-family: Verdana, Arial,Helvetica,sans-serif;
@@ -14,21 +14,26 @@
 </style>
 
 	<groupbox id="gb" mold="3d" width="100%" height="500">
-        <caption label="Evolution IMG par poste de travail" />
+              <caption label="Resultats intermédiaires IMG par poste de travail" />
+
         	<vlayout spacing="5px">
-         		<hlayout spacing ="54px">
+         		<hlayout spacing ="10px">
+					<label value="Compagne d'évaluation:   "  sclass="textboxdetail"/> 				       	
+					<combobox  id="compagne"  autodrop="true"  width="500px"  />			
+				</hlayout>
+			
+        		<hlayout spacing ="54px">
         			<label value="Poste de travail:   "  sclass="textboxdetail"/>
  					<combobox id="poste_travail"  autodrop="true"   width="250px"  readonly="true" />
- 				</hlayout>	
-			
-        			
+ 				</hlayout>			
 			</vlayout>	   	
     </groupbox>
     
    
     
 	<vbox>
-		<flashchart id="mychart" width="800" height="400"  style="font-weight:bold"/>
+		<chart id="mychart"  width="800" if="true" 
+			height="400" type="bar" threeD="true" fgAlpha="128" model="${model}" context="editPopup"/>
 			
 		<menupopup id="editPopup">      
         	<menuitem id= "downloadimage" label="Enregistrer l'image..." />

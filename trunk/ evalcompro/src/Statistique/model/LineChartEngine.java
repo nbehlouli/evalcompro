@@ -12,7 +12,7 @@ public class LineChartEngine extends JFreeChartEngine {
     }
  
     public static Integer strokeWidth = 2;
-    public static boolean showLine = false;
+    public static boolean showLine = true;
     public static boolean lineShape = true;
  
     public boolean prepareJFreeChart(JFreeChart jfchart, Chart chart) {

@@ -46,16 +46,16 @@ public class StatPopPosteTravail extends  GenericForwardComposer{
         
 		while (it.hasNext()){
 	 		cpb  = (EmployeCadreBean) it.next();
-	 		if (cpb.getIs_cadre().equalsIgnoreCase("2")){
+	 		/*if (cpb.getIs_cadre().equalsIgnoreCase("2")){
 	 			typetranche="Non cadre";
 	 		}
 	 		
 	 		else{
 	 			typetranche="Cadre";
 	 		}
-	 	
+	 	*/
 	 		 
-	 		piemodel.setValue(typetranche,cpb.getPourcentage());
+	 		piemodel.setValue(cpb.getIs_cadre(),cpb.getPourcentage());
 	 		  mychart.setModel(piemodel);
 			
 		}
