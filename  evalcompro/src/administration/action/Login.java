@@ -67,7 +67,7 @@ public class Login extends GenericForwardComposer{
 		
 		//Messagebox.show("Hello, " + event.getName());
 		if(Strings.isBlank(user) || Strings.isEmpty(pwd)){
-			msg.setValue("*Need user name and password!");
+			msg.setValue("Merci de saisir votre login et mot de passe!");
 			return;
 		}
 		
