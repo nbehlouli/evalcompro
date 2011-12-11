@@ -218,13 +218,14 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		addedData.setCode_formation(getSelectedFormation());
 		addedData.setCode_poste(getSelectPosteTravail());
 		addedData.setEmail(getSelectedEmail());
-		addedData.setEst_evaluateur(getSelectIsEvaluateur());
-		//addedData.setEst_evaluateur(getIs_evaluateur());
-		
-		addedData.setEst_responsable_rh(getSelectIsResRH());
+		addedData.setCode_est_evaluateur(getSelectIsEvaluateur());
+		addedData.setEst_evaluateur(getIs_evaluateur());
+				
+		addedData.setCode_est_responsable_rh(getSelectIsResRH());
+		addedData.setEst_responsable_rh(getIs_res_rh());
+				
 		addedData.setId_compte(getIdcompte());
 		addedData.setCode_structure(getSelectStructure());
-		//selected.setCode_structure("S0000");
 		addedData.setNom_complet(getNom_complet());
 		addedData.setIntitule_poste(getLbl_poste());
 		addedData.setLibelle_formation(getLbl_formation());
@@ -289,15 +290,18 @@ public class GestionEmployesAction extends GenericForwardComposer {
 		
 		GestionEmployesBean addedData = new GestionEmployesBean();
 		
-		selected.setId_employe(getSelectedIdEmploye());
+    		selected.setId_employe(getSelectedIdEmploye());
 		selected.setDate_naissance(getSelectDateNaissance());
 		selected.setDate_recrutement(getSelectDateRecrutement());
 		selected.setCode_formation(getSelectedFormation());
 		selected.setCode_poste(getSelectPosteTravail());
 		selected.setEmail(getSelectedEmail());
-		//selected.setEst_evaluateur(getSelectIsEvaluateur());
+		selected.setCode_est_evaluateur(getSelectIsEvaluateur());
 		selected.setEst_evaluateur(getIs_evaluateur());
-		selected.setEst_responsable_rh(getSelectIsResRH());
+		
+		selected.setCode_est_responsable_rh(getSelectIsResRH());
+		selected.setEst_responsable_rh(getIs_res_rh());
+		
 		selected.setId_compte(getIdcompte());
 		selected.setCode_structure(getSelectStructure());
 		//selected.setCode_structure("S0000");
@@ -488,6 +492,7 @@ public class GestionEmployesAction extends GenericForwardComposer {
 	
 	private String getSelectIsResRH() throws WrongValueException {
 		String name = (String) map_resRH.get((String)est_responsable_rh.getSelectedItem().getLabel());
+		setIs_res_rh((String)est_responsable_rh.getSelectedItem().getLabel());
 		
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(est_responsable_rh, "Merci de preciser si l'employe est un responsable des RH !");
@@ -588,11 +593,11 @@ public void setPrenom_employe(String prenom_employe) {
 	  Iterator i = set.iterator();
 	  	
 		// Display elements
-		while(i.hasNext()) {
+		/*while(i.hasNext()) {
 		  Map.Entry me = (Map.Entry)i.next();
 		  structure_lbl.setValue((String) me.getKey());
 		  structure.setTooltiptext((String) me.getKey());
-		 }
+		 }*/
 	 
 		
   }
