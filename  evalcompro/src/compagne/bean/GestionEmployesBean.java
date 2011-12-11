@@ -20,9 +20,9 @@ public class GestionEmployesBean {
 	 private String code_structure;
 	 private String code_formation;
 	 private String code_poste;
+	 private String code_est_evaluateur;
+	 private String code_est_responsable_rh;
 	 
-
-	
 
 	
 
@@ -31,7 +31,8 @@ public class GestionEmployesBean {
 			Date date_recrutement, String libelle_formation,
 			String intitule_poste, String email, String est_evaluateur,
 			String est_responsable_rh, String code_structure,
-			String code_formation, String code_poste) {
+			String code_formation, String code_poste,
+			String code_est_evaluateur, String code_est_responsable_rh) {
 		super();
 		this.id_compte = id_compte;
 		this.id_employe = id_employe;
@@ -48,6 +49,24 @@ public class GestionEmployesBean {
 		this.code_structure = code_structure;
 		this.code_formation = code_formation;
 		this.code_poste = code_poste;
+		this.code_est_evaluateur = code_est_evaluateur;
+		this.code_est_responsable_rh = code_est_responsable_rh;
+	}
+
+	public String getCode_est_responsable_rh() {
+		return code_est_responsable_rh;
+	}
+
+	public void setCode_est_responsable_rh(String code_est_responsable_rh) {
+		this.code_est_responsable_rh = code_est_responsable_rh;
+	}
+
+	public String getCode_est_evaluateur() {
+		return code_est_evaluateur;
+	}
+
+	public void setCode_est_evaluateur(String code_est_evaluateur) {
+		this.code_est_evaluateur = code_est_evaluateur;
 	}
 
 	public int getId_compte() {
