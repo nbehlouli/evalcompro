@@ -57,9 +57,11 @@ private ListModel strset =null;
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String sel_comp="select concat(c.nom,'-',c.prenom) as nom, id_employe,date_naissance,date_recrutement ,concat(libelle_formation,'-',libelle_diplome) as libelle_formation,p.intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
-					        " CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
-					        " from employe e  ,poste_travail_description p,formation f,common_evalcom.compte c  where e.code_poste=p.code_poste and e.code_formation=f.code_formation  and   e.id_compte=c.id_compte order by id_employe" ;
+			String sel_comp="select concat(c.nom,'-',c.prenom) as nom, id_employe,date_naissance,date_recrutement ,concat(d.niv_for_libelle,'-',libelle_diplome) as libelle_formation,p.intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
+							" CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
+							" from employe e  ,poste_travail_description p,formation f,common_evalcom.compte c  , def_niv_formation d" +
+							"  where e.code_poste=p.code_poste and e.code_formation=f.code_formation" +
+							"  and   e.id_compte=c.id_compte and   d.niv_for_id=f.niv_for_id order by 1";
 					        
 					        ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
 			
@@ -127,10 +129,10 @@ private ListModel strset =null;
 			sql_query = sql_query.replaceAll("#code_formation", "'"+ addedData.getCode_formation()+"'");
 			sql_query = sql_query.replaceAll("#code_poste", "'"+ addedData.getCode_poste()+"'");
 			sql_query = sql_query.replaceAll("#email", "'"+ addedData.getEmail()+"'");
-			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getEst_evaluateur()+"'");
-			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getEst_responsable_rh()+"'");
-			//sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
-			sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
+			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getCode_est_evaluateur()+"'");
+			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getCode_est_responsable_rh()+"'");
+			sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			//sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
 			sql_query = sql_query.replaceAll("#id_compte", "'"+ addedData.getId_compte()+"'");
 		
 				
@@ -142,7 +144,8 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La donnée n'a pas été insérée dans la base données", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				//Messagebox.show("La donnée n'a pas été insérée dans la base données", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La donnée n'a pas été insérée dans la base de données" +e, "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -227,7 +230,7 @@ private ListModel strset =null;
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
-		Statement stmt;
+		Statement stmt = null;
 		
 		try 
 		{
@@ -245,14 +248,14 @@ private ListModel strset =null;
 			sql_query = sql_query.replaceAll("#code_formation", "'"+ addedData.getCode_formation()+"'");
 			sql_query = sql_query.replaceAll("#code_poste", "'"+ addedData.getCode_poste()+"'");
 			sql_query = sql_query.replaceAll("#email", "'"+ addedData.getEmail()+"'");
-			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getEst_evaluateur()+"'");
-			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getEst_responsable_rh()+"'");
-			//sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
-			sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
+			sql_query = sql_query.replaceAll("#est_evaluateur", "'"+ addedData.getCode_est_evaluateur()+"'");
+			sql_query = sql_query.replaceAll("#est_responsable_rh", "'"+ addedData.getCode_est_responsable_rh()+"'");
+			sql_query = sql_query.replaceAll("#code_structure", "'"+ addedData.getCode_structure()+"'");
+			//sql_query = sql_query.replaceAll("#code_structure", "'"+ "S0000"+"'");
 			sql_query = sql_query.replaceAll("#id_compte", "'"+ addedData.getId_compte()+"'");
 		
 			
-		  // System.out.println(sql_query);
+		  //System.out.println(sql_query);
 			
 			 stmt.executeUpdate(sql_query);
 		} 
@@ -260,7 +263,7 @@ private ListModel strset =null;
 		{
 			try 
 			{
-				Messagebox.show("La modification n'a pas été prise en compte car il existe une donnée ayant le même code établissement", "Erreur",Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("La modification n'a pas été prise en compte "+e, "Erreur",Messagebox.OK, Messagebox.ERROR);
 			} 
 			catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -268,7 +271,7 @@ private ListModel strset =null;
 			}
 			// TODO Auto-generated catch block
 			try {
-				conn.close();
+				stmt.close(); conn.close();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				
@@ -291,8 +294,9 @@ private ListModel strset =null;
 	/**
 	 * cette classe permet de supprimer une donnée de la table structure_entreprise
 	 * @param codeStructure
+	 * @throws InterruptedException 
 	 */
-	public Boolean deleteEmploye(GestionEmployesBean addedData)
+	public Boolean deleteEmploye(GestionEmployesBean addedData) throws InterruptedException
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
@@ -313,13 +317,14 @@ private ListModel strset =null;
 		catch (SQLException e) 
 		{
 			
-				e.printStackTrace();
+				//e.printStackTrace();
+			Messagebox.show("La suppression de l'enregistrement a échoué "+e, "Erreur",Messagebox.OK, Messagebox.ERROR);
 				return false;
 
 
 		}
 		try {
-			conn.close();
+			stmt.close(); conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -347,7 +352,9 @@ private ListModel strset =null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select   code_formation ,concat(libelle_formation,'-',libelle_diplome) as libelle_formation  from formation"; 
+			String profile_list="select   f.code_formation ,concat(d.niv_for_libelle,'-',f.libelle_diplome)" +
+								" as libelle_formation  from formation f, def_niv_formation d" +
+								" where f.niv_for_id=d.niv_for_id"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
