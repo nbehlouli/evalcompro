@@ -21,10 +21,14 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -33,6 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 
+import administration.action.StructureEntreprise;
 import administration.bean.AdministrationLoginBean;
 import administration.bean.FichePosteBean;
 import administration.bean.RepCompetenceBean;
@@ -59,18 +64,39 @@ public List loadFichesPostes() throws SQLException{
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String sql_query=" select  p.code_poste ,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(d.niv_for_libelle,'-',f.libelle_diplome)  as formation_general," +
-					         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste, g.gsp_libelle as is_cadre" +
-					         " from poste_travail_description p,structure_entreprise s ,poste_travail_description t, formation f,def_niv_formation d,def_gsp g" +
-					         " where p.code_structure=s.code_structure  and t.code_poste=p.code_poste_hierarchie  and p.code_formation=f.code_formation" +
-					         " and f.niv_for_id=d.niv_for_id and p.gsp_id=g.gsp_id" +
-					         " Union" +
-					         " select p.code_poste ,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(d.niv_for_libelle,'-',f.libelle_diplome) as formation_general," +
-					         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,code_poste_hierarchie as libelle_poste,p.code_structure,p.date_maj_poste,g.gsp_libelle as is_cadre" +
-					         " from poste_travail_description p,structure_entreprise s , formation f,def_niv_formation d,def_gsp g" +
-					         " where code_poste_hierarchie ='' and p.code_structure=s.code_structure and f.niv_for_id=d.niv_for_id" +
-					         " and p.code_formation=f.code_formation and p.gsp_id=g.gsp_id order by 1";
+//			String sql_query="select p.code_poste ,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(libelle_formation,'-',libelle_diplome) as formation_general," +
+//					         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste,CASE WHEN p.is_cadre='N' THEN 'NON' ELSE 'OUI' END as is_cadre " +
+//					         " from poste_travail_description p,structure_entreprise s ,poste_travail_description t, formation f   where p.code_structure=s.code_structure  and t.code_poste=p.code_poste_hierarchie" +
+//					         " and p.code_formation=f.code_formation";
+//			
+//			
+//			
+//			/***********************************/
+//			String sql_query="select  p.code_poste ,p.code_poste_hierarchie,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(libelle_formation,'-',libelle_diplome) as formation_general," +
+//            " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste,CASE WHEN p.is_cadre='N' THEN 'NON' ELSE 'OUI' END as is_cadre" +
+//            " from poste_travail_description p,structure_entreprise s ,poste_travail_description t, formation f" +
+//            " where p.code_structure=s.code_structure" +
+//            " and t.code_poste=p.code_poste_hierarchie and p.code_formation=f.code_formation union" +
+//            " select  p.code_poste ,p.code_poste_hierarchie,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(libelle_formation,'-',libelle_diplome) as formation_general," +
+//            " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,code_poste_hierarchie as libelle_poste,p.code_structure,p.date_maj_poste,CASE WHEN p.is_cadre='N' THEN 'NON' ELSE 'OUI' END as is_cadre" +
+//            " from poste_travail_description p,structure_entreprise s , formation f" +
+//            " where code_poste_hierarchie ='' and p.code_structure=s.code_structure" +
+//            " and p.code_formation=f.code_formation order by 1";
+			
+			String sql_query=" select  p.code_poste ,p.code_poste_hierarchie,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(d.niv_for_libelle,'-',f.libelle_diplome)  as formation_general," +
+	         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,t.intitule_poste as libelle_poste,p.code_structure,p.date_maj_poste, g.gsp_libelle as is_cadre  , p.code_formation,d.niv_for_libelle" +
+	         " from poste_travail_description p,structure_entreprise s ,poste_travail_description t, formation f,def_niv_formation d,def_gsp g" +
+	         " where p.code_structure=s.code_structure  and t.code_poste=p.code_poste_hierarchie  and p.code_formation=f.code_formation" +
+	         " and f.niv_for_id=d.niv_for_id and p.gsp_id=g.gsp_id" +
+	         " Union" +
+	         " select p.code_poste ,p.code_poste_hierarchie,p.intitule_poste,trim(p.sommaire_poste) as sommaire_poste ,trim(p.tache_responsabilite) as tache_responsabilite ,trim(p.environement_perspectif) as environement_perspectif ,concat(d.niv_for_libelle,'-',f.libelle_diplome) as formation_general," +
+	         " p.formation_professionnelle ,p.experience,trim(p.profile_poste) as profile_poste,code_poste_hierarchie as libelle_poste,p.code_structure,p.date_maj_poste,g.gsp_libelle as is_cadre  , p.code_formation,d.niv_for_libelle" +
+	         " from poste_travail_description p,structure_entreprise s , formation f,def_niv_formation d,def_gsp g" +
+	         " where code_poste_hierarchie ='' and p.code_structure=s.code_structure and f.niv_for_id=d.niv_for_id" +
+	         " and p.code_formation=f.code_formation and p.gsp_id=g.gsp_id order by 1";
 ;
+			
+			/****************************************/
 			//System.out.println(sql_query);
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
@@ -91,7 +117,13 @@ public List loadFichesPostes() throws SQLException{
 				bean.setCode_structure(rs.getString("code_structure"));
 				bean.setDate_maj_poste(rs.getDate("date_maj_poste"));
 				bean.setIs_cadre(rs.getString("is_cadre"));
-				
+				bean.setExperience(rs.getString("experience"));
+				bean.setCode_formation(rs.getString("code_formation"));
+				bean.setNiv_formation(rs.getString("niv_for_libelle"));
+				bean.setPoste_hierarchie(rs.getString("code_poste_hierarchie"));
+
+				bean.setCodeFormationNiv(bean.getCode_formation()+","+bean.getNiv_formation());
+				bean.setHierarchie(rs.getString("code_poste_hierarchie"));
 				    listcomp.add(bean);
 				   
 					
@@ -293,7 +325,6 @@ public void supprimerFichePoste(FichePosteBean addedData) throws InterruptedExce
 		e.printStackTrace();
 	}
 }
-
 
 public HashMap getListFormation() throws SQLException
 {
@@ -524,5 +555,569 @@ public HashMap isCadre() throws SQLException
 	return map;
 	
 }
+public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
+{
+	
+	ArrayList <FichePosteBean> listFichePostebean=new ArrayList<FichePosteBean>();
+	
+	 // Creer l'objet representant le fichier Excel
+    try 
+    {
+		HSSFWorkbook fichierExcel = new HSSFWorkbook(inputStream);
+		// creer l'objet representant les lignes Excel
+        HSSFRow ligne;
 
+        // creer l'objet representant les cellules Excel
+        HSSFCell cellule;
+
+        //lecture de la première feuille excel
+        HSSFSheet feuilleExcel=fichierExcel.getSheet("liste postes travail");
+        
+        // lecture du contenu de la feuille excel
+        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+        
+        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+        {
+        	
+        	ligne = feuilleExcel.getRow(numLigne);
+            int nombreColonne = ligne.getLastCellNum()
+                    - ligne.getFirstCellNum();
+            FichePosteBean fichePoste=new FichePosteBean();
+            // parcours des colonnes de la ligne en cours
+            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+            {
+            	
+            	cellule = ligne.getCell(numColonne);
+            	
+            	String valeur= cellule.getStringCellValue();
+            	
+            	
+            	if(numColonne==0)
+            	{
+            		fichePoste.setCode_poste(valeur);
+            	}
+            	else
+            		if(numColonne==1)
+	            	{
+            			fichePoste.setIntitule_poste(valeur);
+	            	}
+	            	else
+	            		if(numColonne==2)
+		            	{
+	            			fichePoste.setSommaire_poste(valeur);
+		            	}
+		            	else
+		            		if(numColonne==3)
+			            	{
+		            			fichePoste.setTache_responsabilite(valeur);
+			            	}
+			            	else
+			            		if(numColonne==4)
+				            	{
+			            			fichePoste.setEnvironement_perspectif(valeur);
+				            	}
+				            	else
+				            		if(numColonne==5)
+					            	{
+				            			String[] val=valeur.split(",");
+				            			fichePoste.setFormation_general(val[0]);
+					            	}
+					            	else
+					            		if(numColonne==6)
+						            	{
+					            			fichePoste.setFormation_professionnelle(valeur);
+						            	}
+						            	else
+						            		if(numColonne==7)
+							            	{
+						            			fichePoste.setExperience(valeur);
+							            	}
+							            	else
+							            		if(numColonne==8)
+								            	{
+							            			fichePoste.setProfile_poste(valeur);
+								            	}
+								            	else
+								            		if(numColonne==9)
+									            	{
+								            			fichePoste.setPoste_hierarchie(valeur);
+									            	}
+									            	else
+									            		if(numColonne==10)
+										            	{
+									            			String[] val=valeur.split(",");
+									            			fichePoste.setCode_structure(val[0]);
+										            	}
+									            		else
+									            			if(numColonne==11)
+									            			{
+									            				//ajout jsp
+									            			}
+									            			
+            	
+
+            }//fin for colonne
+            listFichePostebean.add(fichePoste);
+        }//fin for ligne
+
+	} 
+    catch (IOException e) 
+    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	}
+	
+	
+	
+	return listFichePostebean;
+}
+
+public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
+{
+	
+	ArrayList <FichePosteBean> listFichePostebean=new ArrayList<FichePosteBean>();
+	
+	 // Creer l'objet representant le fichier Excel
+    try 
+    {
+    	XSSFWorkbook fichierExcel = new XSSFWorkbook(inputStream);
+		// creer l'objet representant les lignes Excel
+        XSSFRow ligne;
+
+        // creer l'objet representant les cellules Excel
+        XSSFCell cellule;
+
+        //lecture de la première feuille excel
+        XSSFSheet feuilleExcel=fichierExcel.getSheet("liste postes travail");
+        
+        // lecture du contenu de la feuille excel
+        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+        
+        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+        {
+        	
+        	ligne = feuilleExcel.getRow(numLigne);
+            int nombreColonne = ligne.getLastCellNum()
+                    - ligne.getFirstCellNum();
+            FichePosteBean fichePoste=new FichePosteBean();
+            // parcours des colonnes de la ligne en cours
+            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+            {
+            	
+            	cellule = ligne.getCell(numColonne);
+            	
+            	String valeur= cellule.getStringCellValue();
+            	
+            	
+            	if(numColonne==0)
+            	{
+            		fichePoste.setCode_poste(valeur);
+            	}
+            	else
+            		if(numColonne==1)
+	            	{
+            			fichePoste.setIntitule_poste(valeur);
+	            	}
+	            	else
+	            		if(numColonne==2)
+		            	{
+	            			fichePoste.setSommaire_poste(valeur);
+		            	}
+		            	else
+		            		if(numColonne==3)
+			            	{
+		            			fichePoste.setTache_responsabilite(valeur);
+			            	}
+			            	else
+			            		if(numColonne==4)
+				            	{
+			            			fichePoste.setEnvironement_perspectif(valeur);
+				            	}
+				            	else
+				            		if(numColonne==5)
+					            	{
+				            			String[] val=valeur.split(",");
+				            			fichePoste.setFormation_general(val[0]);
+					            	}
+					            	else
+					            		if(numColonne==6)
+						            	{
+					            			fichePoste.setFormation_professionnelle(valeur);
+						            	}
+						            	else
+						            		if(numColonne==7)
+							            	{
+						            			fichePoste.setExperience(valeur);
+							            	}
+							            	else
+							            		if(numColonne==8)
+								            	{
+							            			fichePoste.setProfile_poste(valeur);
+								            	}
+								            	else
+								            		if(numColonne==9)
+									            	{
+								            			fichePoste.setPoste_hierarchie(valeur);
+									            	}
+									            	else
+									            		if(numColonne==10)
+										            	{
+									            			String[] val=valeur.split(",");
+									            			fichePoste.setCode_structure(val[0]);
+										            	}
+									            		else
+									            			if(numColonne==11)
+									            			{
+									            				if(valeur.equals("1"))
+									            					fichePoste.setIs_cadre("Y");
+									            				else
+									            					fichePoste.setIs_cadre("N");
+									            			}
+									            			
+            	
+
+            }//fin for colonne
+            listFichePostebean.add(fichePoste);
+        }//fin for ligne
+
+	} 
+    catch (IOException e) 
+    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	}
+	
+	return listFichePostebean;
+}
+
+/**
+ * cette méthode permet de vérifier l'integrite des données et retourne les données rejetés
+ * @return
+ */
+public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <FichePosteBean> liste)throws Exception
+{
+	//Verification de l'integrité des données à inserer doublon dans le fichier
+	List <FichePosteBean> listeAInserer=new ArrayList <FichePosteBean>();
+	List <FichePosteBean> listeDonneesRejetes=new ArrayList <FichePosteBean>();
+	
+	
+	
+
+	for(int i=0; i<liste.size();i++)
+	{
+		FichePosteBean donnee=liste.get(i);
+		boolean donneerejete=false;
+		for(int j=i+1;j<liste.size();j++)
+		{
+			FichePosteBean donnee2=liste.get(j);
+			if(donnee.getCode_poste().equals(donnee2.getCode_poste()))
+			{
+				listeDonneesRejetes.add(donnee);
+				donneerejete=true;
+				
+			}
+		}
+		if((i==liste.size()-1)||(i==0)||(donneerejete==false))
+			listeAInserer.add(donnee);
+		
+	}
+	
+	
+	//Verification de l'integrité des données à inserer doublon avec les données de la base
+	
+	List <FichePosteBean> listeAInsererFinal=new ArrayList <FichePosteBean>();
+	@SuppressWarnings("unchecked")
+	List<FichePosteBean>fichePostebdd =loadFichesPostes();
+	Iterator <FichePosteBean>iterator=listeAInserer.iterator();
+	
+	while(iterator.hasNext())
+	{
+		
+		FichePosteBean bean=(FichePosteBean)iterator.next();
+		
+		Iterator<FichePosteBean> index=fichePostebdd.iterator();
+		boolean donneerejete=false;
+		while(index.hasNext())
+		{
+			
+			FichePosteBean bean2=(FichePosteBean)index.next();
+			if(bean.getCode_poste().equals(bean2.getCode_poste()))
+			{
+				
+				listeDonneesRejetes.add(bean);
+				donneerejete=true;
+				continue;
+			}
+		}
+		if(!donneerejete)
+		{
+			
+			listeAInsererFinal.add(bean);
+		}
+		
+	}
+	
+	//Insertion des données dans la table Structure_entreprise
+	Iterator<FichePosteBean> index =listeAInsererFinal.iterator();
+	while(index.hasNext())
+	{
+		FichePosteBean donneeBean=(FichePosteBean)index.next();
+		
+		addPosteTravail(donneeBean);			
+	}
+	
+
+	HashMap <String,List<FichePosteBean>> donneeMap=new HashMap<String,List<FichePosteBean>>();
+	donneeMap.put("inserer", listeAInsererFinal);
+	donneeMap.put("supprimer", listeDonneesRejetes);
+	return donneeMap;
+}
+
+
+/**
+ * Cette méthode permet de charger le contenu de la table Piche_Poste et de créer un fichier excel avec ces données
+ */
+public void downloadFichePosteDataToXls(HSSFWorkbook workBook)
+{
+	//recupération du contenu de la table Structure_entreprise
+	try 
+	{
+		@SuppressWarnings("unchecked")
+		List<FichePosteBean> listeFichePosteBean=loadFichesPostes();
+		HashMap<String,StructureEntrepriseBean> mapStructureEntreprise= getStructureEntreprise();
+		//creation du fichier xls
+		
+		Iterator <FichePosteBean>index=listeFichePosteBean.iterator();
+		//creation d'un document excel 
+		//HSSFWorkbook workBook = new HSSFWorkbook();
+		
+		//creation d'une feuille excel
+		 HSSFSheet sheet = workBook.createSheet("liste postes travail");
+		 
+		 //creation de l'entête du document excel
+		 HSSFRow row = sheet.createRow(0);
+		 HSSFCell cell = row.createCell((short)0);
+		 
+		 HSSFCellStyle cellStyle = null;
+		 cellStyle = workBook.createCellStyle();
+		 
+		 HSSFFont font1 = workBook.createFont();
+		 font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		 font1.setFontHeightInPoints((short)8);
+		 font1.setFontName("Arial");
+		 
+	     cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setFont(font1);
+	        
+		 cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+		 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		 cell.setCellValue("code poste");
+		 			 cell.setCellStyle(cellStyle);
+		 HSSFCell cell1 = row.createCell((short)1);
+		 cell1.setCellValue("intitule poste");
+		 			 cell1.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell2 = row.createCell((short)2);
+		 cell2.setCellValue("sommaire poste");
+		 			 cell2.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell3 = row.createCell((short)3);
+		 cell3.setCellValue("tache responsabilite");
+		 			 cell3.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell4 = row.createCell((short)4);
+		 cell4.setCellValue("environement_perspectif");
+		 			 cell4.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell5 = row.createCell((short)5);
+		 cell5.setCellValue("code formation");
+		 			 cell5.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell6 = row.createCell((short)6);
+		 cell6.setCellValue("formation professionnelle");
+		 			 cell6.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell7 = row.createCell((short)7);
+		 cell7.setCellValue("experience");
+		 			 cell7.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell8 = row.createCell((short)8);
+		 cell8.setCellValue("profile poste");
+		 			 cell8.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell9 = row.createCell((short)9);
+		 cell9.setCellValue("code poste hierarchie");
+		 			 cell9.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell10 = row.createCell((short)10);
+		 cell10.setCellValue("code structure");
+		 			 cell10.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell11 = row.createCell((short)11);
+		 cell11.setCellValue("GSP");
+		 			 cell11.setCellStyle(cellStyle);
+		 			 
+		 HSSFCell cell12 = row.createCell((short)12);
+		 cell12.setCellValue("code+libelle");
+		 cell12.setCellStyle(cellStyle);		 			 
+		 
+		 
+		 
+		 int i=1;
+		while (index.hasNext())
+		{
+			
+			
+			FichePosteBean donnee=(FichePosteBean)index.next();
+			
+			 HSSFRow row1 = sheet.createRow(i);
+			 HSSFCell cel = row1.createCell((short)0);
+			 cel.setCellValue(donnee.getCode_poste());
+			 
+			 cel = row1.createCell((short)1);
+			 cel.setCellValue(donnee.getIntitule_poste());
+			 cel = row1.createCell((short)2);
+			 cel.setCellValue(donnee.getSommaire_poste());
+			 cel = row1.createCell((short)3);
+			 cel.setCellValue(donnee.getTache_responsabilite());
+			 cel = row1.createCell((short)4);
+			 cel.setCellValue(donnee.getEnvironement_perspectif());
+			 cel = row1.createCell((short)5);
+			 
+			 cel.setCellValue(donnee.getCode_formation()+","+donnee.getNiv_formation());
+			 cel = row1.createCell((short)6);
+			 cel.setCellValue(donnee.getFormation_professionnelle());
+			 cel = row1.createCell((short)7);
+			 
+			 cel.setCellValue(donnee.getExperience());
+			 cel = row1.createCell((short)8);
+			 cel.setCellValue(donnee.getProfile_poste());
+			 cel = row1.createCell((short)9);
+			 cel.setCellValue(donnee.getPoste_hierarchie());
+			 cel = row1.createCell((short)10);
+			 
+			 StructureEntrepriseBean structure=mapStructureEntreprise.get(donnee.getCode_structure());
+			 String libell_division=structure.getLibelleDivision();
+			 String libelleDirection=structure.getLibelleDirection();
+			 String libelleUnite=structure.getLibelleUnite();
+			 String libelleDepartement=structure.getLibelleDepartement();
+			 String libelleService=structure.getLibelleService();
+			 String libelleSection=structure.getLibelleSection();
+			 if(libell_division==null) libell_division="";
+			 if(libelleDirection==null)libelleDirection="";
+			 if(libelleUnite==null)libelleUnite="";
+			 if(libelleDepartement==null)libelleDepartement="";
+			 if(libelleService==null)libelleService="";
+			 if(libelleSection==null)libelleSection="";
+			 String valeurCode_Structure=donnee.getCode_structure()+","+libell_division+","+libelleDirection+","+libelleUnite+","+libelleDepartement+","+ libelleService+","+libelleSection;
+			 cel.setCellValue(valeurCode_Structure);
+			 cel = row1.createCell((short)11);
+			 cel.setCellValue(donnee.getIs_cadre());
+			 
+			 cel = row1.createCell((short)12);		 
+			 i++;
+			 cel.setCellFormula("A"+i+"& \",\"&B"+i);
+		}
+
+		//autosize des colonnes
+		for (int j=0;j<=12;j++)
+	 	{
+	 		sheet.autoSizeColumn(j);
+	 		
+	 	}	
+		
+//		FileOutputStream fOut;
+//		try 
+//		{
+//			fOut = new FileOutputStream("Donnees_Evalcom.xls");
+//			workBook.write(fOut);
+//			fOut.flush();
+//			fOut.close();
+//			
+//			File file = new File("Donnees_Evalcom.xls");
+//			Filedownload.save(file, "XLS");
+//		} 
+//		catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+				
+	}
+	catch (SQLException e) 
+	{
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+}
+
+
+
+public HashMap<String,StructureEntrepriseBean> getStructureEntreprise() throws SQLException{
+	
+	HashMap<String,StructureEntrepriseBean> mapStructureEntreprise = new HashMap<String,StructureEntrepriseBean>();
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	Statement stmt;
+	
+	try {
+		stmt = (Statement) conn.createStatement();
+		String select_structure="select code_structure, libelle_division, libelle_direction, libelle_unite, libelle_departement, libelle_service, libelle_section  from  structure_entreprise";
+		
+		ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+		
+		
+		while(rs.next()){
+			if (rs.getRow()>=1) {
+				StructureEntrepriseBean structureEntreprise=new StructureEntrepriseBean();
+				String code_structure=rs.getString("code_structure");
+
+				structureEntreprise.setLibelleDivision(rs.getString("libelle_division"));
+				
+				structureEntreprise.setLibelleDirection(rs.getString("libelle_direction"));
+				
+				structureEntreprise.setLibelleUnite(rs.getString("libelle_unite"));
+				
+				structureEntreprise.setLibelleDepartement(rs.getString("libelle_departement"));
+				
+				structureEntreprise.setLibelleService(rs.getString("libelle_service"));
+				
+				structureEntreprise.setLibelleSection(rs.getString("libelle_section"));
+				  
+				mapStructureEntreprise.put(code_structure,structureEntreprise);
+			   
+				
+			}else {
+				return mapStructureEntreprise;
+			}
+			
+		}
+		conn.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		//((java.sql.Connection) dbcon).close();
+		e.printStackTrace();
+		conn.close();
+	}
+	
+		
+	return mapStructureEntreprise;	
+
+	
+	
+}
 }
