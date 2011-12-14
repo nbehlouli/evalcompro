@@ -23,7 +23,81 @@ public class FichePosteBean implements  Serializable {
     private String libelle_poste;
     private String is_cadre;
     private String code_gsp;
+    private	String codeFormationNiv;
+    
+    private String hierarchie;
+   
+    private String codeStructLibelle;
+    
+    public String getCodeStructLibelle() {
+		return codeStructLibelle;
+	}
+
+
+
+	public void setCodeStructLibelle(String codeStructLibelle) {
+		this.codeStructLibelle = codeStructLibelle;
+	}
+
+
+
+	public String getHierarchie() {
+		return hierarchie;
+	}
+
+
+
+	public void setHierarchie(String hierarchie) {
+		this.hierarchie = hierarchie;
+	}
+
+
+
+	public String getCodeFormationNiv() {
+		return codeFormationNiv;
+	}
+
+
+
+	public void setCodeFormationNiv(String codeFormationNiv) {
+		this.codeFormationNiv = codeFormationNiv;
+	}
+
+
+
+
+
+
+
+
+
+	private String code_formation;
+    private String niv_formation;
 	
+	public String getCode_formation() {
+		return code_formation;
+	}
+
+
+
+	public void setCode_formation(String code_formation) {
+		this.code_formation = code_formation;
+	}
+
+
+
+	public String getNiv_formation() {
+		return niv_formation;
+	}
+
+
+
+	public void setNiv_formation(String niv_formation) {
+		this.niv_formation = niv_formation;
+	}
+
+
+
 	public FichePosteBean(){
 		
 	}
