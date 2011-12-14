@@ -437,13 +437,13 @@ public class StructureEntreprise extends GenericForwardComposer {
 	}
 
 	
-	public void onClick$download() {
-		//chargement du contenu de la table structure_entreprise et creation du fichier excel
-		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
-		
-		structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
-
-	}
+//	public void onClick$download() {
+//		//chargement du contenu de la table structure_entreprise et creation du fichier excel
+//		StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+//		
+//		structureEntrepriseModel.downloadStructureEntrepriseDataToXls();
+//
+//	}
 	
 	public void onSelect$structureEntrepriselb() {
 		closeErrorBox(new Component[] { codeStructure, codeDivision,nomDivision,codeDirection,  nomDirection, 
