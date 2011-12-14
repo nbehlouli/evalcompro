@@ -16,11 +16,13 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -733,7 +735,7 @@ public class StructureEntrepriseModel {
 	/**
 	 * Cette méthode permet de charger le contenu de la table Structure_entreprise et de créer un fichier excel avec ces données
 	 */
-	public void downloadStructureEntrepriseDataToXls()
+	public void downloadStructureEntrepriseDataToXls(HSSFWorkbook workBook)
 	{
 		
 		//recupération du contenu de la table Structure_entreprise
@@ -745,18 +747,33 @@ public class StructureEntrepriseModel {
 			
 			Iterator <StructureEntrepriseBean>index=listeStructureEntrepriseBean.iterator();
 			//creation d'un document excel 
-			HSSFWorkbook workBook = new HSSFWorkbook();
+			//HSSFWorkbook workBook = new HSSFWorkbook();
 			
 			//creation d'une feuille excel
-			 HSSFSheet sheet = workBook.createSheet("struture_entreprise");
+			 HSSFSheet sheet = workBook.createSheet("structure entreprise");
 			 
 			 //creation de l'entête du document excel
 			 HSSFRow row = sheet.createRow(0);
 			 HSSFCell cell = row.createCell((short)0);
 			 
 			 HSSFCellStyle cellStyle = null;
+			 HSSFFont font1 = workBook.createFont();
+			 font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			 font1.setFontHeightInPoints((short)8);
+			 font1.setFontName("Arial");
+			 
 			 cellStyle = workBook.createCellStyle();
-			 cellStyle.setFillForegroundColor(HSSFColor.RED.index);
+		     cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setFont(font1);
+		        
+			 cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
 			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 			 cell.setCellValue("Code structure");
 			 			 cell.setCellStyle(cellStyle);
@@ -807,6 +824,10 @@ public class StructureEntrepriseModel {
 			 HSSFCell cell12 = row.createCell((short)12);
 			 cell12.setCellValue("Nom section");
 			 			 cell12.setCellStyle(cellStyle);
+			 			 
+			 HSSFCell cell13 = row.createCell((short)13);
+			cell13.setCellValue("code+libellé");
+			cell13.setCellStyle(cellStyle);
 			 
 			 int i=1;
 			while (index.hasNext())
@@ -842,30 +863,40 @@ public class StructureEntrepriseModel {
 				 cel.setCellValue(donnee.getCodesection());
 				 cel = row1.createCell((short)12);
 				 cel.setCellValue(donnee.getLibelleSection());
+				 cel = row1.createCell((short)13);
+				 //cel.setCellValue(donnee.getLibelleSection());
 				 i++;
+				 //cel.setCellFormula("A"+i+"& \",\"&C"+i+"& \",\"&E"+"& \",\"&G"+"& \",\"&I"+"& \",\"&K"+"& \",\"&M");
+				 
+				 cel.setCellFormula("A"+i+"& \",\"&C"+i+"& \",\"&E"+i+"& \",\"&G"+i+"& \",\"&I"+i+"& \",\"&K"+i+"& \",\"&M"+i);
 			}
 
-
+			//autosize des colonnes
+			for (int j=0;j<=14;j++)
+		 	{
+		 		sheet.autoSizeColumn(j);
+		 		
+		 	}
 			
-			FileOutputStream fOut;
-			try 
-			{
-				fOut = new FileOutputStream("Structure_entreprise.xls");
-				workBook.write(fOut);
-				fOut.flush();
-				fOut.close();
-				
-				File file = new File("Structure_entreprise.xls");
-				Filedownload.save(file, "XLS");
-			} 
-			catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			FileOutputStream fOut;
+//			try 
+//			{
+//				fOut = new FileOutputStream("Structure_entreprise.xls");
+//				workBook.write(fOut);
+//				fOut.flush();
+//				fOut.close();
+//				
+//				File file = new File("Structure_entreprise.xls");
+//				Filedownload.save(file, "XLS");
+//			} 
+//			catch (FileNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 					
 		}
