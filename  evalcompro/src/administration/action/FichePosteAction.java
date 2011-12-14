@@ -33,7 +33,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Filedownload;
+
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
@@ -49,7 +49,6 @@ import administration.bean.StructureEntrepriseBean;
 import administration.model.AdministrationLoginModel;
 import administration.model.FichePosteModel;
 import administration.model.RepCompetenceModel;
-import administration.model.StructureEntrepriseModel;
 
 public class FichePosteAction extends GenericForwardComposer {
 
@@ -199,6 +198,7 @@ public class FichePosteAction extends GenericForwardComposer {
 		
 		addedData.setCode_poste(getSelectedcode_poste());
 		addedData.setIntitule_poste(getSelectedintitule_poste());
+		addedData.setFormation_general(getSelectedFormation());
 		addedData.setFormation_professionnelle(getSelectedformation_professionnelle());
 		addedData.setExperience(getSelectedexperience());
 		addedData.setProfile_poste(getSelectedprofile_poste());
@@ -257,6 +257,7 @@ public class FichePosteAction extends GenericForwardComposer {
 		
 		selected.setCode_poste(getSelectedcode_poste());
 		selected.setIntitule_poste(getSelectedintitule_poste());
+		selected.setFormation_general(getSelectedFormation());
 		selected.setFormation_professionnelle(getSelectedformation_professionnelle());
 		selected.setExperience(getSelectedexperience());
 		selected.setProfile_poste(getSelectedprofile_poste());
@@ -266,12 +267,11 @@ public class FichePosteAction extends GenericForwardComposer {
 		selected.setSommaire_poste(getSelectedsommaire_poste());
 		selected.setTache_responsabilite(getSelectedtache_responsabilite());
 		selected.setEnvironement_perspectif(getSelectedenvironement_perspectif());
-		selected.setLibelle_formation(getSelectedFormation());
+		selected.setLibelle_formation(getLbl_formation());
 		selected.setFormation_general(getLbl_formation());
 		selected.setLibelle_poste(getLbl_poste());
+		selected.setIs_cadre(getSelectIsCadre());
 		selected.setCode_gsp(getSelectIsCadre());
-		selected.setIs_cadre(getLbl_gsp());
-		
 	
 		//controle d'intégrité 
 		FichePosteModel admin_model =new FichePosteModel();
@@ -465,8 +465,8 @@ public class FichePosteAction extends GenericForwardComposer {
 	
 	private String getSelectIsCadre() throws WrongValueException {
 		String name = (String) map_cadre.get((String)is_cadre.getSelectedItem().getLabel());
-		setLbl_gsp((String)is_cadre.getSelectedItem().getLabel());
-		
+				setLbl_gsp((String)is_cadre.getSelectedItem().getLabel());
+
 		if (Strings.isBlank(name)) {
 			throw new WrongValueException(is_cadre, "Merci de preciser si l'employe est un evaluateur !");
 		}
@@ -475,7 +475,207 @@ public class FichePosteAction extends GenericForwardComposer {
 
  
 
+   
   
+  public void onClick$upload() throws BiffException, InvalidFormatException, IOException {
+		Executions.getCurrent().getDesktop().setAttribute("org.zkoss.zul.Fileupload.target", divupdown);
+		
+		try 
+		{
+			
+			Fileupload fichierupload=new Fileupload();
+			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier");
+			
+			telechargerExcel(me);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+  
+//  public void onClick$download() {
+//		//chargement du contenu de la table Fiche_Poste et creation du fichier excel
+//		FichePosteModel fichePostemodel =new FichePosteModel();
+//		
+//		fichePostemodel.downloadFichePosteDataToXls();
+//		
+//		
+//	}
+  
+public void telechargerExcel(Media med) throws BiffException, InvalidFormatException, IOException
+	{
+		
+		//Media med=event.getMedia();
+		
+		if ((med != null)&&(med.getName()!=null)) 
+		{
+			String filename = med.getName();
+			
+			if ( filename.indexOf(".xls") == -1 ) 
+			{
+			  alert(filename + " n'est pas un fichier excel");
+			} 
+			else 
+			{
+				
+			  // process the file...
+				FichePosteModel ficheposteModel =new FichePosteModel();
+				if ( filename.endsWith(".xls") ) 
+				{
+					//lecture et upload de fichiers OLE2 Office Documents 
+					//InputStream ss=med.getStreamData();
+					List<FichePosteBean> liste=ficheposteModel.uploadXLSFile(med.getStreamData());
+
+					List<FichePosteBean> donneeRejetes;
+					try 
+					{
+						 HashMap <String,List<FichePosteBean>> listeDonnees=ficheposteModel.ChargementDonneedansBdd(liste);
+						 donneeRejetes =listeDonnees.get("supprimer");
+						 liste=null;
+						 liste=listeDonnees.get("inserer");;
+						
+					
+						//raffrechissement de l'affichage
+						Iterator<FichePosteBean> index=liste.iterator();
+						while(index.hasNext())
+						{
+							FichePosteBean donnee=index.next();
+							model.add(donnee);
+							
+						}
+				
+						binder.loadAll();
+						if(donneeRejetes.size()!=0)
+						{
+							String listeRejet=new String("-->");
+							//Afficharge de la liste des données rejetées
+							Iterator<FichePosteBean> index1 =donneeRejetes.iterator();
+							while(index1.hasNext())
+							{
+							
+
+								FichePosteBean donnee=index1.next();
+								String donneeString=donnee.getCode_poste()+";"+donnee.getIntitule_poste()
+								+";"+donnee.getSommaire_poste()
+								 +";"+donnee.getTache_responsabilite()
+								+";"+donnee.getEnvironement_perspectif()
+								+";"+donnee.getFormation_general()
+								+";"+donnee.getFormation_professionnelle()
+								+";"+donnee.getExperience()
+								+ ";"+donnee.getProfile_poste()
+								+ ";"+donnee.getPoste_hierarchie()
+								+ ";"+ donnee.getCode_structure()
+								+ ";"+ donnee.getCode_poste()+","+ donnee.getIntitule_poste();
+								
+								//ajouter cadre ou non cadre a la fin 
+								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+								
+							}
+							AfficherFenetreRejet(listeRejet);
+
+						}
+					} 
+					catch (Exception e) 
+					{
+							// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+					if(filename.endsWith(".xlsx"))
+					{
+						
+						// lecture de fichiers Office 2007+ XML
+						InputStream ss=med.getStreamData();
+						List<FichePosteBean> liste=ficheposteModel.uploadXLSXFile(ss);
+						List<FichePosteBean> donneeRejetes;
+						try 
+						{
+							 HashMap <String,List<FichePosteBean>> listeDonnees=ficheposteModel.ChargementDonneedansBdd(liste);
+							 donneeRejetes =listeDonnees.get("supprimer");
+							 liste=null;
+							 liste=listeDonnees.get("inserer");;
+							
+						
+							//raffrechissement de l'affichage
+							Iterator<FichePosteBean> index=liste.iterator();
+							while(index.hasNext())
+							{
+								FichePosteBean donnee=index.next();
+								model.add(donnee);
+								
+							}
+					
+							binder.loadAll();
+							if(donneeRejetes.size()!=0)
+							{
+								String listeRejet=new String("-->");
+								//Afficharge de la liste des données rejetées
+								Iterator<FichePosteBean> index1 =donneeRejetes.iterator();
+								while(index1.hasNext())
+								{
+									FichePosteBean donnee=index1.next();
+									String donneeString=donnee.getCode_poste()+";"+donnee.getIntitule_poste()
+									+";"+donnee.getSommaire_poste()
+									 +";"+donnee.getTache_responsabilite()
+									+";"+donnee.getEnvironement_perspectif()
+									+";"+donnee.getFormation_general()
+									+";"+donnee.getFormation_professionnelle()
+									+";"+donnee.getExperience()
+									+ ";"+donnee.getProfile_poste()
+									+ ";"+donnee.getPoste_hierarchie()
+									+ ";"+ donnee.getCode_structure()
+									+ ";"+ donnee.getCode_poste()+","+ donnee.getIntitule_poste();
+									
+									//ajouter cadre ou non cadre a la fin 
+									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+									
+								}
+								AfficherFenetreRejet(listeRejet);
+
+							}
+						} 
+						catch (Exception e) 
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+				
+				} 				
+			}
+		}	
+  
+  
+ public void AfficherFenetreRejet(String listeRejet)
+  {
+  	Map<String, String> listDonne=new HashMap <String, String>();
+		listDonne.put("rejet", listeRejet);
+		
+		
+
+  	final Window win = (Window) Executions.createComponents("../pages/REJDATA.zul", self, listDonne);
+     
+      win.setAttribute("popup", true);
+      
+      //decoratePopup(win);
+      try 
+      {
+          win.doModal();
+         
+      } 
+      catch (InterruptedException ex) 
+      {
+         ex.printStackTrace();
+      } 
+      catch (SuspendNotAllowedException ex) 
+      {
+          ex.printStackTrace();
+      }
+  }
 	
 	 public void clearFields(){
 		
@@ -495,6 +695,7 @@ public class FichePosteAction extends GenericForwardComposer {
 			   
 				
 		  }
+
 
 	public String getLbl_formation() {
 		return lbl_formation;
