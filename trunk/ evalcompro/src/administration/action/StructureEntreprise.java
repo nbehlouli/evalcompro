@@ -298,7 +298,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 				if ( filename.endsWith(".xls") ) 
 				{
 					//lecture et upload de fichiers OLE2 Office Documents 
-					List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadXLSFile(med.getStreamData());
+					List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadStructureEntrepriseXLSFile(med.getStreamData());
 					List<StructureEntrepriseBean> donneeRejetes;
 					try 
 					{
@@ -356,7 +356,7 @@ public class StructureEntreprise extends GenericForwardComposer {
 					{
 						
 						// lecture de fichiers Office 2007+ XML
-						List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadXLSXFile(med.getStreamData());
+						List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadStructureEntrepriseXLSXFile(med.getStreamData());
 						List<StructureEntrepriseBean> donneeRejetes;
 						try 
 						{
