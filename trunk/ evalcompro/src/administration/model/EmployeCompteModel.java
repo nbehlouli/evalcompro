@@ -356,16 +356,36 @@ public class EmployeCompteModel {
 	                    - ligne.getFirstCellNum();
 	            EmployeCompteBean employeCompteBean=new EmployeCompteBean();
 	            // parcours des colonnes de la ligne en cours
-	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+	            short numColonne=-1;
+	            boolean inserer=true;
+	            while( (numColonne < nombreColonne)&&(inserer) )
 	            {
+	            	numColonne++;
+	            	inserer=true;
+	            	
 	            	
 	            	cellule = ligne.getCell(numColonne);
-	            	
-	            	String valeur= cellule.getStringCellValue();
-	            	
+	            	if(cellule!=null)
+	            	{
+	            		
+	            	String valeur="";
+	            	Date date=null;
+	            	if((numColonne==3)||(numColonne==4)||(numColonne==5)||(numColonne==6))
+	            	{
+	            		date= cellule.getDateCellValue();
+//	            		
+	            		
+	            	}
+	            	else
+	            		valeur=cellule.getStringCellValue();
 	            	
 	            	if(numColonne==0)
 	            	{
+	            		if(valeur==null)
+	            			inserer=false;
+	            			else
+	            				if(valeur.equals("")||valeur.equals(" "))
+	            					inserer=false;
 	            		employeCompteBean.setNom(valeur);
 	            	}
 	            	else
@@ -381,23 +401,23 @@ public class EmployeCompteModel {
 			            	else
 			            		if(numColonne==3)
 				            	{
-			            			employeCompteBean.setVal_date_deb(new Date(valeur));
+			            			employeCompteBean.setVal_date_deb(date);
 				            	}
 				            	else
 				            		if(numColonne==4)
 					            	{
-				            			employeCompteBean.setVal_date_fin(new Date(valeur));
+				            			employeCompteBean.setVal_date_fin(date);
 					            	}
 					            	else
 					            		if(numColonne==5)
 						            	{
 					            			
-					            			employeCompteBean.setDate_naissance(new Date(valeur));
+					            			employeCompteBean.setDate_naissance(date);
 						            	}
 						            	else
 						            		if(numColonne==6)
 							            	{
-						            			employeCompteBean.setDate_recrutement(new Date(valeur));
+						            			employeCompteBean.setDate_recrutement(date);
 							            	}
 							            	else
 							            		if(numColonne==7)
@@ -436,9 +456,14 @@ public class EmployeCompteModel {
 											            			}
 										            			
 	            	
-
+	            	}
+	            	else
+	            	if(numColonne==0)
+            			inserer=false;
 	            }//fin for colonne
-	            listEmployeCompteBean.add(employeCompteBean);
+	            if(inserer)
+	            	listEmployeCompteBean.add(employeCompteBean);
+	            
 	        }//fin for ligne
 
 		} 
@@ -451,7 +476,6 @@ public class EmployeCompteModel {
 		
 		return listEmployeCompteBean;
 	}
-	
 	
 	public List <EmployeCompteBean> uploadXLSFile(InputStream inputStream)
 	{
