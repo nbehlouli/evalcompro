@@ -154,6 +154,7 @@
 			<div>
 				<button id="upload" image="/image/upload1616.gif" height="25px" width="50px" tooltiptext="Charger les données en base de données" />			
 				<button id="download" image="/image/download1616.gif" height="25px" width="50px" tooltiptext="Télécharger les données de la base de données"  />
+				<button id="okAdd"  image="/image/OkEnabled.gif" height="25px" width="50px" tooltiptext="Valider" visible="false"/>
 			
 		</div> 
 	</hbox>
