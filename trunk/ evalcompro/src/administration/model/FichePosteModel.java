@@ -709,7 +709,7 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
 	 // Creer l'objet representant le fichier Excel
     try 
     {
-    	XSSFWorkbook fichierExcel = new XSSFWorkbook(inputStream);
+		XSSFWorkbook fichierExcel = new XSSFWorkbook(inputStream);
 		// creer l'objet representant les lignes Excel
         XSSFRow ligne;
 
@@ -722,6 +722,8 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
         // lecture du contenu de la feuille excel
         int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
         
+        
+       
         for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
         {
         	
@@ -730,16 +732,38 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
                     - ligne.getFirstCellNum();
             FichePosteBean fichePoste=new FichePosteBean();
             // parcours des colonnes de la ligne en cours
-            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+            short numColonne=-1;
+            boolean inserer=true;
+            while( (numColonne < nombreColonne)&&(inserer) )
             {
+            	numColonne++;
+            	
             	
             	cellule = ligne.getCell(numColonne);
-            	
-            	String valeur= cellule.getStringCellValue();
+            	Double v;
+            	String valeur="";
+            	if(cellule!=null)
+            	{
+            		inserer=true;
+            		System.out.println("numColonne=="+numColonne+"  numligne==" +numLigne);
+            	if(numColonne==7)
+            	{
+            		v=cellule.getNumericCellValue();
+            		valeur=v.toString();
+            	}
+            	else
+            		valeur= cellule.getStringCellValue();
             	
             	
             	if(numColonne==0)
             	{
+            		if(valeur==null)
+            		{
+            			inserer=false;
+            		}
+            		else
+            			if(valeur.equals("")||valeur.equals(" "))
+            				inserer=false;System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
             		fichePoste.setCode_poste(valeur);
             	}
             	else
@@ -797,14 +821,17 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
 									            		else
 									            			if(numColonne==11)
 									            			{
-									            				
 									            				fichePoste.setCode_gsp(valeur);
 									            			}
 									            			
             	
-
+            	}
+            	else
+            		if(numColonne==0)
+            			inserer=false;
             }//fin for colonne
-            listFichePostebean.add(fichePoste);
+            if(inserer)
+            	listFichePostebean.add(fichePoste);
         }//fin for ligne
 
 	} 
@@ -814,6 +841,8 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
 		e.printStackTrace();
 		return null;
 	}
+	
+	
 	
 	return listFichePostebean;
 }
