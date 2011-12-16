@@ -473,7 +473,8 @@ public class StructureEntrepriseModel {
 		{
 			StructureEntrepriseBean donneeBean=(StructureEntrepriseBean)index.next();
 			
-			addStructureEntrepriseBean(donneeBean);			
+			addStructureEntrepriseBean(donneeBean);	
+			System.out.println("ajout de donnes");
 		}
 		
 			
@@ -489,7 +490,7 @@ public class StructureEntrepriseModel {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public List <StructureEntrepriseBean> uploadXLSFile(InputStream inputStream)
+	public List <StructureEntrepriseBean> uploadStructureEntrepriseXLSFile(InputStream inputStream)
 	{
 		listStructureEntreprise=new ArrayList <StructureEntrepriseBean>();
 		
@@ -504,7 +505,7 @@ public class StructureEntrepriseModel {
 	        HSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        HSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
+	        HSSFSheet feuilleExcel=fichierExcel.getSheet("structure entreprise");
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -517,17 +518,33 @@ public class StructureEntrepriseModel {
 	                    - ligne.getFirstCellNum();
 	            StructureEntrepriseBean structurentreprise=new StructureEntrepriseBean();
 	            // parcours des colonnes de la ligne en cours
-	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+	            boolean inserer=true;
+	            short numColonne=-1;
+	            while( (numColonne < nombreColonne)&&(inserer) )
 	            {
-	            	
+	            	numColonne++;
 	            	cellule = ligne.getCell(numColonne);
-	            	
+	            	if(cellule!=null)
+	            	{
+	            	inserer=true;
 	            	String valeur= cellule.getStringCellValue();
-	            	
+	            	System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
 	            	
 	            	if(numColonne==0)
 	            	{
+	            		if(valeur==null)
+	            			{
+	            			inserer=false;
+	            			System.out.println("null");
+	            			}
+	            			else
+	            				if(valeur.equals("")||(valeur.equals(" ")))
+	            					{
+	            					inserer=false;;
+	            					System.out.println("vide");
+	            					}
 	            		structurentreprise.setCodestructure(valeur);
+	            		
 	            	}
 	            	else
 	            		if(numColonne==1)
@@ -589,9 +606,13 @@ public class StructureEntrepriseModel {
 										            				{
 										            					structurentreprise.setLibelleSection(valeur);
 										            				}
-
+	            	}
+	            	else
+	            		if(numColonne==0)
+	            			inserer=false;
+	            	
 	            }//fin for colonne
-	            listStructureEntreprise.add(structurentreprise);
+	            if(inserer)listStructureEntreprise.add(structurentreprise);
 	        }//fin for ligne
 
 		} 
@@ -609,7 +630,7 @@ public class StructureEntrepriseModel {
 	 * Cette méthode permet de faire un upload d'un fichier xlsx (fichier vers BDD)
 	 * @return
 	 */
-	public List <StructureEntrepriseBean> uploadXLSXFile(InputStream inputStream)
+	public List <StructureEntrepriseBean> uploadStructureEntrepriseXLSXFile(InputStream inputStream)
 	{
 		listStructureEntreprise=new ArrayList <StructureEntrepriseBean>();
 		
@@ -624,7 +645,7 @@ public class StructureEntrepriseModel {
 	        XSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        XSSFSheet feuilleExcel=fichierExcel.getSheetAt(0);
+	        XSSFSheet feuilleExcel=fichierExcel.getSheet("structure entreprise");
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
