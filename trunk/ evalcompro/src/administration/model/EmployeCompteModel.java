@@ -1,8 +1,13 @@
 package administration.model;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +20,12 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.zkoss.lang.Strings;
+import org.zkoss.zk.ui.WrongValueException;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.EmployeCompteBean;
@@ -24,6 +35,8 @@ import administration.bean.StructureEntrepriseBean;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
+
+import common.ApplicationFacade;
 import common.CreateDatabaseCon;
 import common.PwdCrypt;
 import compagne.bean.GestionEmployesBean;
@@ -245,6 +258,7 @@ public class EmployeCompteModel {
 			 
 			 
 			 int i=1;
+			 try {
 			while (index.hasNext())
 			{
 				
@@ -260,22 +274,33 @@ public class EmployeCompteModel {
 				 cel = row1.createCell((short)2);
 				 cel.setCellValue(donnee.getProfile());
 				 cel = row1.createCell((short)3);
-				 String dateD=donnee.getVal_date_deb().getYear()+"/"+donnee.getVal_date_deb().getMonth()+"/"+donnee.getVal_date_deb().getDay();
-				 cel.setCellValue(dateD);
+				 Date dateD;
+				
+//					dateD = FormaterDate(donnee.getVal_date_deb());
+//				
+				  if(donnee.getVal_date_deb()!=null)
+					  cel.setCellValue(donnee.getVal_date_deb().toString());
+				  else
+					  cel.setCellValue("");
 				 cel = row1.createCell((short)4);
 				 
-				 String dateF=donnee.getVal_date_fin().getYear()+"/"+donnee.getVal_date_fin().getMonth()+"/"+donnee.getVal_date_fin().getDay();
-				 cel.setCellValue(dateF);
+//				 Date dateF=FormaterDate(donnee.getVal_date_fin());
+				 if(donnee.getVal_date_fin()!=null)
+					 cel.setCellValue(donnee.getVal_date_fin().toString());
+				 else
+					 cel.setCellValue("");
 				 cel = row1.createCell((short)5);
 				 
-				 cel.setCellValue(donnee.getDate_naissance().toGMTString());
+				 //cel.setCellValue(FormaterDate(donnee.getDate_naissance()));
+				 cel.setCellValue(donnee.getDate_naissance().toString());
 				 cel = row1.createCell((short)6);
-				 cel.setCellValue(donnee.getDate_recrutement().toGMTString());
+				 //cel.setCellValue(FormaterDate(donnee.getDate_recrutement()));
+				 cel.setCellValue(donnee.getDate_recrutement().toString());
 				 cel = row1.createCell((short)7);
 				 
-				 cel.setCellValue(donnee.getCode_formation());
+				 cel.setCellValue(donnee.getLibelle_formation());
 				 cel = row1.createCell((short)8);
-				 cel.setCellValue(donnee.getCode_poste());
+				 cel.setCellValue(donnee.getIntitule_poste());
 				 cel = row1.createCell((short)9);
 				 cel.setCellValue(donnee.getEmail());
 				 cel = row1.createCell((short)10);
@@ -290,18 +315,632 @@ public class EmployeCompteModel {
 				 i++;
 				
 			}
-
+			 } catch (WrongValueException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
 			//autosize des colonnes
 			for (int j=0;j<=12;j++)
 		 	{
 		 		sheet.autoSizeColumn(j);
 		 		
 		 	}	
-			
 
-			
+	}
+	public List <EmployeCompteBean> uploadXLSXFile(InputStream inputStream)
+	{
+		
+		ArrayList <EmployeCompteBean> listEmployeCompteBean=new ArrayList<EmployeCompteBean>();
+		
+		 // Creer l'objet representant le fichier Excel
+	    try 
+	    {
+	    	XSSFWorkbook fichierExcel = new XSSFWorkbook(inputStream);
+			// creer l'objet representant les lignes Excel
+	        XSSFRow ligne;
+
+	        // creer l'objet representant les cellules Excel
+	        XSSFCell cellule;
+
+	        //lecture de la première feuille excel
+	        XSSFSheet feuilleExcel=fichierExcel.getSheet("liste employés");
+	        
+	        // lecture du contenu de la feuille excel
+	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+	        
+	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+	        {
+	        	
+	        	ligne = feuilleExcel.getRow(numLigne);
+	            int nombreColonne = ligne.getLastCellNum()
+	                    - ligne.getFirstCellNum();
+	            EmployeCompteBean employeCompteBean=new EmployeCompteBean();
+	            // parcours des colonnes de la ligne en cours
+	            for (short numColonne = 0; numColonne < nombreColonne; numColonne++) 
+	            {
+	            	
+	            	cellule = ligne.getCell(numColonne);
+	            	
+	            	String valeur= cellule.getStringCellValue();
+	            	
+	            	
+	            	if(numColonne==0)
+	            	{
+	            		employeCompteBean.setNom(valeur);
+	            	}
+	            	else
+	            		if(numColonne==1)
+		            	{
+	            			employeCompteBean.setPrenom(valeur);
+		            	}
+		            	else
+		            		if(numColonne==2)
+			            	{
+		            			employeCompteBean.setProfile(valeur);
+			            	}
+			            	else
+			            		if(numColonne==3)
+				            	{
+			            			employeCompteBean.setVal_date_deb(new Date(valeur));
+				            	}
+				            	else
+				            		if(numColonne==4)
+					            	{
+				            			employeCompteBean.setVal_date_fin(new Date(valeur));
+					            	}
+					            	else
+					            		if(numColonne==5)
+						            	{
+					            			
+					            			employeCompteBean.setDate_naissance(new Date(valeur));
+						            	}
+						            	else
+						            		if(numColonne==6)
+							            	{
+						            			employeCompteBean.setDate_recrutement(new Date(valeur));
+							            	}
+							            	else
+							            		if(numColonne==7)
+								            	{
+							            			String[] val=valeur.split(",");
+							            			employeCompteBean.setCode_formation(val[0]);
+								            	}
+								            	else
+								            		if(numColonne==8)
+									            	{
+								            			String[] val=valeur.split(",");
+								            			employeCompteBean.setCode_poste(val[0]);
+									            	}
+									            	else
+									            		if(numColonne==9)
+										            	{
+									            			employeCompteBean.setEmail(valeur);
+										            	}
+										            	else
+										            		if(numColonne==10)
+											            	{
+										            			String val[]=valeur.split(",");
+										            			employeCompteBean.setEst_evaluateur(val[0]);
+											            	}
+										            		else
+										            			if(numColonne==11)
+										            			{
+										            					String val[]=valeur.split(",");
+										            					employeCompteBean.setCode_est_responsable_rh(val[0]);
+										            			}
+										            			else
+											            			if(numColonne==12)
+											            			{
+											            					String val[]=valeur.split(",");
+											            					employeCompteBean.setCode_structure(val[0]);
+											            			}
+										            			
+	            	
+
+	            }//fin for colonne
+	            listEmployeCompteBean.add(employeCompteBean);
+	        }//fin for ligne
+
+		} 
+	    catch (IOException e) 
+	    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return listEmployeCompteBean;
+	}
+	
+	
+	public List <EmployeCompteBean> uploadXLSFile(InputStream inputStream)
+	{
+		
+		ArrayList <EmployeCompteBean> listEmployeCompteBean=new ArrayList<EmployeCompteBean>();
+		
+		 // Creer l'objet representant le fichier Excel
+	    try 
+	    {
+	    	HSSFWorkbook fichierExcel = new HSSFWorkbook(inputStream);
+			// creer l'objet representant les lignes Excel
+	        HSSFRow ligne;
+
+	        // creer l'objet representant les cellules Excel
+	        HSSFCell cellule;
+
+	        //lecture de la première feuille excel
+	        HSSFSheet feuilleExcel=fichierExcel.getSheet("liste employés");
+	        
+	        // lecture du contenu de la feuille excel
+	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
+	        
+	        for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
+	        {
+	        	
+	        	ligne = feuilleExcel.getRow(numLigne);
+	            int nombreColonne = ligne.getLastCellNum()
+	                    - ligne.getFirstCellNum();
+	            EmployeCompteBean employeCompteBean=new EmployeCompteBean();
+	            // parcours des colonnes de la ligne en cours
+	            short numColonne=-1;
+	            boolean inserer=true;
+	            while( (numColonne < nombreColonne)&&(inserer) )
+	            {
+	            	numColonne++;
+	            	inserer=true;
+	            	
+	            	
+	            	cellule = ligne.getCell(numColonne);
+	            	if(cellule!=null)
+	            	{
+	            		
+	            	String valeur="";
+	            	Date date=null;
+	            	if((numColonne==3)||(numColonne==4)||(numColonne==5)||(numColonne==6))
+	            	{
+	            		date= cellule.getDateCellValue();
+//	            		
+	            		
+	            	}
+	            	else
+	            		valeur=cellule.getStringCellValue();
+	            	
+	            	if(numColonne==0)
+	            	{
+	            		if(valeur==null)
+	            			inserer=false;
+	            			else
+	            				if(valeur.equals("")||valeur.equals(" "))
+	            					inserer=false;
+	            		employeCompteBean.setNom(valeur);
+	            	}
+	            	else
+	            		if(numColonne==1)
+		            	{
+	            			employeCompteBean.setPrenom(valeur);
+		            	}
+		            	else
+		            		if(numColonne==2)
+			            	{
+		            			employeCompteBean.setProfile(valeur);
+			            	}
+			            	else
+			            		if(numColonne==3)
+				            	{
+			            			employeCompteBean.setVal_date_deb(date);
+				            	}
+				            	else
+				            		if(numColonne==4)
+					            	{
+				            			employeCompteBean.setVal_date_fin(date);
+					            	}
+					            	else
+					            		if(numColonne==5)
+						            	{
+					            			
+					            			employeCompteBean.setDate_naissance(date);
+						            	}
+						            	else
+						            		if(numColonne==6)
+							            	{
+						            			employeCompteBean.setDate_recrutement(date);
+							            	}
+							            	else
+							            		if(numColonne==7)
+								            	{
+							            			String[] val=valeur.split(",");
+							            			employeCompteBean.setCode_formation(val[0]);
+								            	}
+								            	else
+								            		if(numColonne==8)
+									            	{
+								            			String[] val=valeur.split(",");
+								            			employeCompteBean.setCode_poste(val[0]);
+									            	}
+									            	else
+									            		if(numColonne==9)
+										            	{
+									            			employeCompteBean.setEmail(valeur);
+										            	}
+										            	else
+										            		if(numColonne==10)
+											            	{
+										            			String val[]=valeur.split(",");
+										            			employeCompteBean.setEst_evaluateur(val[0]);
+											            	}
+										            		else
+										            			if(numColonne==11)
+										            			{
+										            					String val[]=valeur.split(",");
+										            					employeCompteBean.setCode_est_responsable_rh(val[0]);
+										            			}
+										            			else
+											            			if(numColonne==12)
+											            			{
+											            					String val[]=valeur.split(",");
+											            					employeCompteBean.setCode_structure(val[0]);
+											            			}
+										            			
+	            	
+	            	}
+	            	else
+	            	if(numColonne==0)
+            			inserer=false;
+	            }//fin for colonne
+	            if(inserer)
+	            	listEmployeCompteBean.add(employeCompteBean);
+	            
+	        }//fin for ligne
+
+		} 
+	    catch (IOException e) 
+	    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return listEmployeCompteBean;
+	}
+	
+	private Date FormaterDate(Date datevalue) throws WrongValueException, ParseException {
+		if(datevalue!=null)
+		{
+			SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+			String name = datevalue.toString();
+			if (Strings.isBlank(name)) {
+				throw new WrongValueException( "la date debut validité ne doit pas être vide!");
+			}
+			Date datedeb = df.parse(name); 
+			return datedeb;
+		}
+		else return null;
+		
+	}
+	
+	
+	
+	
+	public HashMap <String,List<EmployeCompteBean>> ChargementDonneedansBdd(List <EmployeCompteBean> liste)throws Exception
+	{
+		//Verification de l'integrité des données à inserer doublon dans le fichier
+		List <EmployeCompteBean> listeAInserer=new ArrayList <EmployeCompteBean>();
+		List <EmployeCompteBean> listeDonneesRejetes=new ArrayList <EmployeCompteBean>();
+		
+		
+		
+
+		for(int i=0; i<liste.size();i++)
+		{
+			EmployeCompteBean donnee=liste.get(i);
+			boolean donneerejete=false;
+			for(int j=i+1;j<liste.size();j++)
+			{
+				EmployeCompteBean donnee2=liste.get(j);
+				if(donnee.getCode_poste().equals(donnee2.getCode_poste()))
+				{
+					listeDonneesRejetes.add(donnee);
+					donneerejete=true;
 					
+				}
+			}
+			if((i==liste.size()-1)||(i==0)||(donneerejete==false))
+				listeAInserer.add(donnee);
+			
+		}
+		
+		
+		//Verification de l'integrité des données à inserer doublon avec les données de la base
+		
+		ArrayList <EmployeCompteBean> listeAInsererFinal=new ArrayList <EmployeCompteBean>();
+		@SuppressWarnings("unchecked")
+		List<EmployeCompteBean>employeComptebdd =loadListEmployes();
+		Iterator <EmployeCompteBean>iterator=listeAInserer.iterator();
+		
+		while(iterator.hasNext())
+		{
+			
+			EmployeCompteBean bean=(EmployeCompteBean)iterator.next();
+			
+			Iterator<EmployeCompteBean> index=employeComptebdd.iterator();
+			boolean donneerejete=false;
+			while(index.hasNext())
+			{
+				
+				EmployeCompteBean bean2=(EmployeCompteBean)index.next();
+//				if(bean.getCode_poste().equals(bean2.getCode_poste()))
+//				{
+//					
+//					listeDonneesRejetes.add(bean);
+//					donneerejete=true;
+//					continue;
+//				}
+			}
+			if(!donneerejete)
+			{
+				
+				listeAInsererFinal.add(bean);
+			}
+			
+		}
+		
+		
+		Iterator<EmployeCompteBean> index =listeAInsererFinal.iterator();
+		String requete="";
+		while(index.hasNext())
+		{
+			EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
+			//construction de la requete
+			
+			requete=addCompte(requete,donneeBean);	
+			
+		}
+		
+		//insertion dans la BDD (compte)
+		updateMultiQueryCommon(requete);
+		
+		//recuperation des idCompte 
+		
+		HashMap<String, AdministrationLoginBean> mapComptes= getComptes(ApplicationFacade.getInstance().getClient_database_id()+"");
+		
+		String req=ConstructionRequeteUpdateEmploye(listeAInsererFinal, mapComptes);
+		//insertion dans la BDD employe
+		updateMultiQuery(req);
+		HashMap <String,List<EmployeCompteBean>> donneeMap=new HashMap<String,List<EmployeCompteBean>>();
+		donneeMap.put("inserer", listeAInsererFinal);
+		donneeMap.put("supprimer", listeDonneesRejetes);
+		return donneeMap;
+	}
+	
+	public HashMap<String, AdministrationLoginBean> getComptes(String database_id) throws SQLException
+	{
+		HashMap<String, AdministrationLoginBean> mapCompteidCompte=new HashMap<String, AdministrationLoginBean>();
+		PwdCrypt pwdcrypt=new PwdCrypt();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDB();
+		Statement stmt = null;
+		
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_compte="select distinct id_compte,nom,prenom,c.login,c.pwd,c.id_profile,DATE_FORMAT(val_date_deb,'%Y/%m/%d') as val_date_deb,DATE_FORMAT(val_date_fin,'%Y/%m/%d') as val_date_fin ,modifiedpwd "+ 
+                               "from compte c where c.database_id=#database_id ";
+                               
+			
+			sel_compte = sel_compte.replaceAll("#database_id", database_id);
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
+			
+			SimpleDateFormat formatDateJour = new SimpleDateFormat("yyyy/MM/dd");
+			 
+			
+			while(rs.next()){
+				
+					AdministrationLoginBean admin_compte=new AdministrationLoginBean();
+					
+					admin_compte.setId_compte(Integer.toString(rs.getInt("id_compte")));
+					admin_compte.setNom(rs.getString("nom"));
+					admin_compte.setPrenom(rs.getString("prenom"));
+					admin_compte.setLogin(rs.getString("login"));
+					admin_compte.setMotdepasse(pwdcrypt.decrypter(rs.getString("pwd")));
+					admin_compte.setProfile(rs.getString("id_profile"));
+					
+					admin_compte.setDate_deb_val(rs.getDate("val_date_deb"));
+					admin_compte.setDate_fin_val(rs.getDate("val_date_fin"));
+					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
+					
+					  System.out.println("******************************");
+					  System.out.println("les cles=="+admin_compte.getNom()+admin_compte.getPrenom()+admin_compte.getProfile() + "!!"+admin_compte.getId_compte());
+					mapCompteidCompte.put(admin_compte.getNom()+admin_compte.getPrenom()+admin_compte.getProfile(), admin_compte);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			stmt.close();
+			conn.close();
+			e.printStackTrace();
+			
+		}
+		return mapCompteidCompte;	
+		
+	}
+	/**
+	 * 
+	 * @param requete
+	 * @param donneeBean
+	 * @return
+	 */
+	public String addCompte(String requete,EmployeCompteBean donneeBean)
+	{
+		
+		String login=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+		Integer database_id=ApplicationFacade.getInstance().getClient_database_id(); //recuperation de la base de donnée actuelle
+		
+		String profile[]=donneeBean.getProfile().split(",");
+		requete=ConstructionRequeteUpdateCompte(requete,profile[0],login,"12345678",database_id.toString(), donneeBean.getVal_date_deb(), donneeBean.getVal_date_fin(), donneeBean.getNom(), donneeBean.getPrenom());
+		return requete;
+	}
+	
+	/**
+	 * 
+	 * @param requete
+	 * @param profile
+	 * @param login
+	 * @param pwd
+	 * @param database_id
+	 * @param val_date_deb
+	 * @param val_date_fin
+	 * @param nom
+	 * @param prenom
+	 * @return
+	 */
+	public String ConstructionRequeteUpdateCompte(String requete,String profile,String login,String pwd,String database_id, Date val_date_deb,Date val_date_fin,String nom, String prenom)
+	{
+
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		PwdCrypt pwdcrypt=new PwdCrypt();
+		
+		String insert_structure="INSERT INTO compte ( id_profile, login, pwd, database_id, val_date_deb, val_date_fin, modifiedpwd, nom, prenom) VALUES (#id_profile,#login,#pwd,#database_id,#val_date_deb,#val_date_fin,#modifiedpwd,#nom,#prenom)";
+		insert_structure = insert_structure.replaceAll("#id_profile", profile);
+		insert_structure = insert_structure.replaceAll("#login", "'"+login+"'");
+		insert_structure = insert_structure.replaceAll("#pwd", "'"+pwdcrypt.crypter(pwd)+"'");
+		insert_structure = insert_structure.replaceAll("#database_id", database_id);
+		insert_structure = insert_structure.replaceAll("#val_date_deb", "'"+formatter.format(val_date_deb)+"'");
+		insert_structure = insert_structure.replaceAll("#val_date_fin", "'"+formatter.format(val_date_fin)+"'");
+		insert_structure = insert_structure.replaceAll("#modifiedpwd", "'"+getCurrentDatetime()+"'");
+		insert_structure = insert_structure.replaceAll("#nom", "'"+nom+"'");
+		insert_structure = insert_structure.replaceAll("#prenom", "'"+prenom+"'");
+		requete=requete+ insert_structure+ " ; ";
+
+			return requete;
+	
+	}
+	
+	
+	public String ConstructionRequeteUpdateEmploye(ArrayList <EmployeCompteBean> listEmployeCompte, HashMap<String, AdministrationLoginBean> mapCompte)
+	{
+System.out.println("taille =="+listEmployeCompte.size());
+		Iterator<EmployeCompteBean> index =listEmployeCompte.iterator();
+		String requete="";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		while(index.hasNext())
+		{
+			
+			EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
+			
+			System.out.println("code_formation"+donneeBean.getCode_formation());
+			String[]profile=donneeBean.getProfile().split(",");
+			String cles=donneeBean.getNom()+donneeBean.getPrenom()+profile[0];
+			
+			AdministrationLoginBean loginBean=mapCompte.get(cles);
+			String id_compte=loginBean.getId_compte();	
+			
+			String insert_structure="INSERT INTO employe( nom, prenom, date_naissance, rattach_dg, date_recrutement, code_formation, code_poste, email, est_evaluateur, est_responsable_service, est_responsable_direction, est_responsable_division, est_responsable_departement, est_responsable_unite, est_responsable_section, est_responsable_rh, code_structure, id_compte)" +
+	         " VALUES(#nom,#prenom,#date_naissance,'N',#date_recrutement,#code_formation,#code_poste,#email,#est_evaluateur,'N','N','N','N','N','N',#est_responsable_rh,#code_structure,#id_compte)";
+
+			insert_structure = insert_structure.replaceAll("#nom", "'"+ donneeBean.getNom()+"'");
+			insert_structure = insert_structure.replaceAll("#prenom", "'"+ donneeBean.getPrenom()+"'");
+			insert_structure = insert_structure.replaceAll("#date_naissance", "'"+ formatter.format(donneeBean.getDate_naissance())+"'");
+			insert_structure = insert_structure.replaceAll("#date_recrutement", "'"+ formatter.format(donneeBean.getDate_recrutement())+"'");
+			insert_structure = insert_structure.replaceAll("#code_formation", "'"+ donneeBean.getCode_formation()+"'");
+			insert_structure = insert_structure.replaceAll("#code_poste", "'"+ donneeBean.getCode_poste()+"'");
+			insert_structure = insert_structure.replaceAll("#email", "'"+ donneeBean.getEmail()+"'");
+			insert_structure = insert_structure.replaceAll("#est_evaluateur", "'"+ donneeBean.getEst_evaluateur()+"'");
+			insert_structure = insert_structure.replaceAll("#est_responsable_rh", "'"+ donneeBean.getCode_est_responsable_rh()+"'");
+			insert_structure = insert_structure.replaceAll("#code_structure", "'"+ donneeBean.getCode_structure()+"'");
+
+			insert_structure = insert_structure.replaceAll("#id_compte", "'"+ id_compte+"'");
+
+			
+			requete=requete+ insert_structure+ " ; ";
+		}
+		
 
 
+			return requete;
+	
+	}
+	public String getCurrentDatetime(){
+		Date today = Calendar.getInstance().getTime();
+	    // (2) create our "formatter" (our custom format)
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+	    // (3) create a new String in the format we want
+	    String todaydate = formatter.format(today);
+	    
+	    return todaydate;
+	}
+	
+	public void updateMultiQuery(String requete)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			System.out.println(requete);
+			 stmt.execute(requete);
+			 
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+
+	
+	}
+	
+	public void updateMultiQueryCommon(String requete)
+	{
+
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDBMulti();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			System.out.println(requete);
+			 stmt.execute(requete);
+			 
+			 conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				
+				e1.printStackTrace();
+				//return false;
+			}
+			
+			
+			
+		}
+
+	
 	}
 }
