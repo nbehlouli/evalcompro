@@ -223,7 +223,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	 
 		 
 			try {
-				if (Messagebox.show("Voulez vous charger les donnes dans la base ?", "Prompt", Messagebox.YES|Messagebox.NO,
+				if (Messagebox.show("Voulez vous charger les données dans la base ?", "Prompt", Messagebox.YES|Messagebox.NO,
 						    Messagebox.QUESTION) == Messagebox.YES) 
 				{
 
