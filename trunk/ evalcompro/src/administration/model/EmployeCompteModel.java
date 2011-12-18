@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -51,7 +52,7 @@ public class EmployeCompteModel {
 	public List loadListEmployes() throws SQLException{
 		
 		 mapCompte=checkLoginBean();
-		 System.out.println("apres checklogin");
+		 
 		listEmployeCompte = new ArrayList<EmployeCompteBean>();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
@@ -123,7 +124,7 @@ public class EmployeCompteModel {
 			String sel_compte="select id_compte,nom,prenom,c.login,c.pwd,libelle_profile,p.id_profile,l.nom_base,DATE_FORMAT(val_date_deb,'%Y/%m/%d') as val_date_deb,DATE_FORMAT(val_date_fin,'%Y/%m/%d') as val_date_fin ,modifiedpwd "+ 
                                "from compte c ,liste_db l ,profile p where c.database_id=l.database_id "+
                                "and c.id_profile=p.id_profile";
-			System.out.println(sel_compte);
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
 			
 			SimpleDateFormat formatDateJour = new SimpleDateFormat("yyyy/MM/dd");
@@ -144,7 +145,7 @@ public class EmployeCompteModel {
 					admin_compte.setDate_fin_val(rs.getDate("val_date_fin"));
 					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
 					
-					  System.out.println("dans compte"+rs.getString("id_compte"));
+					 
 					mapCompte.put(rs.getString("id_compte"), admin_compte);
 				   
 					
@@ -673,7 +674,7 @@ public class EmployeCompteModel {
 			
 		}
 		
-		
+		System.out.println("listeAInserer" +listeAInserer.size() );
 		//Verification de l'integrité des données à inserer doublon avec les données de la base
 		
 		ArrayList <EmployeCompteBean> listeAInsererFinal=new ArrayList <EmployeCompteBean>();
@@ -681,47 +682,78 @@ public class EmployeCompteModel {
 		List<EmployeCompteBean>employeComptebdd =loadListEmployes();
 		Iterator <EmployeCompteBean>iterator=listeAInserer.iterator();
 		
-		while(iterator.hasNext())
+//		while(iterator.hasNext())
+//		{
+//			
+//			EmployeCompteBean bean=(EmployeCompteBean)iterator.next();
+//			
+//			Iterator<EmployeCompteBean> index=employeComptebdd.iterator();
+//			boolean donneerejete=false;
+//			while(index.hasNext())
+//			{
+//				
+//				EmployeCompteBean bean2=(EmployeCompteBean)index.next();
+////				if(bean.getCode_poste().equals(bean2.getCode_poste()))
+////				{
+////					
+////					listeDonneesRejetes.add(bean);
+////					donneerejete=true;
+////					continue;
+////				}
+//			}
+//			if(!donneerejete)
+//			{
+//				
+//				listeAInsererFinal.add(bean);
+//			}
+//			
+//		}
+		
+		
+		Iterator<EmployeCompteBean> index =listeAInserer.iterator();
+		String requete="";
+		//verification doubon
+		try 
 		{
+			HashMap<String, AdministrationLoginBean> mapComptes=getComptes(ApplicationFacade.getInstance().getClient_database_id()+"");
 			
-			EmployeCompteBean bean=(EmployeCompteBean)iterator.next();
-			
-			Iterator<EmployeCompteBean> index=employeComptebdd.iterator();
-			boolean donneerejete=false;
+		
 			while(index.hasNext())
 			{
-				
-				EmployeCompteBean bean2=(EmployeCompteBean)index.next();
-//				if(bean.getCode_poste().equals(bean2.getCode_poste()))
-//				{
-//					
-//					listeDonneesRejetes.add(bean);
-//					donneerejete=true;
-//					continue;
-//				}
-			}
-			if(!donneerejete)
-			{
-				
-				listeAInsererFinal.add(bean);
-			}
+				EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
+				//construction de la requete
+				Set<String> listCles=mapComptes.keySet();
+				Iterator<String> iterator1=listCles.iterator();
+				boolean continuer=true;
+				while(iterator1.hasNext()&&continuer)
+				{
+					String cles=iterator1.next();
+					AdministrationLoginBean bean=mapComptes.get(cles);
+					String login=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+					String login2=bean.getPrenom().charAt(0)+bean.getNom();
+					if(login2.equals(login))
+					{
+						continuer=false;
+					}
+				}
+				if(continuer)
+					{
+						listeAInsererFinal.add(donneeBean);
+						requete=addCompte(requete,donneeBean);	
+					}
+				else
+					listeDonneesRejetes.add(donneeBean);
 			
-		}
-		
-		
-		Iterator<EmployeCompteBean> index =listeAInsererFinal.iterator();
-		String requete="";
-		while(index.hasNext())
+			}
+		} 
+		catch (SQLException e) 
 		{
-			EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
-			//construction de la requete
-			
-			requete=addCompte(requete,donneeBean);	
-			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 		//insertion dans la BDD (compte)
-		updateMultiQueryCommon(requete);
+		if(requete!=null)
+			updateMultiQueryCommon(requete);
 		
 		//recuperation des idCompte 
 		
@@ -729,7 +761,7 @@ public class EmployeCompteModel {
 		
 		String req=ConstructionRequeteUpdateEmploye(listeAInsererFinal, mapComptes);
 		//insertion dans la BDD employe
-		updateMultiQuery(req);
+		if(req!=null) updateMultiQuery(req);
 		HashMap <String,List<EmployeCompteBean>> donneeMap=new HashMap<String,List<EmployeCompteBean>>();
 		donneeMap.put("inserer", listeAInsererFinal);
 		donneeMap.put("supprimer", listeDonneesRejetes);
@@ -772,8 +804,7 @@ public class EmployeCompteModel {
 					admin_compte.setDate_fin_val(rs.getDate("val_date_fin"));
 					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
 					
-					  System.out.println("******************************");
-					  System.out.println("les cles=="+admin_compte.getNom()+admin_compte.getPrenom()+admin_compte.getProfile() + "!!"+admin_compte.getId_compte());
+					  
 					mapCompteidCompte.put(admin_compte.getNom()+admin_compte.getPrenom()+admin_compte.getProfile(), admin_compte);
 				   
 					
@@ -801,6 +832,7 @@ public class EmployeCompteModel {
 		
 		String login=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
 		Integer database_id=ApplicationFacade.getInstance().getClient_database_id(); //recuperation de la base de donnée actuelle
+		//recherche de doublon
 		
 		String profile[]=donneeBean.getProfile().split(",");
 		requete=ConstructionRequeteUpdateCompte(requete,profile[0],login,"12345678",database_id.toString(), donneeBean.getVal_date_deb(), donneeBean.getVal_date_fin(), donneeBean.getNom(), donneeBean.getPrenom());
@@ -845,7 +877,7 @@ public class EmployeCompteModel {
 	
 	public String ConstructionRequeteUpdateEmploye(ArrayList <EmployeCompteBean> listEmployeCompte, HashMap<String, AdministrationLoginBean> mapCompte)
 	{
-System.out.println("taille =="+listEmployeCompte.size());
+
 		Iterator<EmployeCompteBean> index =listEmployeCompte.iterator();
 		String requete="";
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -854,7 +886,7 @@ System.out.println("taille =="+listEmployeCompte.size());
 			
 			EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
 			
-			System.out.println("code_formation"+donneeBean.getCode_formation());
+
 			String[]profile=donneeBean.getProfile().split(",");
 			String cles=donneeBean.getNom()+donneeBean.getPrenom()+profile[0];
 			
@@ -899,33 +931,35 @@ System.out.println("taille =="+listEmployeCompte.size());
 	
 	public void updateMultiQuery(String requete)
 	{
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
-		Statement stmt;
+		if(requete!="")
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+			Statement stmt;
 		
-		try 
-		{
-			stmt = (Statement) conn.createStatement();
-			System.out.println(requete);
-			 stmt.execute(requete);
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				System.out.println(requete);
+				stmt.execute(requete);
 			 
-			 conn.close();
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-
-			// TODO Auto-generated catch block
-			try {
 				conn.close();
-			} catch (SQLException e1) {
+			} 
+			catch (SQLException e) 
+			{
+				e.printStackTrace();
+
 				// TODO Auto-generated catch block
+				try {
+					conn.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
 				
-				e1.printStackTrace();
-				//return false;
+					e1.printStackTrace();
+					//return false;
+				}
+			
 			}
-			
-			
 			
 		}
 
@@ -935,34 +969,36 @@ System.out.println("taille =="+listEmployeCompte.size());
 	public void updateMultiQueryCommon(String requete)
 	{
 
-		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDBMulti();
-		Statement stmt;
+		if(requete!="")
+		{
+			CreateDatabaseCon dbcon=new CreateDatabaseCon();
+			Connection conn=(Connection) dbcon.connectToDBMulti();
+			Statement stmt;
 		
-		try 
-		{
-			stmt = (Statement) conn.createStatement();
-			System.out.println(requete);
-			 stmt.execute(requete);
+			try 
+			{
+				stmt = (Statement) conn.createStatement();
+				System.out.println(requete);
+				stmt.execute(requete);
 			 
-			 conn.close();
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-
-			// TODO Auto-generated catch block
-			try {
 				conn.close();
-			} catch (SQLException e1) {
+			} 
+			catch (SQLException e) 
+			{
+				e.printStackTrace();
+
 				// TODO Auto-generated catch block
+				try {
+					conn.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
 				
-				e1.printStackTrace();
-				//return false;
+					e1.printStackTrace();
+					//return false;
+				}
+			
+			
 			}
-			
-			
-			
 		}
 
 	
