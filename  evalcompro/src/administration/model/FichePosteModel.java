@@ -599,7 +599,7 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
             	if(cellule!=null)
             	{
             		inserer=true;
-            		System.out.println("numColonne=="+numColonne+"  numligne==" +numLigne);
+            		
             	if(numColonne==7)
             	{
             		v=cellule.getNumericCellValue();
@@ -617,7 +617,7 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
             		}
             		else
             			if(valeur.equals("")||valeur.equals(" "))
-            				inserer=false;System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
+            				inserer=false;
             		fichePoste.setCode_poste(valeur);
             	}
             	else
@@ -745,7 +745,7 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
             	if(cellule!=null)
             	{
             		inserer=true;
-            		System.out.println("numColonne=="+numColonne+"  numligne==" +numLigne);
+            		
             	if(numColonne==7)
             	{
             		v=cellule.getNumericCellValue();
@@ -763,7 +763,7 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
             		}
             		else
             			if(valeur.equals("")||valeur.equals(" "))
-            				inserer=false;System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
+            				inserer=false;
             		fichePoste.setCode_poste(valeur);
             	}
             	else
