@@ -216,6 +216,9 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	 }
 	 public void onClick$okAdd()
 	 {
+		 String rejetStructure="--> Rejets Structure Entreprise" +System.getProperty("line.separator");
+		 String rejetPoste=System.getProperty("line.separator")+"--> Rejets Liste fiches postes"+System.getProperty("line.separator");
+		 String rejetEMploye=System.getProperty("line.separator")+"--> Rejets Liste Employes"+System.getProperty("line.separator");
 		 String rejet="";
 	 
 		 
@@ -269,18 +272,19 @@ public class ChargementMasseAction extends GenericForwardComposer {
 								
 							}
 							//AfficherFenetreRejet(listeRejet);
-							rejet=rejet+listeRejet;
+							rejet=rejetStructure+rejet+listeRejet;
+							System.out.println("rejets StructureEntreprise"+listeRejet);
 
 						}
 					 //mise à jour de la table poste_Travail_description
-						System.out.println("avant BDD poste");						
+											
 						FichePosteModel fichePosteModel=new FichePosteModel();
-						System.out.println("apres BDD structure");						
+												
 						 HashMap <String,List<FichePosteBean>> listeDonneesPoste=fichePosteModel.ChargementDonneedansBdd(Addedmodel2);
 						 List<FichePosteBean> donneeRejetesPoste =listeDonneesPoste.get("supprimer");
 						 Addedmodel2=null;
 						 Addedmodel2=listeDonneesPoste.get("inserer");;
-						 System.out.println("1");				
+						 				
 						 model2=savemodel2;
 						//raffrechissement de l'affichage
 						Iterator<FichePosteBean> indexPoste=Addedmodel2.iterator();
@@ -290,11 +294,11 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							model2.add(donnee);
 							
 						}
-						 System.out.println("2");
+						 
 						//binder.loadAll();
-						if(donneeRejetes.size()!=0)
+						if(donneeRejetesPoste.size()!=0)
 						{
-							System.out.println("2.1");
+							
 							String listeRejet=new String("-->");
 							//Afficharge de la liste des données rejetées
 							Iterator<FichePosteBean> index1 =donneeRejetesPoste.iterator();
@@ -315,18 +319,19 @@ public class ChargementMasseAction extends GenericForwardComposer {
 								
 							}
 							//AfficherFenetreRejet(listeRejet);
-							rejet=rejet+listeRejet;
+							rejet=rejet+rejetPoste+listeRejet;
+							System.out.println("rejets Postee"+listeRejet);
 						}
-							 System.out.println("3");
+							 
 							//mise à jour de des tables Compte et Employe
 							
 							EmployeCompteModel employeCompteModel=new EmployeCompteModel();
-							System.out.println("avant BDD employe");							
+														
 							 HashMap <String,List<EmployeCompteBean>> listeDonneesEmployeCompte=employeCompteModel.ChargementDonneedansBdd(Addedmodel3);
 							 List<EmployeCompteBean> donneeRejetesEmplyeCompte =listeDonneesEmployeCompte.get("supprimer");
 							 Addedmodel3=null;
 							 Addedmodel3=listeDonneesEmployeCompte.get("inserer");;
-							 System.out.println("aprest BDD structure");							
+														
 							 model3=savemodel3;
 							//raffrechissement de l'affichage
 							Iterator<EmployeCompteBean> indexEmployeCompte=Addedmodel3.iterator();
@@ -362,13 +367,15 @@ public class ChargementMasseAction extends GenericForwardComposer {
 									
 								}
 								//AfficherFenetreRejet(listeRejet);
-								rejet=rejet+listeRejet1;
+								rejet=rejet+rejetEMploye+listeRejet1;
+								System.out.println("rejets Employe"+listeRejet1);
 
 						}
 						
 					 //mise à jour des tables compte de la base common et employe
 						
 						binder.loadAll();
+						System.out.println("Tout "+rejet);
 						AfficherFenetreRejet1(rejet);	
 				
 				}
@@ -387,7 +394,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	     */
 	    public void AfficherFenetreRejet1(String listeRejet)
 	    {
-	    	System.out.println("affichage fenetre rejet");
+	    	
 	    	Map<String, String> listDonne=new HashMap <String, String>();
 			listDonne.put("rejet", listeRejet);
 			
@@ -457,7 +464,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							{
 								StructureEntrepriseBean donnee=index.next();
 								model.add(donnee);
-								
+								Addedmodel.add(donnee);
 							}
 					
 							binder.loadAll();
