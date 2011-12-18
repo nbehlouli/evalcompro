@@ -148,7 +148,7 @@ public boolean addRepCompBean(RepCompetenceBean addedData) throws ParseException
 		try 
 		{
 			
-			System.out.println(select_structure +grouplbl);
+			
 			
 			Messagebox.show("La donnée n'a pas été insérée dans la base de données" +e, "Erreur",Messagebox.OK, Messagebox.ERROR);
 		} 
