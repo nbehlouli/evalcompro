@@ -77,7 +77,6 @@ public class StructureEntrepriseModel {
 					structureEntreprise.setLibelleService(rs.getString("libelle_service"));
 					structureEntreprise.setCodesection(rs.getString("code_section"));
 					structureEntreprise.setLibelleSection(rs.getString("libelle_section"));
-					  System.out.println("selection d'un element");
 					listStructureEntreprise.add(structureEntreprise);
 				   
 					
