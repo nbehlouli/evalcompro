@@ -77,7 +77,7 @@ public class StructureEntrepriseModel {
 					structureEntreprise.setLibelleService(rs.getString("libelle_service"));
 					structureEntreprise.setCodesection(rs.getString("code_section"));
 					structureEntreprise.setLibelleSection(rs.getString("libelle_section"));
-					  
+					  System.out.println("selection d'un element");
 					listStructureEntreprise.add(structureEntreprise);
 				   
 					
@@ -186,6 +186,7 @@ public class StructureEntrepriseModel {
 			
 			
 			 stmt.execute(select_structure);
+			 System.out.println(select_structure);
 			 stmt.close();
 			 conn.close();
 		} 
@@ -414,7 +415,7 @@ public class StructureEntrepriseModel {
 		//Verification de l'integrité des données à inserer doublon dans le fichier
 		List <StructureEntrepriseBean> listeAInserer=new ArrayList <StructureEntrepriseBean>();
 		List <StructureEntrepriseBean> listeDonneesRejetes=new ArrayList <StructureEntrepriseBean>();
-
+		
 		for(int i=0; i<liste.size();i++)
 		{
 			StructureEntrepriseBean donnee=liste.get(i);
@@ -439,23 +440,26 @@ public class StructureEntrepriseModel {
 		List <StructureEntrepriseBean> listeAInsererFinal=new ArrayList <StructureEntrepriseBean>();
 		ArrayList<StructureEntrepriseBean>strctureEntreprisebdd =checkStructureEntreprise();
 		Iterator <StructureEntrepriseBean>iterator=listeAInserer.iterator();
-		
+	System.out.println("taille element a inseer"+listeAInserer.size());	
 		while(iterator.hasNext())
 		{
 			
 			StructureEntrepriseBean bean=(StructureEntrepriseBean)iterator.next();
-			
+			System.out.println("nbelement"+strctureEntreprisebdd.size());
 			Iterator<StructureEntrepriseBean> index=strctureEntreprisebdd.iterator();
 			boolean donneerejete=false;
 			while(index.hasNext())
 			{
 				
+				
 				StructureEntrepriseBean bean2=(StructureEntrepriseBean)index.next();
+				System.out.println("controle "+bean.getCodestructure()+ " avec "+bean2.getCodestructure());
 				if(bean.getCodestructure().equals(bean2.getCodestructure()))
 				{
 					
 					listeDonneesRejetes.add(bean);
 					donneerejete=true;
+					System.out.println("donnee rejetée"+bean.getCodestructure());
 					continue;
 				}
 			}
@@ -474,7 +478,7 @@ public class StructureEntrepriseModel {
 			StructureEntrepriseBean donneeBean=(StructureEntrepriseBean)index.next();
 			
 			addStructureEntrepriseBean(donneeBean);	
-			System.out.println("ajout de donnes");
+			
 		}
 		
 			
@@ -528,20 +532,20 @@ public class StructureEntrepriseModel {
 	            	{
 	            	inserer=true;
 	            	String valeur= cellule.getStringCellValue();
-	            	System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
+	            	
 	            	
 	            	if(numColonne==0)
 	            	{
 	            		if(valeur==null)
 	            			{
 	            			inserer=false;
-	            			System.out.println("null");
+	            			
 	            			}
 	            			else
 	            				if(valeur.equals("")||(valeur.equals(" ")))
 	            					{
 	            					inserer=false;;
-	            					System.out.println("vide");
+	            					
 	            					}
 	            		structurentreprise.setCodestructure(valeur);
 	            		
@@ -668,20 +672,20 @@ public class StructureEntrepriseModel {
 	            	{
 	            	inserer=true;
 	            	String valeur= cellule.getStringCellValue();
-	            	System.out.println("numColonne=="+numColonne+" valeur=="+valeur+". numligne==" +numLigne);
+	            	
 	            	
 	            	if(numColonne==0)
 	            	{
 	            		if(valeur==null)
 	            			{
 	            			inserer=false;
-	            			System.out.println("null");
+	            			
 	            			}
 	            			else
 	            				if(valeur.equals("")||(valeur.equals(" ")))
 	            					{
 	            					inserer=false;;
-	            					System.out.println("vide");
+	            					
 	            					}
 	            		structurentreprise.setCodestructure(valeur);
 	            		
