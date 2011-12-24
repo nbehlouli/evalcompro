@@ -9,6 +9,7 @@
 { 
      font-size:7pt;
       color: blue;
+      text-align:center;
 } 
 </style>
 
@@ -52,8 +53,8 @@
 		</div>
 		
 		   
-		   <groupbox id="gb" mold="3d" width="500px" open="false"  >
-		   <caption label="Testez votre débit internet"  sclass="myCaption"/>
+		   <groupbox id="gb" mold="3d" width="100%" open="false"  >
+		   <caption image="/image/fleche_bas.png"  tooltiptext="Testez votre débit internet"  sclass="myCaption"/>
 		   <include src="footer.zul"/>
 		   </groupbox>
 			
