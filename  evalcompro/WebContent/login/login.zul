@@ -4,6 +4,16 @@
   
 	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
 
+ <style>
+.myCaption .z-caption-l
+{ 
+     font-size:7pt;
+      color: blue;
+} 
+</style>
+
+
+
 		<div height="100px" >
              <image src="/image/Logo.gif" width="500px" height="100px" align="top"/>
         </div>
@@ -41,9 +51,12 @@
 			</div>
 		</div>
 		
-		   <div>
+		   
+		   <groupbox id="gb" mold="3d" width="500px" open="false"  >
+		   <caption label="Testez votre débit internet"  sclass="myCaption"/>
 		   <include src="footer.zul"/>
-			</div>
+		   </groupbox>
+			
   	</window>	   
   	
 </zk>
