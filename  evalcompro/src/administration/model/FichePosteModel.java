@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -142,7 +143,38 @@ public List loadFichesPostes() throws SQLException{
 		
 	}
 
+public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean addedData)
+{
 
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	PwdCrypt pwdcrypt=new PwdCrypt();
+	
+	String insert_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
+     " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#gsp_id)";
+
+
+
+	insert_structure = insert_structure.replaceAll("#code_poste", "'"+addedData.getCode_poste()+"'");
+	insert_structure = insert_structure.replaceAll("#intitule_poste", "'"+addedData.getIntitule_poste()+"'");
+	insert_structure = insert_structure.replaceAll("#sommaire_poste", "'"+removeString(addedData.getSommaire_poste())+"'");
+	insert_structure = insert_structure.replaceAll("#tache_responsabilite", "'"+removeString(addedData.getTache_responsabilite())+"'");
+	insert_structure = insert_structure.replaceAll("#environement_perspectif", "'"+removeString(addedData.getEnvironement_perspectif())+"'");
+	insert_structure = insert_structure.replaceAll("#code_formation", "'"+removeString(addedData.getLibelle_formation())+"'");
+	insert_structure = insert_structure.replaceAll("#formation_professionnelle", "'"+removeString(addedData.getFormation_professionnelle())+"'");
+	insert_structure= insert_structure.replaceAll("#experience", "'"+removeString(addedData.getExperience())+"'");
+	insert_structure = insert_structure.replaceAll("#profile_poste", "'"+addedData.getProfile_poste()+"'");
+	insert_structure = insert_structure.replaceAll("#hierarchie", "'"+addedData.getPoste_hierarchie()+"'");
+	insert_structure = insert_structure.replaceAll("#code_structure", "'"+addedData.getCode_structure()+"'");
+	
+	insert_structure = insert_structure.replaceAll("#gsp_id","'"+addedData.getCode_gsp()+"'");
+
+
+	
+	requete=requete+ insert_structure+ " ; ";
+
+		return requete;
+
+}
 /**
  * cette méthode permet d'inserer la donnée addedData dans la table structure_entreprise de la base de donnée
  * @param addedData
@@ -645,6 +677,7 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
 					            	{
 				            			String[] val=valeur.split(",");
 				            			fichePoste.setFormation_general(val[0]);
+				            			fichePoste.setLibelle_formation(val[0]);
 					            	}
 					            	else
 					            		if(numColonne==6)
@@ -916,14 +949,24 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 	
 	//Insertion des données dans la table Structure_entreprise
 	Iterator<FichePosteBean> index =listeAInsererFinal.iterator();
+	String requete="";
 	while(index.hasNext())
 	{
 		FichePosteBean donneeBean=(FichePosteBean)index.next();
-		
-		addPosteTravail(donneeBean);			
+		requete=ConstructionRequeteAddPosteTravail(requete,donneeBean);
+		//addPosteTravail(donneeBean);			
 	}
-	
-
+	//execution de la requete
+	try
+	{
+		System.out.println(requete);
+		if(requete!="")
+			updateMultiQuery(requete);
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+	}
 	HashMap <String,List<FichePosteBean>> donneeMap=new HashMap<String,List<FichePosteBean>>();
 	donneeMap.put("inserer", listeAInsererFinal);
 	donneeMap.put("supprimer", listeDonneesRejetes);
@@ -1174,5 +1217,42 @@ public HashMap<String,StructureEntrepriseBean> getStructureEntreprise() throws S
 
 	
 	
+}
+
+public void updateMultiQuery(String requete)
+{
+	if(requete!="")
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+		Statement stmt;
+	
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			System.out.println(requete);
+			stmt.execute(requete);
+		 
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+			
+				e1.printStackTrace();
+				//return false;
+			}
+		
+		}
+		
+	}
+
+
 }
 }
