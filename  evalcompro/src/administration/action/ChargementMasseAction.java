@@ -220,7 +220,9 @@ public class ChargementMasseAction extends GenericForwardComposer {
 		 String rejetPoste=System.getProperty("line.separator")+"--> Rejets Liste fiches postes"+System.getProperty("line.separator");
 		 String rejetEMploye=System.getProperty("line.separator")+"--> Rejets Liste Employes"+System.getProperty("line.separator");
 		 String rejet="";
-	 
+			
+			FichePosteModel init =new FichePosteModel();
+			EmployeCompteModel init3= new EmployeCompteModel();
 		 
 			try {
 				if (Messagebox.show("Voulez vous charger les données dans la base ?", "Prompt", Messagebox.YES|Messagebox.NO,
@@ -237,17 +239,17 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						 Addedmodel=null;
 						 Addedmodel=listeDonnees.get("inserer");;
 						
-						 model=savemodel;
-						//raffrechissement de l'affichage
-						Iterator<StructureEntrepriseBean> index=Addedmodel.iterator();
-						while(index.hasNext())
-						{
-							StructureEntrepriseBean donnee=index.next();
-							model.add(donnee);
-							
-						}
-				
-						binder.loadAll();
+//						 model=savemodel;
+//						//raffrechissement de l'affichage
+//						Iterator<StructureEntrepriseBean> index=Addedmodel.iterator();
+//						while(index.hasNext())
+//						{
+//							StructureEntrepriseBean donnee=index.next();
+//							model.add(donnee);
+//							
+//						}
+//				
+//						binder.loadAll();
 						if(donneeRejetes.size()!=0)
 						{
 							String listeRejet=new String("-->");
@@ -273,7 +275,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							}
 							//AfficherFenetreRejet(listeRejet);
 							rejet=rejetStructure+rejet+listeRejet;
-							System.out.println("rejets StructureEntreprise"+listeRejet);
+							//System.out.println("rejets StructureEntreprise"+listeRejet);
 
 						}
 					 //mise à jour de la table poste_Travail_description
@@ -282,20 +284,20 @@ public class ChargementMasseAction extends GenericForwardComposer {
 												
 						 HashMap <String,List<FichePosteBean>> listeDonneesPoste=fichePosteModel.ChargementDonneedansBdd(Addedmodel2);
 						 List<FichePosteBean> donneeRejetesPoste =listeDonneesPoste.get("supprimer");
-						 Addedmodel2=null;
-						 Addedmodel2=listeDonneesPoste.get("inserer");;
-						 				
-						 model2=savemodel2;
-						//raffrechissement de l'affichage
-						Iterator<FichePosteBean> indexPoste=Addedmodel2.iterator();
-						while(indexPoste.hasNext())
-						{
-							FichePosteBean donnee=indexPoste.next();
-							model2.add(donnee);
-							
-						}
-						 
-						//binder.loadAll();
+//						 Addedmodel2=null;
+//						 Addedmodel2=listeDonneesPoste.get("inserer");;
+//						 				
+//						 model2=savemodel2;
+//						//raffrechissement de l'affichage
+//						Iterator<FichePosteBean> indexPoste=Addedmodel2.iterator();
+//						while(indexPoste.hasNext())
+//						{
+//							FichePosteBean donnee=indexPoste.next();
+//							model2.add(donnee);
+//							
+//						}
+//						 
+//						binder.loadAll();
 						if(donneeRejetesPoste.size()!=0)
 						{
 							
@@ -329,20 +331,20 @@ public class ChargementMasseAction extends GenericForwardComposer {
 														
 							 HashMap <String,List<EmployeCompteBean>> listeDonneesEmployeCompte=employeCompteModel.ChargementDonneedansBdd(Addedmodel3);
 							 List<EmployeCompteBean> donneeRejetesEmplyeCompte =listeDonneesEmployeCompte.get("supprimer");
-							 Addedmodel3=null;
-							 Addedmodel3=listeDonneesEmployeCompte.get("inserer");;
-														
-							 model3=savemodel3;
-							//raffrechissement de l'affichage
-							Iterator<EmployeCompteBean> indexEmployeCompte=Addedmodel3.iterator();
-							while(indexEmployeCompte.hasNext())
-							{
-								EmployeCompteBean donnee=indexEmployeCompte.next();
-								model3.add(donnee);
-								
-							}
-					
-							binder.loadAll();
+//							 Addedmodel3=null;
+//							 Addedmodel3=listeDonneesEmployeCompte.get("inserer");;
+//														
+//							 model3=savemodel3;
+//							//raffrechissement de l'affichage
+//							Iterator<EmployeCompteBean> indexEmployeCompte=Addedmodel3.iterator();
+//							while(indexEmployeCompte.hasNext())
+//							{
+//								EmployeCompteBean donnee=indexEmployeCompte.next();
+//								model3.add(donnee);
+//								
+//							}
+//					
+//							binder.loadAll();
 							if(donneeRejetesEmplyeCompte.size()!=0)
 							{
 								String listeRejet1=new String("-->");
@@ -373,7 +375,10 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						}
 						
 					 //mise à jour des tables compte de la base common et employe
-						
+							model=structureEntrepriseModel.checkStructureEntreprise();
+
+							model2=init.loadFichesPostes();
+							model3=init3.loadListEmployes();
 						binder.loadAll();
 						System.out.println("Tout "+rejet);
 						AfficherFenetreRejet1(rejet);	
@@ -504,6 +509,8 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						//lecture des données se trouvant dans l'onglet liste poste
 						FichePosteModel fichePosteModel=new FichePosteModel();
 						listFichePoste=fichePosteModel.uploadXLSFile(med.getStreamData());
+						//sauvegarde du contenu du model
+						savemodel2=model2;
 						//raffrechissement de l'affichage
 						Iterator<FichePosteBean> index=listFichePoste.iterator();
 						while(index.hasNext())
@@ -516,7 +523,10 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						//lecture des données se trouvant dans l'onglet liste_employés
 						EmployeCompteModel employeCompteModel=new EmployeCompteModel();
 						List<EmployeCompteBean> listEmployeCompteBean= employeCompteModel.uploadXLSFile(med.getStreamData());
+						//sauvegarde du contenu du model
+						savemodel3=model3;
 						
+						System.out.println("savemodel avant="+savemodel3.size());
 						//raffrechissement de l'affichage
 						Iterator<EmployeCompteBean> index1=listEmployeCompteBean.iterator();
 						while(index1.hasNext())
@@ -527,6 +537,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							Addedmodel3.add(donnee);
 							
 						}
+						System.out.println("savemodel apres="+savemodel3.size());
 						binder.loadAll();
 					}
 					else
