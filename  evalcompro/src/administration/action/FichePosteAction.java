@@ -486,7 +486,7 @@ public class FichePosteAction extends GenericForwardComposer {
 			Fileupload fichierupload=new Fileupload();
 			Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier");
 			
-			telechargerExcel(me);
+			//telechargerExcel(me);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
