@@ -1,10 +1,12 @@
 <zk>
 
    <hbox pack="center" width="100%">
+   
 	<html><![CDATA[
 	
 	<body onload="load_img()">
-		<input type="text" STYLE="font-weight: bold; font-size: 10px;" id="vitesse" size="12" readonly="readonly"/><input id="image" type="image" src="./image/Refresh_32.gif"  width="20 height="20  onclick="javascript:start_test_vitesse();" title="Tester votre connexion internet" />
+	<label  style="font-size:8pt; color:blue;" for="b">Testez votre débit internet</label>
+		<input title ="Testez votre débit internet" type="text" STYLE="font-weight: bold; font-size: 10px;" id="vitesse" size="12" readonly="readonly"/><input id="image" type="image" src="./image/Refresh_32.gif"  width="20 height="20  onclick="javascript:start_test_vitesse();" title="Tester votre connexion internet" />
 		
 	</body>			
 	]]></html>
