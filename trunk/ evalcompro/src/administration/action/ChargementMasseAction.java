@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +58,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	List<EmployeCompteBean> model3 = new ArrayList<EmployeCompteBean>();
 	List<EmployeCompteBean> Addedmodel3 = new ArrayList<EmployeCompteBean>();
 	Button okAdd;
+	Button annuler;
 	Div divupdown;
 	
 	@SuppressWarnings("deprecation")
@@ -193,6 +195,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	 {
 		 	 
 		 okAdd.setVisible(true);
+		 annuler.setVisible(true);
 		 Executions.getCurrent().getDesktop().setAttribute("org.zkoss.zul.Fileupload.target", divupdown);
 			
 		 try 
@@ -212,6 +215,38 @@ public class ChargementMasseAction extends GenericForwardComposer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		 }		 
+		 
+	 }
+	 
+	 public void onClick$annuler()
+	 {
+		 //raffrechissement de l'affichage
+		 StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+		 FichePosteModel init =new FichePosteModel();
+		 Addedmodel=null;
+			Addedmodel2=null;
+			Addedmodel3=null;
+			savemodel=null;savemodel2=null;savemodel3=null;
+			
+			EmployeCompteModel init3= new EmployeCompteModel();
+			try {
+				
+				model=structureEntrepriseModel.checkStructureEntreprise();
+			
+			model2=init.loadFichesPostes();
+			model3=init3.loadListEmployes();
+			
+			
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		 //rendre les boutons non visibles
+		 annuler.setVisible(false);
+		 okAdd.setVisible(false);
+		 //raffrechissement de l'affichage
+		 binder.loadAll();
 		 
 	 }
 	 public void onClick$okAdd()
@@ -322,7 +357,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							}
 							//AfficherFenetreRejet(listeRejet);
 							rejet=rejet+rejetPoste+listeRejet;
-							System.out.println("rejets Postee"+listeRejet);
+							//System.out.println("rejets Postee"+listeRejet);
 						}
 							 
 							//mise à jour de des tables Compte et Employe
@@ -370,7 +405,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 								}
 								//AfficherFenetreRejet(listeRejet);
 								rejet=rejet+rejetEMploye+listeRejet1;
-								System.out.println("rejets Employe"+listeRejet1);
+								//System.out.println("rejets Employe"+listeRejet1);
 
 						}
 						
@@ -380,7 +415,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							model2=init.loadFichesPostes();
 							model3=init3.loadListEmployes();
 						binder.loadAll();
-						System.out.println("Tout "+rejet);
+						//System.out.println("Tout "+rejet);
 						AfficherFenetreRejet1(rejet);	
 				
 				}
@@ -392,7 +427,8 @@ public class ChargementMasseAction extends GenericForwardComposer {
 				e.printStackTrace();
 			}	
 		
-		
+			okAdd.setVisible(false);
+			annuler.setVisible(false);
 	 }
 	   /**
 	     * cette méthode permet d'afficher les données rejetées et qui n'ont pas été intégres dans la table
@@ -526,7 +562,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						//sauvegarde du contenu du model
 						savemodel3=model3;
 						
-						System.out.println("savemodel avant="+savemodel3.size());
+						
 						//raffrechissement de l'affichage
 						Iterator<EmployeCompteBean> index1=listEmployeCompteBean.iterator();
 						while(index1.hasNext())
@@ -537,7 +573,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							Addedmodel3.add(donnee);
 							
 						}
-						System.out.println("savemodel apres="+savemodel3.size());
+						
 						binder.loadAll();
 					}
 					else
@@ -554,14 +590,15 @@ public class ChargementMasseAction extends GenericForwardComposer {
 //								 liste=null;
 //								 liste=listeDonnees.get("inserer");;
 								
-							
+								//sauvegarde du contenu du model
+								savemodel=model;
 								//raffrechissement de l'affichage
 								Iterator<StructureEntrepriseBean> index=liste.iterator();
 								while(index.hasNext())
 								{
 									StructureEntrepriseBean donnee=index.next();
 									model.add(donnee);
-									
+									Addedmodel.add(donnee);
 								}
 						
 								binder.loadAll();
@@ -600,19 +637,37 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							//lecture des données se trouvant dans l'onglet liste poste
 							FichePosteModel fichePosteModel=new FichePosteModel();
 							listFichePoste=fichePosteModel.uploadXLSXFile(med.getStreamData());
+							
+							//sauvegarde du contenu du model
+							savemodel2=model2;
+							//raffrechissement de l'affichage
+							Iterator<FichePosteBean> index=listFichePoste.iterator();
+							while(index.hasNext())
+							{
+								FichePosteBean donnee=index.next();
+								model2.add(donnee);
+								Addedmodel2.add(donnee);
+								
+							}
 							//lecture des données se trouvant dans l'onglet liste_employés
 							EmployeCompteModel employeCompteModel=new EmployeCompteModel();
 							List<EmployeCompteBean> listEmployeCompteBean= employeCompteModel.uploadXLSXFile(med.getStreamData());
+							
+							//sauvegarde du contenu du model
+							savemodel3=model3;
+							
 							
 							//raffrechissement de l'affichage
 							Iterator<EmployeCompteBean> index1=listEmployeCompteBean.iterator();
 							while(index1.hasNext())
 							{
+								
 								EmployeCompteBean donnee=index1.next();
 								model3.add(donnee);
 								Addedmodel3.add(donnee);
 								
 							}
+							
 							binder.loadAll();
 						}
 					
