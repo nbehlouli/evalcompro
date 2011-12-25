@@ -517,6 +517,8 @@ public class StructureEntrepriseModel {
 	        {
 	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
+	        	if(ligne!=null)
+	        	{
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
 	            StructureEntrepriseBean structurentreprise=new StructureEntrepriseBean();
@@ -616,6 +618,7 @@ public class StructureEntrepriseModel {
 	            	
 	            }//fin for colonne
 	            if(inserer)listStructureEntreprise.add(structurentreprise);
+	        	}
 	        }//fin for ligne
 
 		} 
@@ -657,6 +660,8 @@ public class StructureEntrepriseModel {
 	        {
 	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
+	        	if(ligne!=null)
+	        	{
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
 	            StructureEntrepriseBean structurentreprise=new StructureEntrepriseBean();
@@ -756,6 +761,7 @@ public class StructureEntrepriseModel {
 	            	
 	            }//fin for colonne
 	            if(inserer)listStructureEntreprise.add(structurentreprise);
+	        	}
 	        }//fin for ligne
 
 		} 
