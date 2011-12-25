@@ -353,6 +353,8 @@ public class EmployeCompteModel {
 	        {
 	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
+	        	if(ligne!=null)
+	        	{
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
 	            EmployeCompteBean employeCompteBean=new EmployeCompteBean();
@@ -464,7 +466,7 @@ public class EmployeCompteModel {
 	            }//fin for colonne
 	            if(inserer)
 	            	listEmployeCompteBean.add(employeCompteBean);
-	            
+	        	}
 	        }//fin for ligne
 
 		} 
@@ -503,6 +505,8 @@ public class EmployeCompteModel {
 	        {
 	        	
 	        	ligne = feuilleExcel.getRow(numLigne);
+	        	if(ligne!=null)
+	        	{
 	            int nombreColonne = ligne.getLastCellNum()
 	                    - ligne.getFirstCellNum();
 	            EmployeCompteBean employeCompteBean=new EmployeCompteBean();
@@ -614,7 +618,7 @@ public class EmployeCompteModel {
 	            }//fin for colonne
 	            if(inserer)
 	            	listEmployeCompteBean.add(employeCompteBean);
-	            
+	        	}
 	        }//fin for ligne
 
 		} 
