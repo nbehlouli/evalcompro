@@ -146,14 +146,15 @@ public List loadFichesPostes() throws SQLException{
 public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean addedData)
 {
 
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	PwdCrypt pwdcrypt=new PwdCrypt();
+//	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//	PwdCrypt pwdcrypt=new PwdCrypt();
 	
 	String insert_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
      " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#gsp_id)";
 
 
-
+	String[] code_hierarchie=addedData.getPoste_hierarchie().split(",");
+	String[] gsp=addedData.getCode_gsp().split(",");
 	insert_structure = insert_structure.replaceAll("#code_poste", "'"+addedData.getCode_poste()+"'");
 	insert_structure = insert_structure.replaceAll("#intitule_poste", "'"+addedData.getIntitule_poste()+"'");
 	insert_structure = insert_structure.replaceAll("#sommaire_poste", "'"+removeString(addedData.getSommaire_poste())+"'");
@@ -163,10 +164,10 @@ public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean a
 	insert_structure = insert_structure.replaceAll("#formation_professionnelle", "'"+removeString(addedData.getFormation_professionnelle())+"'");
 	insert_structure= insert_structure.replaceAll("#experience", "'"+removeString(addedData.getExperience())+"'");
 	insert_structure = insert_structure.replaceAll("#profile_poste", "'"+addedData.getProfile_poste()+"'");
-	insert_structure = insert_structure.replaceAll("#hierarchie", "'"+addedData.getPoste_hierarchie()+"'");
+	insert_structure = insert_structure.replaceAll("#hierarchie", "'"+code_hierarchie[0]+"'");
 	insert_structure = insert_structure.replaceAll("#code_structure", "'"+addedData.getCode_structure()+"'");
 	
-	insert_structure = insert_structure.replaceAll("#gsp_id","'"+addedData.getCode_gsp()+"'");
+	insert_structure = insert_structure.replaceAll("#gsp_id","'"+gsp[0]+"'");
 
 
 	
@@ -613,7 +614,11 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
         for(int numLigne =1;numLigne<=nombreLigne; numLigne++)
         {
         	
+        	
         	ligne = feuilleExcel.getRow(numLigne);
+        	if(ligne!=null)
+        	{
+        		
             int nombreColonne = ligne.getLastCellNum()
                     - ligne.getFirstCellNum();
             FichePosteBean fichePoste=new FichePosteBean();
@@ -719,6 +724,7 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
             }//fin for colonne
             if(inserer)
             	listFichePostebean.add(fichePoste);
+        	}
         }//fin for ligne
 
 	} 
@@ -761,6 +767,8 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
         {
         	
         	ligne = feuilleExcel.getRow(numLigne);
+        	if(ligne!=null)
+        	{
             int nombreColonne = ligne.getLastCellNum()
                     - ligne.getFirstCellNum();
             FichePosteBean fichePoste=new FichePosteBean();
@@ -866,7 +874,7 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
             if(inserer)
             	listFichePostebean.add(fichePoste);
         }//fin for ligne
-
+        }
 	} 
     catch (IOException e) 
     {
