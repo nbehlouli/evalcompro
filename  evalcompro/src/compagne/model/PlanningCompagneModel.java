@@ -39,6 +39,8 @@ import administration.bean.StructureEntrepriseBean;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
+
+import common.ApplicationFacade;
 import common.CreateDatabaseCon;
 import common.InitContext;
 import common.PwdCrypt;
@@ -54,6 +56,7 @@ public class PlanningCompagneModel {
 
 private ArrayList<PlanningCompagneListBean>  listcompagne =null; 
 private ListModel strset =null;
+private int database=ApplicationFacade.getInstance().getClient_database_id();
 	
 	/**
 	 * cette méthode fournit le contenu de la table structure_entreprise
@@ -388,10 +391,15 @@ private ListModel strset =null;
 		Statement stmt = null;
 		HashMap map = new HashMap();
 		
+		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select id_employe,concat(nom,' ',prenom) as evaluateur from employe where est_evaluateur='Y'"; 
+			String profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evaluateur " +
+					            " from employe e,common_evalcom.compte c where est_evaluateur='Y'" +
+					            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			
+			profile_list = profile_list.replaceAll("#databaseid", "'"+database+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
@@ -419,7 +427,11 @@ private ListModel strset =null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select id_employe,concat(nom,' ',prenom) as evalue from employe where est_evaluateur='N'"; 
+			String profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evalue " +
+            " from employe e,common_evalcom.compte c where est_evaluateur='N'" +
+            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+
+            profile_list = profile_list.replaceAll("#databaseid", "'"+database+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
