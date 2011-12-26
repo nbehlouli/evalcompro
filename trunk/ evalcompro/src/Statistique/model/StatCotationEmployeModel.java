@@ -28,6 +28,8 @@ import Statistique.bean.StatMoyFamillePosteBean;
 import Statistique.bean.StatCotationEmployeBean;
 
 public class StatCotationEmployeModel {
+	
+	private int database=ApplicationFacade.getInstance().getClient_database_id();
 
 	
 	public ArrayList<StatCotationEmployeBean> InitialiserStatCotationEmploye()
@@ -108,18 +110,24 @@ public class StatCotationEmployeModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			if (id_profile==1 || id_profile==2 ){
-			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
-					         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select distinct id_planning_evaluation  from planning_evaluation )";
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+					  " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
+					  " in (select distinct id_planning_evaluation  from planning_evaluation )" +
+					  " and e.id_compte=c.id_compte and database_id=#database_id";
 			//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
 			
 			else{
-				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
-		         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation " +
-		          " where  id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))";
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+						  " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
+						  " in (select id_planning_evaluation  from planning_evaluation compagne_evaluation" +
+						  "  where  id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))" +
+						  "  and e.id_compte=c.id_compte   and database_id=#database_id";
 				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
 				//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
+			
+			sql_query=sql_query.replaceAll("#database_id", "'"+database+"'");
 			
 		   //System.out.println(sql_query);
 			
@@ -155,20 +163,24 @@ public class StatCotationEmployeModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			if (id_profile==1 || id_profile==2 ){
-			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
-					         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation where id_compagne=#id_compagne)";
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e, common_evalcom.compte c" +
+					"  where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
+					"  in (select id_planning_evaluation  from planning_evaluation where id_compagne=#id_compagne)" +
+					"  and c.id_compte=e.id_compte and database_id=#database_id";
 			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
 			
 			else{
-				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e" +
-		         " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation " +
-		          " where id_compagne=#id_compagne  and id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))";
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+						  "  where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation" +
+						  "  where id_compagne=#id_compagne  and id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))" +
+						  "  and c.id_compte=e.id_compte and database_id=#database_id";
 				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
 				sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
 			
 		   //System.out.println(sql_query);
+			sql_query=sql_query.replaceAll("#database_id", "'"+database+"'");
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
