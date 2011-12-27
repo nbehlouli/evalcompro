@@ -152,7 +152,7 @@ public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean a
 	String insert_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
      " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#gsp_id)";
 
-
+	System.out.println("code_poste="+addedData.getCode_poste()+ "addedData.getSommaire_poste()"+addedData.getSommaire_poste());
 	String[] code_hierarchie=addedData.getPoste_hierarchie().split(",");
 	String[] gsp=addedData.getCode_gsp().split(",");
 	insert_structure = insert_structure.replaceAll("#code_poste", "'"+addedData.getCode_poste()+"'");
@@ -477,9 +477,15 @@ public HashMap getListStructure() throws SQLException
 }	
 
 public String removeString(String chaine){
-	
-	String chaine_trt=chaine;
+	String chaine_trt="";
+	if(chaine==null)
+		return "";
+	else		
+		if(!chaine.equals(""))
+		{
+			chaine_trt=chaine;
            chaine_trt=chaine_trt.replaceAll("’"," ");
+		}
 	return chaine_trt;
 }
 
@@ -967,7 +973,7 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 	//execution de la requete
 	try
 	{
-		System.out.println(requete);
+		//System.out.println(requete);
 		if(requete!="")
 			updateMultiQuery(requete);
 	}
@@ -1240,11 +1246,12 @@ public void updateMultiQuery(String requete)
 			stmt = (Statement) conn.createStatement();
 			System.out.println(requete);
 			stmt.execute(requete);
-		 
+			
 			conn.close();
 		} 
 		catch (SQLException e) 
 		{
+			
 			e.printStackTrace();
 
 			// TODO Auto-generated catch block
