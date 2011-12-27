@@ -686,32 +686,7 @@ public class EmployeCompteModel {
 		List<EmployeCompteBean>employeComptebdd =loadListEmployes();
 		Iterator <EmployeCompteBean>iterator=listeAInserer.iterator();
 		
-//		while(iterator.hasNext())
-//		{
-//			
-//			EmployeCompteBean bean=(EmployeCompteBean)iterator.next();
-//			
-//			Iterator<EmployeCompteBean> index=employeComptebdd.iterator();
-//			boolean donneerejete=false;
-//			while(index.hasNext())
-//			{
-//				
-//				EmployeCompteBean bean2=(EmployeCompteBean)index.next();
-////				if(bean.getCode_poste().equals(bean2.getCode_poste()))
-////				{
-////					
-////					listeDonneesRejetes.add(bean);
-////					donneerejete=true;
-////					continue;
-////				}
-//			}
-//			if(!donneerejete)
-//			{
-//				
-//				listeAInsererFinal.add(bean);
-//			}
-//			
-//		}
+
 		
 		
 		Iterator<EmployeCompteBean> index =listeAInserer.iterator();
@@ -835,11 +810,16 @@ public class EmployeCompteModel {
 	{
 		
 		String login=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+		String log="";
+		if(login.length()>10)
+			log=login.substring(0,9);
+		else
+			log=login;
 		Integer database_id=ApplicationFacade.getInstance().getClient_database_id(); //recuperation de la base de donnée actuelle
 		//recherche de doublon
 		
 		String profile[]=donneeBean.getProfile().split(",");
-		requete=ConstructionRequeteUpdateCompte(requete,profile[0],login,"12345678",database_id.toString(), donneeBean.getVal_date_deb(), donneeBean.getVal_date_fin(), donneeBean.getNom(), donneeBean.getPrenom());
+		requete=ConstructionRequeteUpdateCompte(requete,profile[0],log,"12345678",database_id.toString(), donneeBean.getVal_date_deb(), donneeBean.getVal_date_fin(), donneeBean.getNom(), donneeBean.getPrenom());
 		return requete;
 	}
 	
