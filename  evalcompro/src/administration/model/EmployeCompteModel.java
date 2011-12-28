@@ -38,6 +38,7 @@ import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 
 import common.ApplicationFacade;
+import common.Contantes;
 import common.CreateDatabaseCon;
 import common.PwdCrypt;
 import compagne.bean.GestionEmployesBean;
@@ -180,7 +181,7 @@ public class EmployeCompteModel {
 			//HSSFWorkbook workBook = new HSSFWorkbook();
 			
 			//creation d'une feuille excel
-			 HSSFSheet sheet = workBook.createSheet("liste employés");
+			 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_liste_employes);
 			 
 			 //creation de l'entête du document excel
 			 HSSFRow row = sheet.createRow(0);
@@ -344,7 +345,7 @@ public class EmployeCompteModel {
 	        XSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        XSSFSheet feuilleExcel=fichierExcel.getSheet("liste employés");
+	        XSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_liste_employes);
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -496,7 +497,7 @@ public class EmployeCompteModel {
 	        HSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        HSSFSheet feuilleExcel=fichierExcel.getSheet("liste employés");
+	        HSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_liste_employes);
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -656,8 +657,6 @@ public class EmployeCompteModel {
 		List <EmployeCompteBean> listeAInserer=new ArrayList <EmployeCompteBean>();
 		List <EmployeCompteBean> listeDonneesRejetes=new ArrayList <EmployeCompteBean>();
 		
-		
-		
 
 		for(int i=0; i<liste.size();i++)
 		{
@@ -666,7 +665,25 @@ public class EmployeCompteModel {
 			for(int j=i+1;j<liste.size();j++)
 			{
 				EmployeCompteBean donnee2=liste.get(j);
-				if(donnee.getCode_poste().equals(donnee2.getCode_poste()))
+				
+				String login0=donnee.getPrenom().charAt(0)+donnee.getNom();
+				String log="";
+				if(login0.length()>10)
+					log=login0.substring(0,9);
+				else
+					log=login0;
+				log=log.replaceAll(" ", "");
+				
+				
+				String login2=donnee2.getPrenom().charAt(0)+donnee2.getNom();
+				String log2="";
+				if(login2.length()>10)
+					log2=login2.substring(0,9);
+				else
+					log2=login2;
+				log2=log2.replaceAll(" ", "");
+				
+				if(log.equals(log2))
 				{
 					listeDonneesRejetes.add(donnee);
 					donneerejete=true;
@@ -678,14 +695,17 @@ public class EmployeCompteModel {
 			
 		}
 		
+		//listeAInserer=liste;
+		
+	
 		System.out.println("listeAInserer" +listeAInserer.size() );
+		System.out.println("listeDonneeRejetées" + listeDonneesRejetes.size());
 		//Verification de l'integrité des données à inserer doublon avec les données de la base
 		
 		ArrayList <EmployeCompteBean> listeAInsererFinal=new ArrayList <EmployeCompteBean>();
 		@SuppressWarnings("unchecked")
-		List<EmployeCompteBean>employeComptebdd =loadListEmployes();
-		Iterator <EmployeCompteBean>iterator=listeAInserer.iterator();
-		
+
+		//verification de doublons dans les données a inserer
 
 		
 		
@@ -708,11 +728,39 @@ public class EmployeCompteModel {
 				{
 					String cles=iterator1.next();
 					AdministrationLoginBean bean=mapComptes.get(cles);
-					String login=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
-					String login2=bean.getPrenom().charAt(0)+bean.getNom();
+					
+/*********
+ * 
+ */
+					String login0=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+					String log="";
+					if(login0.length()>10)
+						log=login0.substring(0,9);
+					else
+						log=login0;
+					log=log.replaceAll(" ", "");
+					/************/
+					//String log=donneeBean.getdonneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+					String log2=bean.getLogin();//bean.getPrenom().charAt(0)+bean.getNom();
+					
+					
+					String login;
+					String login2;
+					if(log.length()>10)
+						login=log.substring(0,9);
+					else
+						login=log; 
+					if(log2.length()>10)
+						login2=log2.substring(0,9);
+					else
+						login2=log2; 
+					login=login.replaceAll(" ", "");
+					login2=login2.replaceAll(" ", "");
+					System.out.println("login=="+login+"= login2=="+login2+"=");
 					if(login2.equals(login))
 					{
 						continuer=false;
+						System.out.println("doublon login "+ login2 + " nomPrenom" + donneeBean.getPrenom()  +""+ donneeBean.getNom());
 					}
 				}
 				if(continuer)
@@ -784,7 +832,7 @@ public class EmployeCompteModel {
 					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
 					
 					  
-					mapCompteidCompte.put(admin_compte.getNom()+admin_compte.getPrenom()+admin_compte.getProfile(), admin_compte);
+					mapCompteidCompte.put(admin_compte.getNom()+admin_compte.getPrenom(), admin_compte);
 				   
 					
 				}
@@ -815,6 +863,7 @@ public class EmployeCompteModel {
 			log=login.substring(0,9);
 		else
 			log=login;
+		log=log.replaceAll(" ", "");
 		Integer database_id=ApplicationFacade.getInstance().getClient_database_id(); //recuperation de la base de donnée actuelle
 		//recherche de doublon
 		
@@ -872,7 +921,7 @@ public class EmployeCompteModel {
 			
 
 			String[]profile=donneeBean.getProfile().split(",");
-			String cles=donneeBean.getNom()+donneeBean.getPrenom()+profile[0];
+			String cles=donneeBean.getNom()+donneeBean.getPrenom();
 			
 			AdministrationLoginBean loginBean=mapCompte.get(cles);
 			String id_compte=loginBean.getId_compte();	
