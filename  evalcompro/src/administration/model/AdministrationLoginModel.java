@@ -48,7 +48,7 @@ private ListModel strset =null;
 			stmt = (Statement) conn.createStatement();
 			String sel_compte="select id_compte,nom,prenom,c.login,c.pwd,libelle_profile,l.nom_base,DATE_FORMAT(val_date_deb,'%Y/%m/%d') as val_date_deb,DATE_FORMAT(val_date_fin,'%Y/%m/%d') as val_date_fin ,modifiedpwd "+ 
                                "from compte c ,liste_db l ,profile p where c.database_id=l.database_id "+
-                               "and c.id_profile=p.id_profile";
+                               "and c.id_profile=p.id_profile order by l.nom_base,nom";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
 			
