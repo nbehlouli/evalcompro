@@ -36,6 +36,8 @@ import administration.bean.StructureEntrepriseBean;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
+
+import common.Contantes;
 import common.CreateDatabaseCon;
 
 public class StructureEntrepriseModel {
@@ -508,7 +510,7 @@ public class StructureEntrepriseModel {
 	        HSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        HSSFSheet feuilleExcel=fichierExcel.getSheet("structure entreprise");
+	        HSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_structure_entreprise);
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -651,7 +653,7 @@ public class StructureEntrepriseModel {
 	        XSSFCell cellule;
 
 	        //lecture de la première feuille excel
-	        XSSFSheet feuilleExcel=fichierExcel.getSheet("structure entreprise");
+	        XSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_structure_entreprise);
 	        
 	        // lecture du contenu de la feuille excel
 	        int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -795,7 +797,7 @@ public class StructureEntrepriseModel {
 			//HSSFWorkbook workBook = new HSSFWorkbook();
 			
 			//creation d'une feuille excel
-			 HSSFSheet sheet = workBook.createSheet("structure entreprise");
+			 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_structure_entreprise);
 			 
 			 //creation de l'entête du document excel
 			 HSSFRow row = sheet.createRow(0);
