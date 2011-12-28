@@ -1,22 +1,27 @@
 
 
 <zk>
-  
-	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="img_logo">
 
- <style>
+  
+	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="error" >
+
+<style>
+
 .myCaption .z-caption-l
 { 
      font-size:7pt;
       color: blue;
       text-align:center;
 } 
+
 </style>
+
+ 
 
 
 
 		<div height="100px" >
-             <image src="/image/Logo.gif" width="500px" height="100px" align="top"/>
+             <image src="/image/Logo.png" width="100%" height="100px" align="top"/>
         </div>
 
 		<div id="loginDiv"  visible="${empty user}">
@@ -42,7 +47,7 @@
 						</hbox>
 					</row>
 					<row>
-						<a href="/login/REINIPW.zul" sclass="edition-field" label=" Mot de passe oublié?" style="font-size:7pt;"/>
+						<a href="/login/REINIPW.zul" sclass="edition-field" label=" Mot de passe oublié?" style="font-size:7pt;color:#009ED6;font-weight: bold;;"/>
 				    </row>
 		      </rows>
 			</grid>
