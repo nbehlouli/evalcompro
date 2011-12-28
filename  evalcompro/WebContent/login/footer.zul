@@ -4,9 +4,9 @@
    
 	<html><![CDATA[
 	
-	<body onload="load_img()">
-	<label  style="font-size:8pt; color:blue;" for="b">Testez votre débit internet</label>
-		<input title ="Testez votre débit internet" type="text" STYLE="font-weight: bold; font-size: 10px;" id="vitesse" size="12" readonly="readonly"/><input id="image" type="image" src="./image/Refresh_32.gif"  width="20 height="20  onclick="javascript:start_test_vitesse();" title="Tester votre connexion internet" />
+	<body onLoad="load_img()">
+	<label  style="font-size:8pt; color:#009ED6;" for="b">Testez votre débit internet</label>
+		<input title ="Testez votre débit internet" type="text" STYLE="font-weight: bold; font-size: 10px;" id="vitesse" size="12" readonly="readonly"/><input id="image" type="image" src="./image/Logo.gif"  width="20" height="20"  onClick="javascript:start_test_vitesse();" title="Tester votre connexion internet" />
 		
 	</body>			
 	]]></html>
@@ -19,6 +19,7 @@
 			            var time2 = 0;
 			            function start_test_vitesse()
 			            {
+			                alert("toto");
 			                time1 = new Date();
 			                time1 = time1.getTime();
 			                var img = new Image();
