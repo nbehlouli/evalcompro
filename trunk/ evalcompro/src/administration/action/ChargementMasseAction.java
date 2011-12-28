@@ -26,6 +26,7 @@ import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import common.Contantes;
 import compagne.bean.GestionEmployesBean;
 import compagne.model.GestionEmployesModel;
 
@@ -173,12 +174,12 @@ public class ChargementMasseAction extends GenericForwardComposer {
 			FileOutputStream fOut;
 			try 
 			{
-				fOut = new FileOutputStream("Donnees_Evalcom.xls");
+				fOut = new FileOutputStream(Contantes.nom_fichier_extraction_xls);
 				workBook.write(fOut);
 				fOut.flush();
 				fOut.close();
 				
-				File file = new File("Donnees_Evalcom.xls");
+				File file = new File(Contantes.nom_fichier_extraction_xls);
 				Filedownload.save(file, "XLS");
 			} 
 			catch (FileNotFoundException e) {
