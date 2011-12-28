@@ -428,8 +428,7 @@ private int database=ApplicationFacade.getInstance().getClient_database_id();
 		{
 			stmt = (Statement) conn.createStatement();
 			String profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evalue " +
-            " from employe e,common_evalcom.compte c where est_evaluateur='N'" +
-            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+            " from employe e,common_evalcom.compte c where e.id_compte=c.id_compte and c.database_id=#databaseid"; 
 
             profile_list = profile_list.replaceAll("#databaseid", "'"+database+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
