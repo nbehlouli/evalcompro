@@ -47,6 +47,8 @@ import administration.bean.StructureEntrepriseBean;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
+
+import common.Contantes;
 import common.CreateDatabaseCon;
 import common.PwdCrypt;
 
@@ -610,7 +612,7 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
         HSSFCell cellule;
 
         //lecture de la première feuille excel
-        HSSFSheet feuilleExcel=fichierExcel.getSheet("liste postes travail");
+        HSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_fiche_postes);
         
         // lecture du contenu de la feuille excel
         int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -762,7 +764,7 @@ public List <FichePosteBean> uploadXLSXFile(InputStream inputStream)
         XSSFCell cellule;
 
         //lecture de la première feuille excel
-        XSSFSheet feuilleExcel=fichierExcel.getSheet("liste postes travail");
+        XSSFSheet feuilleExcel=fichierExcel.getSheet(Contantes.onglet_fiche_postes);
         
         // lecture du contenu de la feuille excel
         int nombreLigne = feuilleExcel.getLastRowNum()- feuilleExcel.getFirstRowNum();
@@ -1006,7 +1008,7 @@ public void downloadFichePosteDataToXls(HSSFWorkbook workBook)
 		//HSSFWorkbook workBook = new HSSFWorkbook();
 		
 		//creation d'une feuille excel
-		 HSSFSheet sheet = workBook.createSheet("liste postes travail");
+		 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_fiche_postes);
 		 
 		 //creation de l'entête du document excel
 		 HSSFRow row = sheet.createRow(0);
@@ -1244,7 +1246,7 @@ public void updateMultiQuery(String requete)
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			System.out.println(requete);
+			//System.out.println(requete);
 			stmt.execute(requete);
 			
 			conn.close();
