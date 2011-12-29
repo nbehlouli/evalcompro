@@ -32,6 +32,49 @@ private ArrayList<AdministrationLoginBean>  listlogin =null;
 private ListModel strset =null;
 	
 	/**
+	 * Cette méthode permet de dire si le login passé en paramètre existe dans les bases de données gérées par evalcom
+	 * @param login
+	 * @return
+	 */
+	public boolean isLoginExists(String login)throws SQLException
+	{
+	
+		boolean existe=false;
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDB();
+		Statement stmt = null;
+		
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_compte="select login "+ 
+                               "from compte c where login=#login ";
+			sel_compte = sel_compte.replaceAll("#login", "'"+login+"'");                
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
+			while (rs.next())
+			{
+				existe=true;
+			}
+			
+				stmt.close();
+				conn.close();
+				
+			
+			return existe;
+			 
+			
+		
+			
+			
+		} catch (SQLException e) {
+			stmt.close();
+			conn.close();
+			
+		}
+		return false;
+
+	}
+	/**
 	 * cette méthode fournit le contenu de la table structure_entreprise
 	 * @return
 	 * @throws SQLException
