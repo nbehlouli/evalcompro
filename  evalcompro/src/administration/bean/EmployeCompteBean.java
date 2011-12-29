@@ -25,8 +25,16 @@ public class EmployeCompteBean {
 		private String nom_complet;
 		private String code_est_evaluateur;
 		private String code_est_responsable_rh;
+		
+		private String  causeRejet;
 	 
 	 
+	public String getCauseRejet() {
+			return causeRejet;
+		}
+		public void setCauseRejet(String causeRejet) {
+			this.causeRejet = causeRejet;
+		}
 	public String getProfile() {
 		return profile;
 	}
