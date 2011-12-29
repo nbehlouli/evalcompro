@@ -85,7 +85,8 @@ public class StatIndiceMoyPosteAction extends  GenericForwardComposer{
 		
 		// forcer la selection de la permiere ligne
 		poste_travail.setVisible(false);
-		compagne.setSelectedIndex(0);
+		if(compagne.getItemCount()>0)
+			compagne.setSelectedIndex(0);
 		code_famille.setVisible(false);
 
 		
