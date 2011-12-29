@@ -78,7 +78,8 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		
 		//profilemodel.add((String) me.getKey());
 		}
-		 comp_list.setSelectedIndex (1);
+		 if(comp_list.getItemCount()>1)
+			 comp_list.setSelectedIndex (1);
 				
 		 progressbar.setStyle("background:#FF0000;");
 		// création de la structure de l'entreprise bean
@@ -94,7 +95,8 @@ public class SuiviCompagneAction extends GenericForwardComposer{
 		 profileid=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		 checkPercentageProfile(profileid);
 		
-	
+	if(comp_list.getItemCount()==1)
+		valider.setDisabled(true);
 	
 	}
 	/**
@@ -137,9 +139,14 @@ public void onClick$search() throws SQLException {
 				
 	}
 public void onCreation(ForwardEvent event){
-	Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
-	if (Integer.parseInt(checkbox.getName())==100){
-		checkbox.setVisible(false);
+	if(event.getOrigin()!=null)
+	{
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
+		if(checkbox!=null)
+			if(checkbox.getName()!=null)
+				if (Integer.parseInt(checkbox.getName())==100){
+					checkbox.setVisible(false);
+			}
 	}
 	
 }
