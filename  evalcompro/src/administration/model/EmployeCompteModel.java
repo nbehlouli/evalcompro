@@ -329,6 +329,175 @@ public class EmployeCompteModel {
 		 	}	
 
 	}
+	
+	public void downloadEmployeCompteRejectedDataToXls(HSSFWorkbook workBook,List<EmployeCompteBean> listEmployeCompte)
+	{
+		//recupération du contenu de la table 
+
+			@SuppressWarnings("unchecked")
+			
+			//creation du fichier xls
+			
+			Iterator <EmployeCompteBean>index=listEmployeCompte.iterator();
+			//creation d'un document excel 
+			//HSSFWorkbook workBook = new HSSFWorkbook();
+			
+			//creation d'une feuille excel
+			 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_liste_employes);
+			 
+			 //creation de l'entête du document excel
+			 HSSFRow row = sheet.createRow(0);
+			 HSSFCell cell = row.createCell((short)0);
+			 
+			 HSSFCellStyle cellStyle = null;
+			 cellStyle = workBook.createCellStyle();
+			 
+			 HSSFFont font1 = workBook.createFont();
+			 font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			 font1.setFontHeightInPoints((short)8);
+			 font1.setFontName("Arial");
+			 
+		     cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setFont(font1);
+		        
+			 cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+			 cell.setCellValue("Nom");
+			 			 cell.setCellStyle(cellStyle);
+			 HSSFCell cell1 = row.createCell((short)1);
+			 cell1.setCellValue("Prenom");
+			 			 cell1.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell2 = row.createCell((short)2);
+			 cell2.setCellValue("Profil");
+			 			 cell2.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell3 = row.createCell((short)3);
+			 cell3.setCellValue("val_date_deb");
+			 			 cell3.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell4 = row.createCell((short)4);
+			 cell4.setCellValue("val_date_fin");
+			 			 cell4.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell5 = row.createCell((short)5);
+			 cell5.setCellValue("date_naissance");
+			 			 cell5.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell6 = row.createCell((short)6);
+			 cell6.setCellValue("date_recrutement");
+			 			 cell6.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell7 = row.createCell((short)7);
+			 cell7.setCellValue("code_formation");
+			 			 cell7.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell8 = row.createCell((short)8);
+			 cell8.setCellValue("code_poste");
+			 			 cell8.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell9 = row.createCell((short)9);
+			 cell9.setCellValue("email");
+			 			 cell9.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell10 = row.createCell((short)10);
+			 cell10.setCellValue("est_evaluateur");
+			 			 cell10.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell11 = row.createCell((short)11);
+			 cell11.setCellValue("est_responsable_rh");
+			 			 cell11.setCellStyle(cellStyle);
+			 			 
+			 HSSFCell cell12 = row.createCell((short)12);
+			 cell12.setCellValue("code_structure");
+			 cell12.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell13 = row.createCell((short)13);
+			 cell13.setCellValue("Cause du rejet");
+			 cell13.setCellStyle(cellStyle);
+			 
+			 
+			 
+			 int i=1;
+			 try {
+			while (index.hasNext())
+			{
+				
+				
+				EmployeCompteBean donnee=(EmployeCompteBean)index.next();
+				
+				 HSSFRow row1 = sheet.createRow(i);
+				 HSSFCell cel = row1.createCell((short)0);
+				 cel.setCellValue(donnee.getNom());
+				 
+				 cel = row1.createCell((short)1);
+				 cel.setCellValue(donnee.getPrenom());
+				 cel = row1.createCell((short)2);
+				 cel.setCellValue(donnee.getProfile());
+				 cel = row1.createCell((short)3);
+				 Date dateD;
+				
+//					dateD = FormaterDate(donnee.getVal_date_deb());
+//				
+				  if(donnee.getVal_date_deb()!=null)
+					  cel.setCellValue(donnee.getVal_date_deb().toString());
+				  else
+					  cel.setCellValue("");
+				 cel = row1.createCell((short)4);
+				 
+//				 Date dateF=FormaterDate(donnee.getVal_date_fin());
+				 if(donnee.getVal_date_fin()!=null)
+					 cel.setCellValue(donnee.getVal_date_fin().toString());
+				 else
+					 cel.setCellValue("");
+				 cel = row1.createCell((short)5);
+				 
+				 //cel.setCellValue(FormaterDate(donnee.getDate_naissance()));
+				 cel.setCellValue(donnee.getDate_naissance().toString());
+				 cel = row1.createCell((short)6);
+				 //cel.setCellValue(FormaterDate(donnee.getDate_recrutement()));
+				 cel.setCellValue(donnee.getDate_recrutement().toString());
+				 cel = row1.createCell((short)7);
+				 
+				 cel.setCellValue(donnee.getLibelle_formation());
+				 cel = row1.createCell((short)8);
+				 cel.setCellValue(donnee.getIntitule_poste());
+				 cel = row1.createCell((short)9);
+				 cel.setCellValue(donnee.getEmail());
+				 cel = row1.createCell((short)10);
+				 
+				 
+				 cel.setCellValue(donnee.getEst_evaluateur());
+				 cel = row1.createCell((short)11);
+				 cel.setCellValue(donnee.getEst_responsable_rh());
+				 
+				 cel = row1.createCell((short)12);		
+				 cel.setCellValue(donnee.getCode_structure());
+				 
+				 cel = row1.createCell((short)13);		
+				 cel.setCellValue(donnee.getCauseRejet());
+				 i++;
+				
+			}
+			 } catch (WrongValueException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			//autosize des colonnes
+			for (int j=0;j<=13;j++)
+		 	{
+		 		sheet.autoSizeColumn(j);
+		 		
+		 	}	
+
+	}
 	public List <EmployeCompteBean> uploadXLSXFile(InputStream inputStream)
 	{
 		
@@ -662,6 +831,7 @@ public class EmployeCompteModel {
 		{
 			EmployeCompteBean donnee=liste.get(i);
 			boolean donneerejete=false;
+			
 			for(int j=i+1;j<liste.size();j++)
 			{
 				EmployeCompteBean donnee2=liste.get(j);
@@ -685,13 +855,17 @@ public class EmployeCompteModel {
 				
 				if(log.equals(log2))
 				{
+					donnee.setCauseRejet("le login  "+ log+" a été utilisé pour un autre employé de ce fichier, merci d'inserer cet employé manuellement en spécifiant un autre login");
 					listeDonneesRejetes.add(donnee);
 					donneerejete=true;
 					
 				}
 			}
 			if((i==liste.size()-1)||(i==0)||(donneerejete==false))
+			{
+				
 				listeAInserer.add(donnee);
+			}
 			
 		}
 		
@@ -714,7 +888,7 @@ public class EmployeCompteModel {
 		//verification doubon
 		try 
 		{
-			HashMap<String, AdministrationLoginBean> mapComptes=getComptes(ApplicationFacade.getInstance().getClient_database_id()+"");
+			HashMap<String, AdministrationLoginBean> mapComptes=getComptes();
 			
 		
 			while(index.hasNext())
@@ -756,11 +930,11 @@ public class EmployeCompteModel {
 						login2=log2; 
 					login=login.replaceAll(" ", "");
 					login2=login2.replaceAll(" ", "");
-					System.out.println("login=="+login+"= login2=="+login2+"=");
+					//System.out.println("login=="+login+"= login2=="+login2+"=");
 					if(login2.equals(login))
 					{
 						continuer=false;
-						System.out.println("doublon login "+ login2 + " nomPrenom" + donneeBean.getPrenom()  +""+ donneeBean.getNom());
+						//System.out.println("doublon login "+ login2 + " nomPrenom" + donneeBean.getPrenom()  +""+ donneeBean.getNom());
 					}
 				}
 				if(continuer)
@@ -769,7 +943,17 @@ public class EmployeCompteModel {
 						requete=addCompte(requete,donneeBean);	
 					}
 				else
-					listeDonneesRejetes.add(donneeBean);
+					{
+					String login0=donneeBean.getPrenom().charAt(0)+donneeBean.getNom();
+					String log="";
+					if(login0.length()>10)
+						log=login0.substring(0,9);
+					else
+						log=login0;
+					log=log.replaceAll(" ", "");
+					donneeBean.setCauseRejet("le login  "+ log+" existe déja dans la base, merci d'inserer cet employé manuellement en spécifiant un autre login");
+						listeDonneesRejetes.add(donneeBean);
+					}
 			
 			}
 		} 
@@ -811,6 +995,60 @@ public class EmployeCompteModel {
                                
 			
 			sel_compte = sel_compte.replaceAll("#database_id", database_id);
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
+			
+			SimpleDateFormat formatDateJour = new SimpleDateFormat("yyyy/MM/dd");
+			 
+			
+			while(rs.next()){
+				
+					AdministrationLoginBean admin_compte=new AdministrationLoginBean();
+					
+					admin_compte.setId_compte(Integer.toString(rs.getInt("id_compte")));
+					admin_compte.setNom(rs.getString("nom"));
+					admin_compte.setPrenom(rs.getString("prenom"));
+					admin_compte.setLogin(rs.getString("login"));
+					admin_compte.setMotdepasse(pwdcrypt.decrypter(rs.getString("pwd")));
+					admin_compte.setProfile(rs.getString("id_profile"));
+					
+					admin_compte.setDate_deb_val(rs.getDate("val_date_deb"));
+					admin_compte.setDate_fin_val(rs.getDate("val_date_fin"));
+					admin_compte.setDatemodifpwd(rs.getString("modifiedpwd"));
+					
+					  
+					mapCompteidCompte.put(admin_compte.getNom()+admin_compte.getPrenom(), admin_compte);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			stmt.close();
+			conn.close();
+			e.printStackTrace();
+			
+		}
+		return mapCompteidCompte;	
+		
+	}
+	
+	public HashMap<String, AdministrationLoginBean> getComptes() throws SQLException
+	{
+		HashMap<String, AdministrationLoginBean> mapCompteidCompte=new HashMap<String, AdministrationLoginBean>();
+		PwdCrypt pwdcrypt=new PwdCrypt();
+		
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToDB();
+		Statement stmt = null;
+		
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_compte="select distinct id_compte,nom,prenom,c.login,c.pwd,c.id_profile,DATE_FORMAT(val_date_deb,'%Y/%m/%d') as val_date_deb,DATE_FORMAT(val_date_fin,'%Y/%m/%d') as val_date_fin ,modifiedpwd "+ 
+                               "from compte c  ";
+                               
+			
+			//sel_compte = sel_compte.replaceAll("#database_id", database_id);
 			ResultSet rs = (ResultSet) stmt.executeQuery(sel_compte);
 			
 			SimpleDateFormat formatDateJour = new SimpleDateFormat("yyyy/MM/dd");
@@ -920,7 +1158,7 @@ public class EmployeCompteModel {
 			EmployeCompteBean donneeBean=(EmployeCompteBean)index.next();
 			
 
-			String[]profile=donneeBean.getProfile().split(",");
+			//String[]profile=donneeBean.getProfile().split(",");
 			String cles=donneeBean.getNom()+donneeBean.getPrenom();
 			
 			AdministrationLoginBean loginBean=mapCompte.get(cles);
