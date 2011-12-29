@@ -13,7 +13,17 @@ public class StructureEntrepriseBean {
 	private String libelleDepartement;
 	private String codeService;
 	private String libelleService;
+	//variable utilisé lors du chargement en masse dans la bdd à partir d'un fichier excel
+	private String causeRejet;
 	
+	public String getCauseRejet() {
+		return causeRejet;
+	}
+
+	public void setCauseRejet(String causeRejet) {
+		this.causeRejet = causeRejet;
+	}
+
 	public StructureEntrepriseBean( String codestructure )
     {
         super();
