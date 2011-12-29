@@ -126,13 +126,17 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 		}
 		
 		// forcer la selection de la permiere ligne
-		nom_famille.setSelectedIndex(0);
+		if(nom_famille.getItemCount()>0)
+			nom_famille.setSelectedIndex(0);
 		
 
 
-		
+		if(familleGroupe!=null)
+		{
 
 		HashMap<String, HashMap<String, ArrayList<String>>> mapGroupeCompetence=familleGroupe.get(selectedFamille);
+		if(mapGroupeCompetence!=null)
+		{
 		Set<String> setGroupe =mapGroupeCompetence.keySet(); 
 		
 		List<String> listGroupe = new ArrayList<String>(setGroupe);
@@ -234,6 +238,8 @@ public class CompetencePosteTravailAction extends GenericForwardComposer {
 
 				//}
 			}
+		}
+		}
 		}
 		comp1=comp;
 		binder.loadAll();
