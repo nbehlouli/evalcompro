@@ -70,7 +70,8 @@ public class StatCotationEmploye extends  GenericForwardComposer{
 	   }
 		// forcer la selection de la permiere ligne
 		nom_employe.setVisible(false);
-		compagne.setSelectedIndex(0);
+		if(compagne.getItemCount()>0)
+			compagne.setSelectedIndex(0);
 		
 		
 		//selection des données associées à la dernière compagne
