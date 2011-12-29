@@ -72,7 +72,8 @@ public class StatEvolIMIEmployeAction extends  GenericForwardComposer{
 			}
 		
 		nom_employe.setVisible(true);
-		nom_employe.setSelectedIndex(0);
+		if(nom_employe.getItemCount()>0)
+			nom_employe.setSelectedIndex(0);
 		
 		
 	}
