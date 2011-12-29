@@ -153,6 +153,16 @@ public class ChargementMasseAction extends GenericForwardComposer {
 			//chargement du contenu de la table Fiche_Poste et creation du fichier excel
 			FichePosteModel fichePostemodel =new FichePosteModel();
 			
+			EmployeCompteModel init3= new EmployeCompteModel();
+			
+			List<EmployeCompteBean> listeemployes=new ArrayList<EmployeCompteBean>();
+
+			try {
+				listeemployes=init3.loadListEmployes();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			//creation du document xls
 			HSSFWorkbook workBook = new HSSFWorkbook();
 			
@@ -168,7 +178,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 			
 			//creation de l'onglet liste employés et remplissage des données
 			EmployeCompteModel employeCompte=new EmployeCompteModel();
-			employeCompte.downloadEmployeCompteDataToXls(workBook,model3);
+			employeCompte.downloadEmployeCompteDataToXls(workBook,listeemployes);
 			
 			//enregistrement des données dans un fihcier xls
 			FileOutputStream fOut;
@@ -204,7 +214,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 				
 				Fileupload fichierupload=new Fileupload();
 				
-				//Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
+				
 				Media me=fichierupload.get("Merci de selectionner le fichier qui doit être chargé", "Chargement de fichier", true);
 				
 				processMedia(me);
@@ -252,10 +262,10 @@ public class ChargementMasseAction extends GenericForwardComposer {
 	 }
 	 public void onClick$okAdd()
 	 {
-		 String rejetStructure="--> Rejets Structure Entreprise" +System.getProperty("line.separator");
-		 String rejetPoste=System.getProperty("line.separator")+"--> Rejets Liste fiches postes"+System.getProperty("line.separator");
-		 String rejetEMploye=System.getProperty("line.separator")+"--> Rejets Liste Employes"+System.getProperty("line.separator");
-		 String rejet="";
+//		 String rejetStructure="--> Rejets Structure Entreprise" +System.getProperty("line.separator");
+//		 String rejetPoste=System.getProperty("line.separator")+"--> Rejets Liste fiches postes"+System.getProperty("line.separator");
+//		 String rejetEMploye=System.getProperty("line.separator")+"--> Rejets Liste Employes"+System.getProperty("line.separator");
+//		 String rejet="";
 			
 			FichePosteModel init =new FichePosteModel();
 			EmployeCompteModel init3= new EmployeCompteModel();
@@ -275,91 +285,68 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						 Addedmodel=null;
 						 Addedmodel=listeDonnees.get("inserer");;
 						
-//						 model=savemodel;
-//						//raffrechissement de l'affichage
-//						Iterator<StructureEntrepriseBean> index=Addedmodel.iterator();
-//						while(index.hasNext())
-//						{
-//							StructureEntrepriseBean donnee=index.next();
-//							model.add(donnee);
-//							
-//						}
-//				
-//						binder.loadAll();
-						if(donneeRejetes.size()!=0)
-						{
-							String listeRejet=new String("-->");
-							//Afficharge de la liste des données rejetées
-							Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
-							while(index1.hasNext())
-							{
-								StructureEntrepriseBean donnee=index1.next();
-								String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
-								+";"+donnee.getLibelleDivision()
-								 +";"+donnee.getCodeDirection()
-								+";"+donnee.getLibelleDirection()
-								+";"+donnee.getCodeUnite()
-								+";"+donnee.getLibelleUnite()
-								+";"+donnee.getCodeDepartement()
-								+ ";"+donnee.getLibelleDepartement()
-								+";"+donnee.getCodeService()
-								+";"+donnee.getLibelleService()
-								+ ";"+donnee.getCodesection()
-								+ ";"+donnee.getLibelleSection();
-								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-								
-							}
-							//AfficherFenetreRejet(listeRejet);
-							rejet=rejetStructure+rejet+listeRejet;
-							//System.out.println("rejets StructureEntreprise"+listeRejet);
 
-						}
+//						if(donneeRejetes.size()!=0)
+//						{
+//							String listeRejet=new String("-->");
+//							//Afficharge de la liste des données rejetées
+//							Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
+//							while(index1.hasNext())
+//							{
+//								StructureEntrepriseBean donnee=index1.next();
+//								String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
+//								+";"+donnee.getLibelleDivision()
+//								 +";"+donnee.getCodeDirection()
+//								+";"+donnee.getLibelleDirection()
+//								+";"+donnee.getCodeUnite()
+//								+";"+donnee.getLibelleUnite()
+//								+";"+donnee.getCodeDepartement()
+//								+ ";"+donnee.getLibelleDepartement()
+//								+";"+donnee.getCodeService()
+//								+";"+donnee.getLibelleService()
+//								+ ";"+donnee.getCodesection()
+//								+ ";"+donnee.getLibelleSection();
+//								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+//								
+//							}
+//							//AfficherFenetreRejet(listeRejet);
+//							rejet=rejetStructure+rejet+listeRejet;
+//							//System.out.println("rejets StructureEntreprise"+listeRejet);
+//
+//						}
 					 //mise à jour de la table poste_Travail_description
 											
 						FichePosteModel fichePosteModel=new FichePosteModel();
 												
 						 HashMap <String,List<FichePosteBean>> listeDonneesPoste=fichePosteModel.ChargementDonneedansBdd(Addedmodel2);
 						 List<FichePosteBean> donneeRejetesPoste =listeDonneesPoste.get("supprimer");
-//						 Addedmodel2=null;
-//						 Addedmodel2=listeDonneesPoste.get("inserer");;
-//						 				
-//						 model2=savemodel2;
-//						//raffrechissement de l'affichage
-//						Iterator<FichePosteBean> indexPoste=Addedmodel2.iterator();
-//						while(indexPoste.hasNext())
+
+//						if(donneeRejetesPoste.size()!=0)
 //						{
-//							FichePosteBean donnee=indexPoste.next();
-//							model2.add(donnee);
 //							
+//							String listeRejet=new String("-->");
+//							//Afficharge de la liste des données rejetées
+//							Iterator<FichePosteBean> index1 =donneeRejetesPoste.iterator();
+//							while(index1.hasNext())
+//							{
+//								FichePosteBean donnee=index1.next();
+//								String donneeString=donnee.getCode_poste()+";"+donnee.getIs_cadre()
+//								+";"+donnee.getSommaire_poste()
+//								 +";"+donnee.getTache_responsabilite()
+//								+";"+donnee.getCode_formation()
+//								+";"+donnee.getFormation_professionnelle()
+//								+";"+donnee.getExperience()
+//								+";"+donnee.getProfile_poste()
+//								+ ";"+donnee.getHierarchie()
+//								+";"+donnee.getCode_structure()
+//								+";"+donnee.getCode_gsp();
+//								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
+//								
+//							}
+//							//AfficherFenetreRejet(listeRejet);
+//							rejet=rejet+rejetPoste+listeRejet;
+//							//System.out.println("rejets Postee"+listeRejet);
 //						}
-//						 
-//						binder.loadAll();
-						if(donneeRejetesPoste.size()!=0)
-						{
-							
-							String listeRejet=new String("-->");
-							//Afficharge de la liste des données rejetées
-							Iterator<FichePosteBean> index1 =donneeRejetesPoste.iterator();
-							while(index1.hasNext())
-							{
-								FichePosteBean donnee=index1.next();
-								String donneeString=donnee.getCode_poste()+";"+donnee.getIs_cadre()
-								+";"+donnee.getSommaire_poste()
-								 +";"+donnee.getTache_responsabilite()
-								+";"+donnee.getCode_formation()
-								+";"+donnee.getFormation_professionnelle()
-								+";"+donnee.getExperience()
-								+";"+donnee.getProfile_poste()
-								+ ";"+donnee.getHierarchie()
-								+";"+donnee.getCode_structure()
-								+";"+donnee.getCode_gsp();
-								listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-								
-							}
-							//AfficherFenetreRejet(listeRejet);
-							rejet=rejet+rejetPoste+listeRejet;
-							//System.out.println("rejets Postee"+listeRejet);
-						}
 							 
 							//mise à jour de des tables Compte et Employe
 							
@@ -367,48 +354,35 @@ public class ChargementMasseAction extends GenericForwardComposer {
 														
 							 HashMap <String,List<EmployeCompteBean>> listeDonneesEmployeCompte=employeCompteModel.ChargementDonneedansBdd(Addedmodel3);
 							 List<EmployeCompteBean> donneeRejetesEmplyeCompte =listeDonneesEmployeCompte.get("supprimer");
-//							 Addedmodel3=null;
-//							 Addedmodel3=listeDonneesEmployeCompte.get("inserer");;
-//														
-//							 model3=savemodel3;
-//							//raffrechissement de l'affichage
-//							Iterator<EmployeCompteBean> indexEmployeCompte=Addedmodel3.iterator();
-//							while(indexEmployeCompte.hasNext())
-//							{
-//								EmployeCompteBean donnee=indexEmployeCompte.next();
-//								model3.add(donnee);
-//								
-//							}
-//					
-//							binder.loadAll();
-							if(donneeRejetesEmplyeCompte.size()!=0)
-							{
-								String listeRejet1=new String("-->");
-								//Afficharge de la liste des données rejetées
-								Iterator<EmployeCompteBean> index2 =donneeRejetesEmplyeCompte.iterator();
-								while(index2.hasNext())
-								{
-									EmployeCompteBean donnee=index2.next();
-									String donneeString=donnee.getNom()+";"+donnee.getPrenom()
-									+";"+donnee.getProfile()
-									 +";"+donnee.getVal_date_deb()
-									+";"+donnee.getVal_date_fin()
-									+";"+donnee.getDate_naissance()
-									+";"+donnee.getDate_recrutement()
-									+";"+donnee.getCode_formation()
-									+ ";"+donnee.getCode_poste()
-									+";"+donnee.getEmail()
-									+";"+donnee.getEst_evaluateur()
-									+";"+donnee.getEst_responsable_rh()
-									+";"+donnee.getCode_structure();
-									listeRejet1=listeRejet1+System.getProperty("line.separator")+donneeString;//saut de ligne
-									
-								}
-								//AfficherFenetreRejet(listeRejet);
-								rejet=rejet+rejetEMploye+listeRejet1;
-								//System.out.println("rejets Employe"+listeRejet1);
 
-						}
+//							if(donneeRejetesEmplyeCompte.size()!=0)
+//							{
+//								String listeRejet1=new String("-->");
+//								//Afficharge de la liste des données rejetées
+//								Iterator<EmployeCompteBean> index2 =donneeRejetesEmplyeCompte.iterator();
+//								while(index2.hasNext())
+//								{
+//									EmployeCompteBean donnee=index2.next();
+//									String donneeString=donnee.getNom()+";"+donnee.getPrenom()
+//									+";"+donnee.getProfile()
+//									 +";"+donnee.getVal_date_deb()
+//									+";"+donnee.getVal_date_fin()
+//									+";"+donnee.getDate_naissance()
+//									+";"+donnee.getDate_recrutement()
+//									+";"+donnee.getCode_formation()
+//									+ ";"+donnee.getCode_poste()
+//									+";"+donnee.getEmail()
+//									+";"+donnee.getEst_evaluateur()
+//									+";"+donnee.getEst_responsable_rh()
+//									+";"+donnee.getCode_structure();
+//									listeRejet1=listeRejet1+System.getProperty("line.separator")+donneeString;//saut de ligne
+//									
+//								}
+//								//AfficherFenetreRejet(listeRejet);
+//								rejet=rejet+rejetEMploye+listeRejet1;
+//								//System.out.println("rejets Employe"+listeRejet1);
+//
+//						}
 						
 					 //mise à jour des tables compte de la base common et employe
 							model=structureEntrepriseModel.checkStructureEntreprise();
@@ -417,7 +391,9 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							model3=init3.loadListEmployes();
 						binder.loadAll();
 						//System.out.println("Tout "+rejet);
-						AfficherFenetreRejet1(rejet);	
+						//AfficherFenetreRejet1(rejet);
+						if((donneeRejetes.size()!=0)||(donneeRejetesPoste.size()!=0)||(donneeRejetesEmplyeCompte.size()!=0))
+							CreationfichierRejet(donneeRejetes,donneeRejetesPoste,donneeRejetesEmplyeCompte);
 				
 				}
 			} catch (InterruptedException e) {
@@ -430,6 +406,57 @@ public class ChargementMasseAction extends GenericForwardComposer {
 		
 			okAdd.setVisible(false);
 			annuler.setVisible(false);
+	 }
+	 /**
+	  * cette méthode permet de créer et d'afficher un fichier excel contenant  les données rejetées
+	  * @param donneeRejetes
+	  * @param donneeRejetesPoste
+	  * @param donneeRejetesEmplyeCompte
+	  */
+	 public void CreationfichierRejet(List<StructureEntrepriseBean> donneeRejetes,List<FichePosteBean> donneeRejetesPoste,List<EmployeCompteBean>donneeRejetesEmplyeCompte)
+	 {
+			//chargement du contenu de la table Fiche_Poste et creation du fichier excel
+			FichePosteModel fichePostemodel =new FichePosteModel();
+			
+			//creation du document xls
+			HSSFWorkbook workBook = new HSSFWorkbook();
+			
+			
+			//création de l'onglet structure entreprise et remplissage des données
+			
+			StructureEntrepriseModel structureEntrepriseModel =new StructureEntrepriseModel();
+			
+			structureEntrepriseModel.downloadStructureEntrepriseRejectedDataToXls(workBook,donneeRejetes);
+			
+			//creation de l'onglet listePostetravail et remplissage des données
+			fichePostemodel.downloadFichePosteRejectedDataToXls(workBook,donneeRejetesPoste);
+			
+			//creation de l'onglet liste employés et remplissage des données
+			EmployeCompteModel employeCompte=new EmployeCompteModel();
+			employeCompte.downloadEmployeCompteRejectedDataToXls(workBook,donneeRejetesEmplyeCompte);
+			
+			//enregistrement des données dans un fihcier xls
+			FileOutputStream fOut;
+			try 
+			{
+				fOut = new FileOutputStream(Contantes.nom_fichier_rejected_xls);
+				workBook.write(fOut);
+				fOut.flush();
+				fOut.close();
+				
+				File file = new File(Contantes.nom_fichier_rejected_xls);
+				Filedownload.save(file, "XLS");
+			} 
+			catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
+
 	 }
 	   /**
 	     * cette méthode permet d'afficher les données rejetées et qui n'ont pas été intégres dans la table
@@ -492,11 +519,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 						List<StructureEntrepriseBean> liste=structureEntrepriseModel.uploadStructureEntrepriseXLSFile(med.getStreamData());
 						List<StructureEntrepriseBean> donneeRejetes;
 						try 
-						{
-//							 HashMap <String,List<StructureEntrepriseBean>> listeDonnees=structureEntrepriseModel.ChargementDonneedansBdd(liste);
-//							 donneeRejetes =listeDonnees.get("supprimer");
-//							 liste=null;
-//							 liste=listeDonnees.get("inserer");;
+						{						 
 							
 							//sauvegarde du contenu du model
 							savemodel=model;
@@ -510,33 +533,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							}
 					
 							binder.loadAll();
-//							if(donneeRejetes.size()!=0)
-//							{
-//								String listeRejet=new String("-->");
-//								//Afficharge de la liste des données rejetées
-//								Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
-//								while(index1.hasNext())
-//								{
-//									StructureEntrepriseBean donnee=index1.next();
-//									String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
-//									+";"+donnee.getLibelleDivision()
-//									 +";"+donnee.getCodeDirection()
-//									+";"+donnee.getLibelleDirection()
-//									+";"+donnee.getCodeUnite()
-//									+";"+donnee.getLibelleUnite()
-//									+";"+donnee.getCodeDepartement()
-//									+ ";"+donnee.getLibelleDepartement()
-//									+";"+donnee.getCodeService()
-//									+";"+donnee.getLibelleService()
-//									+ ";"+donnee.getCodesection()
-//									+ ";"+donnee.getLibelleSection();
-//									listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-//									
-//								}
-//								//AfficherFenetreRejet(listeRejet);
-//								rejet=rejet+listeRejet;
-//
-//							}
+
 						} 
 						catch (Exception e) 
 						{
@@ -586,10 +583,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 							List<StructureEntrepriseBean> donneeRejetes;
 							try 
 							{
-//								 HashMap <String,List<StructureEntrepriseBean>> listeDonnees=structureEntrepriseModel.ChargementDonneedansBdd(liste);
-//								 donneeRejetes =listeDonnees.get("supprimer");
-//								 liste=null;
-//								 liste=listeDonnees.get("inserer");;
+
 								
 								//sauvegarde du contenu du model
 								savemodel=model;
@@ -603,32 +597,7 @@ public class ChargementMasseAction extends GenericForwardComposer {
 								}
 						
 								binder.loadAll();
-//								if(donneeRejetes.size()!=0)
-//								{
-//									String listeRejet=new String("-->");
-//									//Afficharge de la liste des données rejetées
-//									Iterator<StructureEntrepriseBean> index1 =donneeRejetes.iterator();
-//									while(index1.hasNext())
-//									{
-//										StructureEntrepriseBean donnee=index1.next();
-//										String donneeString=donnee.getCodestructure()+";"+donnee.getCodeDivision()
-//										+";"+donnee.getLibelleDivision()
-//										 +";"+donnee.getCodeDirection()
-//										+";"+donnee.getLibelleDirection()
-//										+";"+donnee.getCodeUnite()
-//										+";"+donnee.getLibelleUnite()
-//										+";"+donnee.getCodeDepartement()
-//										+ ";"+donnee.getLibelleDepartement()
-//										+";"+donnee.getCodeService()
-//										+";"+donnee.getLibelleService()
-//										+ ";"+donnee.getCodesection()
-//										+ ";"+donnee.getLibelleSection();
-//										listeRejet=listeRejet+System.getProperty("line.separator")+donneeString;//saut de ligne
-//										
-//									}
-//									///AfficherFenetreRejet(listeRejet);
-//									rejet=rejet+listeRejet;
-//								}
+
 							} 
 							catch (Exception e) 
 							{
