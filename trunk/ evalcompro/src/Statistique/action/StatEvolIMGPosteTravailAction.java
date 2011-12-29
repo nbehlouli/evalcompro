@@ -71,7 +71,8 @@ public class StatEvolIMGPosteTravailAction extends  GenericForwardComposer{
 			poste_travail.appendItem((String) me.getKey());
 			}
 		
-		poste_travail.setSelectedIndex(0);
+		if(poste_travail.getItemCount()>0)
+			poste_travail.setSelectedIndex(0);
 		
 	 
 	 
