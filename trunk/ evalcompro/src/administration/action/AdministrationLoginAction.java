@@ -1,6 +1,7 @@
 package administration.action;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -155,26 +156,44 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		Boolean donneeValide=admini_login_model.controleIntegrite(addedData);
 		//Boolean donneeValide=true;
 		
-		if (donneeValide)
-		{
-			//insertion de la donnée ajoutée dans la base de donnée
-			boolean donneeAjoute=admini_login_model.addAdministrationLoginBean(addedData);
-			// raffrechissemet de l'affichage
-			if (donneeAjoute )
-			{
-				model.add(addedData);
+		//verifier si le login existe déja
+		Boolean loginExists=false;
+		try {
 			
-				selected = addedData;
+			loginExists=admini_login_model.isLoginExists(addedData.getLogin());
 			
-				binder.loadAll();
-			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		okAdd.setVisible(false);
-		effacer.setVisible(false);
-		add.setVisible(true);
-		update.setVisible(true);
-		delete.setVisible(true);
-		
+		if(loginExists)
+		{
+			//afficher un message
+			//Messagebox.show("Ce login existe deja, merci de choisir un autre login", "Erreur", Messagebox.OK, Messagebox.ERROR);
+			alert("Ce login existe deja, merci de choisir un autre login");
+		}
+		else
+		{	
+			if (donneeValide)
+			{
+				//insertion de la donnée ajoutée dans la base de donnée
+				boolean donneeAjoute=admini_login_model.addAdministrationLoginBean(addedData);
+				// raffrechissemet de l'affichage
+				if (donneeAjoute )
+				{
+					model.add(addedData);
+			
+					selected = addedData;
+			
+					binder.loadAll();
+				}
+			}
+			okAdd.setVisible(false);
+			effacer.setVisible(false);
+			add.setVisible(true);
+			update.setVisible(true);
+			delete.setVisible(true);
+		}
 				
 	}
 
@@ -183,6 +202,25 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		//verifier si le login existe déja
+		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
+		Boolean loginExists=false;
+		try {
+			
+			loginExists=admini_login_model.isLoginExists(getSelectedLogin());
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(loginExists)
+		{
+			//afficher un message
+			//Messagebox.show("Ce login existe deja, merci de choisir un autre login", "Erreur", Messagebox.OK, Messagebox.ERROR);
+			alert("Ce login existe deja, merci de choisir un autre login");
+		}
+		else
+		{	
 		//String codeStructureselectione=selected.getCodestructure();
 		//System.out.println(getSelectedcodeStructure());
 		selected.setId_compte(getSelectedIdCompte());
@@ -196,7 +234,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		selected.setDate_fin_val( getSelecteddate_fin_val());
 		
 		//controle d'intégrité 
-		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
+		//AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
 		Boolean donneeValide=admini_login_model.controleIntegrite(selected);
 		if (donneeValide)
 		{
@@ -214,7 +252,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 			}
 		}	
 			
-			
+		}
 			
 	}
 
