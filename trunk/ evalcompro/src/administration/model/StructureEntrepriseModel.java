@@ -426,7 +426,9 @@ public class StructureEntrepriseModel {
 				StructureEntrepriseBean donnee2=liste.get(j);
 				if(donnee.getCodestructure().equals(donnee2.getCodestructure()))
 				{
+					donnee.setCauseRejet("le code "+ donnee.getCodestructure()+" existe déja dans le fichier à inserer");
 					listeDonneesRejetes.add(donnee);
+					
 					donneerejete=true;
 					
 				}
@@ -441,12 +443,12 @@ public class StructureEntrepriseModel {
 		List <StructureEntrepriseBean> listeAInsererFinal=new ArrayList <StructureEntrepriseBean>();
 		ArrayList<StructureEntrepriseBean>strctureEntreprisebdd =checkStructureEntreprise();
 		Iterator <StructureEntrepriseBean>iterator=listeAInserer.iterator();
-	System.out.println("taille element a inseer"+listeAInserer.size());	
+		
 		while(iterator.hasNext())
 		{
 			
 			StructureEntrepriseBean bean=(StructureEntrepriseBean)iterator.next();
-			System.out.println("nbelement"+strctureEntreprisebdd.size());
+			
 			Iterator<StructureEntrepriseBean> index=strctureEntreprisebdd.iterator();
 			boolean donneerejete=false;
 			while(index.hasNext())
@@ -454,13 +456,13 @@ public class StructureEntrepriseModel {
 				
 				
 				StructureEntrepriseBean bean2=(StructureEntrepriseBean)index.next();
-				System.out.println("controle "+bean.getCodestructure()+ " avec "+bean2.getCodestructure());
+				
 				if(bean.getCodestructure().equals(bean2.getCodestructure()))
 				{
-					
+					bean.setCauseRejet("le code "+ bean.getCodestructure()+" existe déja dans la base de donnée");
 					listeDonneesRejetes.add(bean);
 					donneerejete=true;
-					System.out.println("donnee rejetée"+bean.getCodestructure());
+					
 					continue;
 				}
 			}
@@ -948,6 +950,168 @@ public class StructureEntrepriseModel {
 					
 		}
 		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void downloadStructureEntrepriseRejectedDataToXls(HSSFWorkbook workBook,List<StructureEntrepriseBean> listeStructureEntrepriseBean)
+	{
+		
+		
+		try 
+		{//
+			
+			
+			//creation du fichier xls
+			
+			Iterator <StructureEntrepriseBean>index=listeStructureEntrepriseBean.iterator();
+			//creation d'un document excel 
+			//HSSFWorkbook workBook = new HSSFWorkbook();
+			
+			//creation d'une feuille excel
+			 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_structure_entreprise);
+			 
+			 //creation de l'entête du document excel
+			 HSSFRow row = sheet.createRow(0);
+			 HSSFCell cell = row.createCell((short)0);
+			 
+			 HSSFCellStyle cellStyle = null;
+			 HSSFFont font1 = workBook.createFont();
+			 font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			 font1.setFontHeightInPoints((short)8);
+			 font1.setFontName("Arial");
+			 
+			 cellStyle = workBook.createCellStyle();
+		     cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		     cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
+		     cellStyle.setFont(font1);
+		        
+			 cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+			 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+			 cell.setCellValue("Code structure");
+			 			 cell.setCellStyle(cellStyle);
+			 HSSFCell cell1 = row.createCell((short)1);
+			 cell1.setCellValue("Code division");
+			 			 cell1.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell2 = row.createCell((short)2);
+			 cell2.setCellValue("Nom division");
+			 			 cell2.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell3 = row.createCell((short)3);
+			 cell3.setCellValue("Code direction");
+			 			 cell3.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell4 = row.createCell((short)4);
+			 cell4.setCellValue("Nom direction");
+			 			 cell4.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell5 = row.createCell((short)5);
+			 cell5.setCellValue("Code unité");
+			 			 cell5.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell6 = row.createCell((short)6);
+			 cell6.setCellValue("Nom unité");
+			 			 cell6.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell7 = row.createCell((short)7);
+			 cell7.setCellValue("Code département");
+			 			 cell7.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell8 = row.createCell((short)8);
+			 cell8.setCellValue("Nom département");
+			 			 cell8.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell9 = row.createCell((short)9);
+			 cell9.setCellValue("Code service");
+			 			 cell9.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell10 = row.createCell((short)10);
+			 cell10.setCellValue("Nom service");
+			 			 cell10.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell11 = row.createCell((short)11);
+			 cell11.setCellValue("Code section");
+			 			 cell11.setCellStyle(cellStyle);
+			 
+			 HSSFCell cell12 = row.createCell((short)12);
+			 cell12.setCellValue("Nom section");
+			 			 cell12.setCellStyle(cellStyle);
+			 			 
+			 HSSFCell cell13 = row.createCell((short)13);
+			cell13.setCellValue("code+libellé");
+			cell13.setCellStyle(cellStyle);
+			
+			HSSFCell cell14 = row.createCell((short)14);
+			cell14.setCellValue("Cause du rejet");
+			cell14.setCellStyle(cellStyle);
+			 
+			 int i=1;
+			while (index.hasNext())
+			{
+				
+				StructureEntrepriseBean donnee=(StructureEntrepriseBean)index.next();
+				
+				 HSSFRow row1 = sheet.createRow(i);
+				 HSSFCell cel = row1.createCell((short)0);
+				 cel.setCellValue(donnee.getCodestructure());
+				 
+				 cel = row1.createCell((short)1);
+				 cel.setCellValue(donnee.getCodeDivision());
+				 cel = row1.createCell((short)2);
+				 cel.setCellValue(donnee.getLibelleDivision());
+				 cel = row1.createCell((short)3);
+				 cel.setCellValue(donnee.getCodeDirection());
+				 cel = row1.createCell((short)4);
+				 cel.setCellValue(donnee.getLibelleDirection());
+				 cel = row1.createCell((short)5);
+				 cel.setCellValue(donnee.getCodeUnite());
+				 cel = row1.createCell((short)6);
+				 cel.setCellValue(donnee.getLibelleUnite());
+				 cel = row1.createCell((short)7);
+				 cel.setCellValue(donnee.getCodeDepartement());
+				 cel = row1.createCell((short)8);
+				 cel.setCellValue(donnee.getLibelleDepartement());
+				 cel = row1.createCell((short)9);
+				 cel.setCellValue(donnee.getCodeService());
+				 cel = row1.createCell((short)10);
+				 cel.setCellValue(donnee.getLibelleService());
+				 cel = row1.createCell((short)11);
+				 cel.setCellValue(donnee.getCodesection());
+				 cel = row1.createCell((short)12);
+				 cel.setCellValue(donnee.getLibelleSection());
+				 cel = row1.createCell((short)13);
+				 //cel.setCellValue(donnee.getLibelleSection());
+				 i++;
+				 //cel.setCellFormula("A"+i+"& \",\"&C"+i+"& \",\"&E"+"& \",\"&G"+"& \",\"&I"+"& \",\"&K"+"& \",\"&M");
+				 
+				 cel.setCellFormula("A"+i+"& \",\"&C"+i+"& \",\"&E"+i+"& \",\"&G"+i+"& \",\"&I"+i+"& \",\"&K"+i+"& \",\"&M"+i);
+				 
+				 cel = row1.createCell((short)14);
+				 cel.setCellValue(donnee.getCauseRejet());
+			}
+
+			//autosize des colonnes
+			for (int j=0;j<=15;j++)
+		 	{
+		 		sheet.autoSizeColumn(j);
+		 		
+		 	}
+			
+
+			
+					
+		}
+		catch (Exception e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
