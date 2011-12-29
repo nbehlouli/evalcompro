@@ -29,7 +29,21 @@ public class FichePosteBean implements  Serializable {
    
     private String codeStructLibelle;
     
-    public String getCodeStructLibelle() {
+    private String causeRejet;
+    
+    public String getCauseRejet() {
+		return causeRejet;
+	}
+
+
+
+	public void setCauseRejet(String causeRejet) {
+		this.causeRejet = causeRejet;
+	}
+
+
+
+	public String getCodeStructLibelle() {
 		return codeStructLibelle;
 	}
 
