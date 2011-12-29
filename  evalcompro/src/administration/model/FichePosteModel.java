@@ -918,6 +918,7 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 			FichePosteBean donnee2=liste.get(j);
 			if(donnee.getCode_poste().equals(donnee2.getCode_poste()))
 			{
+				donnee.setCauseRejet("le code "+ donnee.getCode_poste()+" existe déja dans le fichier à inserer");
 				listeDonneesRejetes.add(donnee);
 				donneerejete=true;
 				
@@ -949,7 +950,7 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 			FichePosteBean bean2=(FichePosteBean)index.next();
 			if(bean.getCode_poste().equals(bean2.getCode_poste()))
 			{
-				
+				bean.setCauseRejet("le code "+ bean.getCode_poste()+" existe déja dans la base de données");
 				listeDonneesRejetes.add(bean);
 				donneerejete=true;
 				continue;
@@ -1179,6 +1180,181 @@ public void downloadFichePosteDataToXls(HSSFWorkbook workBook)
 
 }
 
+
+public void downloadFichePosteRejectedDataToXls(HSSFWorkbook workBook,List<FichePosteBean> listeFichePosteBean)
+{
+	//recupération du contenu de la table Structure_entreprise
+	try 
+	{
+		@SuppressWarnings("unchecked")
+		
+		HashMap<String,StructureEntrepriseBean> mapStructureEntreprise= getStructureEntreprise();
+		//creation du fichier xls
+		
+		Iterator <FichePosteBean>index=listeFichePosteBean.iterator();
+		//creation d'un document excel 
+		//HSSFWorkbook workBook = new HSSFWorkbook();
+		
+		//creation d'une feuille excel
+		 HSSFSheet sheet = workBook.createSheet(Contantes.onglet_fiche_postes);
+		 
+		 //creation de l'entête du document excel
+		 HSSFRow row = sheet.createRow(0);
+		 HSSFCell cell = row.createCell((short)0);
+		 
+		 HSSFCellStyle cellStyle = null;
+		 cellStyle = workBook.createCellStyle();
+		 
+		 HSSFFont font1 = workBook.createFont();
+		 font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		 font1.setFontHeightInPoints((short)8);
+		 font1.setFontName("Arial");
+		 
+	     cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+	     cellStyle.setTopBorderColor(HSSFColor.BLACK.index);
+	     cellStyle.setFont(font1);
+	        
+		 cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+		 cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		 cell.setCellValue("code poste");
+		 			 cell.setCellStyle(cellStyle);
+		 HSSFCell cell1 = row.createCell((short)1);
+		 cell1.setCellValue("intitule poste");
+		 			 cell1.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell2 = row.createCell((short)2);
+		 cell2.setCellValue("sommaire poste");
+		 			 cell2.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell3 = row.createCell((short)3);
+		 cell3.setCellValue("tache responsabilite");
+		 			 cell3.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell4 = row.createCell((short)4);
+		 cell4.setCellValue("environement_perspectif");
+		 			 cell4.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell5 = row.createCell((short)5);
+		 cell5.setCellValue("code formation");
+		 			 cell5.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell6 = row.createCell((short)6);
+		 cell6.setCellValue("formation professionnelle");
+		 			 cell6.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell7 = row.createCell((short)7);
+		 cell7.setCellValue("experience");
+		 			 cell7.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell8 = row.createCell((short)8);
+		 cell8.setCellValue("profile poste");
+		 			 cell8.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell9 = row.createCell((short)9);
+		 cell9.setCellValue("code poste hierarchie");
+		 			 cell9.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell10 = row.createCell((short)10);
+		 cell10.setCellValue("code structure");
+		 			 cell10.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell11 = row.createCell((short)11);
+		 cell11.setCellValue("GSP");
+		 			 cell11.setCellStyle(cellStyle);
+		 			 
+		 HSSFCell cell12 = row.createCell((short)12);
+		 cell12.setCellValue("code+libelle");
+		 cell12.setCellStyle(cellStyle);
+		 
+		 HSSFCell cell13 = row.createCell((short)13);
+		 cell13.setCellValue("Cause du rejet");
+		 cell13.setCellStyle(cellStyle);
+		 
+		 
+		 
+		 int i=1;
+		while (index.hasNext())
+		{
+			
+			
+			FichePosteBean donnee=(FichePosteBean)index.next();
+			
+			 HSSFRow row1 = sheet.createRow(i);
+			 HSSFCell cel = row1.createCell((short)0);
+			 cel.setCellValue(donnee.getCode_poste());
+			 
+			 cel = row1.createCell((short)1);
+			 cel.setCellValue(donnee.getIntitule_poste());
+			 cel = row1.createCell((short)2);
+			 cel.setCellValue(donnee.getSommaire_poste());
+			 cel = row1.createCell((short)3);
+			 cel.setCellValue(donnee.getTache_responsabilite());
+			 cel = row1.createCell((short)4);
+			 cel.setCellValue(donnee.getEnvironement_perspectif());
+			 cel = row1.createCell((short)5);
+			 
+			 cel.setCellValue(donnee.getCode_formation()+","+donnee.getNiv_formation());
+			 cel = row1.createCell((short)6);
+			 cel.setCellValue(donnee.getFormation_professionnelle());
+			 cel = row1.createCell((short)7);
+			 
+			 cel.setCellValue(donnee.getExperience());
+			 cel = row1.createCell((short)8);
+			 cel.setCellValue(donnee.getProfile_poste());
+			 cel = row1.createCell((short)9);
+			 cel.setCellValue(donnee.getPoste_hierarchie());
+			 cel = row1.createCell((short)10);
+			 
+			 StructureEntrepriseBean structure=mapStructureEntreprise.get(donnee.getCode_structure());
+			 String libell_division=structure.getLibelleDivision();
+			 String libelleDirection=structure.getLibelleDirection();
+			 String libelleUnite=structure.getLibelleUnite();
+			 String libelleDepartement=structure.getLibelleDepartement();
+			 String libelleService=structure.getLibelleService();
+			 String libelleSection=structure.getLibelleSection();
+			 if(libell_division==null) libell_division="";
+			 if(libelleDirection==null)libelleDirection="";
+			 if(libelleUnite==null)libelleUnite="";
+			 if(libelleDepartement==null)libelleDepartement="";
+			 if(libelleService==null)libelleService="";
+			 if(libelleSection==null)libelleSection="";
+			 String valeurCode_Structure=donnee.getCode_structure()+","+libell_division+","+libelleDirection+","+libelleUnite+","+libelleDepartement+","+ libelleService+","+libelleSection;
+			 cel.setCellValue(valeurCode_Structure);
+			 cel = row1.createCell((short)11);
+			 cel.setCellValue(donnee.getIs_cadre());
+			 
+			 cel = row1.createCell((short)12);		 
+			 i++;
+			 cel.setCellFormula("A"+i+"& \",\"&B"+i);
+			 
+			 cel = row1.createCell((short)13);
+			 cel.setCellValue(donnee.getCauseRejet());
+		}
+
+		//autosize des colonnes
+		for (int j=0;j<=13;j++)
+	 	{
+	 		sheet.autoSizeColumn(j);
+	 		
+	 	}	
+		
+
+		
+				
+	}
+	catch (SQLException e) 
+	{
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+}
 
 
 public HashMap<String,StructureEntrepriseBean> getStructureEntreprise() throws SQLException{
