@@ -872,8 +872,8 @@ public class EmployeCompteModel {
 		//listeAInserer=liste;
 		
 	
-		System.out.println("listeAInserer" +listeAInserer.size() );
-		System.out.println("listeDonneeRejetées" + listeDonneesRejetes.size());
+		//System.out.println("listeAInserer" +listeAInserer.size() );
+		//System.out.println("listeDonneeRejetées" + listeDonneesRejetes.size());
 		//Verification de l'integrité des données à inserer doublon avec les données de la base
 		
 		ArrayList <EmployeCompteBean> listeAInsererFinal=new ArrayList <EmployeCompteBean>();
