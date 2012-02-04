@@ -1,6 +1,7 @@
 package compagne.action;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,21 +18,29 @@ import org.zkoss.zk.au.out.AuClearWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 
+import compagne.bean.CompagnePosteMapBean;
 import compagne.model.CompagneCreationModel;
 
 import administration.bean.AdministrationLoginBean;
 import administration.bean.CompagneCreationBean;
+import administration.bean.FichePosteBean;
 import administration.bean.StructureEntrepriseBean;
 import administration.model.AdministrationLoginModel;
+import administration.model.ProfileDroitsAccessModel;
 import administration.model.StructureEntrepriseModel;
 
 public class CompagneCreationAction extends GenericForwardComposer {
@@ -41,6 +50,7 @@ public class CompagneCreationAction extends GenericForwardComposer {
 	 */
 	private static final long serialVersionUID = 1L;
 	Listbox admincomptelb;
+	Listbox admincomptelb1;
 	Textbox idcompagne;
 	Textbox id_compagne_type;
 	Textbox  nom;
@@ -49,7 +59,11 @@ public class CompagneCreationAction extends GenericForwardComposer {
 	Datebox date_fin_comp;
 	AnnotateDataBinder binder;
 	List<CompagneCreationBean> model = new ArrayList<CompagneCreationBean>();
+	List<CompagnePosteMapBean> model1 = new ArrayList<CompagnePosteMapBean>();
+	
 	CompagneCreationBean selected;
+	CompagnePosteMapBean selected1;
+	
 	List list_profile=null;
 	Button add;
 	Button okAdd;
@@ -58,13 +72,29 @@ public class CompagneCreationAction extends GenericForwardComposer {
 	Button upload;
 	Button download;
 	Button effacer;
-	 Map map=null;
+	Button valider;
+	Map map=null;
+	Map ma_compagne=null;
+	Tab compagne_tb;
+	Tab compvsPoste_tb;
+	Combobox compagne_cb;
+
+    HashMap <String, Checkbox> selectedCheckBox;
+	HashMap <String, Checkbox> unselectedCheckBox;
+	HashMap <String, Checkbox> listCheckBox;
+	AnnotateDataBinder binder1;
+	
 	public CompagneCreationAction() {
 	}
 
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
+		
 		super.doAfterCompose(comp);
+		
+		selectedCheckBox=new  HashMap <String, Checkbox>();
+		unselectedCheckBox=new  HashMap <String, Checkbox>();
+		listCheckBox=new  HashMap <String, Checkbox>();
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		okAdd.setVisible(false);
 		effacer.setVisible(false);
@@ -88,6 +118,8 @@ public class CompagneCreationAction extends GenericForwardComposer {
 		if(admincomptelb.getItemCount()!=0)
 			admincomptelb.setSelectedIndex(0);
 		binder.loadAll();
+		compvsPoste_tb.addForward(Events.ON_CLICK, comp, "onSelectTab");
+		
 		
 	}
 
@@ -103,6 +135,24 @@ public class CompagneCreationAction extends GenericForwardComposer {
 
 	public void setSelected(CompagneCreationBean selected) {
 		this.selected = selected;
+	}
+
+	
+	
+	public List<CompagnePosteMapBean> getModel1() {
+		return model1;
+	}
+
+	public void setModel1(List<CompagnePosteMapBean> model1) {
+		this.model1 = model1;
+	}
+
+	public CompagnePosteMapBean getSelected1() {
+		return selected1;
+	}
+
+	public void setSelected1(CompagnePosteMapBean selected1) {
+		this.selected1 = selected1;
 	}
 
 	public void onClick$add() throws WrongValueException, ParseException {
@@ -300,5 +350,124 @@ public class CompagneCreationAction extends GenericForwardComposer {
 	    nom.setText("");
 				
   }
+  
+  public void onModifyCheckedBox(ForwardEvent event){
+		Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();	
+		if (checkbox.isChecked())
+		{
+			//verifier si ça n'a pas encore été unchecked
+			if(unselectedCheckBox.containsValue(checkbox))
+			{
+				unselectedCheckBox.remove(checkbox);
+				
+			}
+			selectedCheckBox.put(checkbox.getValue(), checkbox);
+		}
+		else
+		{
+			//verifier si ça n'a pas encore été checked
+			if(selectedCheckBox.containsValue(checkbox))
+			{
+				selectedCheckBox.remove(checkbox);
 
+			}
+			unselectedCheckBox.put(checkbox.getValue(), checkbox);
+		}
+		//selectedCheckBox
+	}
+  
+  
+  public void onSelectTab(ForwardEvent event) throws SQLException
+	 {
+		
+		
+		compagne_cb.getItems().clear();
+		CompagneCreationModel init =new CompagneCreationModel();
+		ma_compagne=init.getListCompagne();
+		Set set = (ma_compagne).entrySet(); 
+		Iterator i = set.iterator();
+		
+		// Display elements
+		while(i.hasNext()) {
+		Map.Entry me = (Map.Entry)i.next();
+		compagne_cb.appendItem((String)me.getKey());
+		
+		}
+	 }
+	
+  public void onSelect$compagne_cb() throws SQLException	 {
+	  
+	   
+	     Integer compagne_id= (Integer) ma_compagne.get((String)compagne_cb.getSelectedItem().getLabel());
+	     
+	 	CompagneCreationModel init =new CompagneCreationModel();
+   
+	 	model1=init.loadPosteMapToComapgne(compagne_id);
+	  	binder1 = new AnnotateDataBinder(self);
+		if(model1.size()!=0)
+			selected1=model1.get(0);
+		
+		if(admincomptelb1.getItemCount()!=0)
+			admincomptelb1.setSelectedIndex(0);
+		binder1.loadAll();
+     
+		
+	
+}
+  
+  public void onCreation(ForwardEvent event){
+	  
+	  
+	  Checkbox checkbox = (Checkbox) event.getOrigin().getTarget();
+	  listCheckBox.put(checkbox.getValue(),(Checkbox) checkbox);
+	  if (checkbox.getName().equalsIgnoreCase("1")){
+		  checkbox.setChecked(true);
+		  selectedCheckBox.put(checkbox.getValue(),(Checkbox) checkbox);
+		  
+	  }
+	  
+	  //System.out.println(selectedCheckBox.size());
+  }
+  
+  public void onClick$valider() throws InterruptedException  {
+	  
+	    HashMap map_checked_cb = new HashMap();	
+	    Set<String> setselected = listCheckBox.keySet( );
+		ArrayList<String> listselected = new ArrayList<String>(setselected);
+		Iterator<String>iterator=listselected.iterator();
+		CompagneCreationModel init =new CompagneCreationModel();
+		
+		while (iterator.hasNext()){
+			String cles=(String)iterator.next();
+			Checkbox checkBox=listCheckBox.get(cles);
+			if (checkBox.isChecked()){
+			map_checked_cb.put(checkBox.getValue(), (Integer) ma_compagne.get((String)compagne_cb.getSelectedItem().getLabel()));
+			}
+		}
+		try {
+			if (Messagebox.show("Voulez vous ajouter ces postes de travail à la compagne: "+(String)compagne_cb.getSelectedItem().getLabel()+"?", "Prompt", Messagebox.YES|Messagebox.NO,
+				    Messagebox.QUESTION) == Messagebox.YES) {
+			init.appliquerMapPosteCompagne(map_checked_cb, (Integer) ma_compagne.get((String)compagne_cb.getSelectedItem().getLabel()));
+			 selectedCheckBox.clear();
+			 unselectedCheckBox.clear();
+			 
+			 //binder1.loadAll();
+			 return;
+			}
+			else{
+				return;
+			}
+			
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			try {
+				Messagebox.show("La modification n'a pas été prise en compte"+e, "Erreur",Messagebox.OK, Messagebox.ERROR);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+  }
 }
