@@ -93,7 +93,7 @@ public List uploadListEvaluateur() throws SQLException{
 		try 
 		{ 
 			stmt = (Statement) conn.createStatement();
-			String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',date_debut,' Au ',date_fin) as libelle_compagne from compagne_evaluation where now()<=date_fin"; 
+			String db_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',cast(date_debut as char)  ,' Au ',cast(date_fin as char) ) as libelle_compagne from compagne_evaluation where now()<=date_fin"; 
 			ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
 			
 			
