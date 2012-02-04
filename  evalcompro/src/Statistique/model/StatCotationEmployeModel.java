@@ -209,7 +209,7 @@ public class StatCotationEmployeModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select  id_compagne,concat(e.libelle_compagne,'->', 'Du ',e.date_debut,' Au ',e.date_fin) nomcompagne" +
+			String sql_query="select  id_compagne,concat(libelle_compagne,'->', 'Du ',cast(date_debut as char)  ,' Au ',cast(date_fin as char) ) nomcompagne" +
 					         " from compagne_evaluation e 	where e.id_compagne in (select id_compagne from compagne_validation where compagne_valide=1)";
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
@@ -606,7 +606,7 @@ public class StatCotationEmployeModel {
 			try 
 			{
 				stmt = (Statement) conn.createStatement();
-				String sql_query=" select  id_compagne,concat(e.libelle_compagne,'->', 'Du ',e.date_debut,' Au ',e.date_fin) nomcompagne" +
+				String sql_query=" select  id_compagne,concat(libelle_compagne,'->', 'Du ',cast(date_debut as char)  ,' Au ',cast(date_fin as char) ) nomcompagne" +
 						         " from compagne_evaluation e where now() between e.date_debut and e.date_fin";
 			     
 				ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
