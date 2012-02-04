@@ -161,7 +161,8 @@ public class CompetencePosteTravailModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT intitule_poste  FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			String select_structure="SELECT intitule_poste  FROM poste_travail_description where code_poste in(select distinct code_poste from compagne_poste_travail p, compagne_evaluation c" +
+            " where c.id_compagne=p.id_compagne and now()<=date_fin) ";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -208,7 +209,9 @@ public class CompetencePosteTravailModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			//String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from compagne_poste_travail p, compagne_evaluation c" +
+            " where c.id_compagne=p.id_compagne and now()<=date_fin) ";
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -258,7 +261,11 @@ public class CompetencePosteTravailModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			//String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from planning_evaluation) ";
+			String select_structure="SELECT intitule_poste,  code_poste FROM poste_travail_description where code_poste in(select distinct code_poste from compagne_poste_travail p, compagne_evaluation c" +
+            " where c.id_compagne=p.id_compagne and now()<=date_fin) ";
+			
+			
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -364,9 +371,14 @@ public class CompetencePosteTravailModel {
 			stmt = (Statement) conn.createStatement();
 			//String select_structure="select distinct a.id_repertoire_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste from repertoire_competence a, poste_travail_competence b, poste_travail_description e where a.code_competence=b.code_competence and e.code_poste=b.code_poste and e.code_poste in(select distinct code_poste from planning_evaluation)"; 
 			//String select_structure="select distinct  a.code_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste from repertoire_competence a, poste_travail_competence b, poste_travail_description e where a.code_competence=b.code_competence and e.code_poste=b.code_poste and e.code_poste in(select distinct code_poste from planning_evaluation)";
+			/*String select_structure="select distinct  a.code_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste" +
+			" from  poste_travail_description e ,repertoire_competence a LEFT OUTER  JOIN poste_travail_competence b" +
+			" on ( a.code_competence=a.code_competence) where e.code_poste in(select distinct code_poste from planning_evaluation)";*/
+			
 			String select_structure="select distinct  a.code_competence, a.famille, a.groupe, a.libelle_competence, e.intitule_poste" +
 			" from  poste_travail_description e ,repertoire_competence a LEFT OUTER  JOIN poste_travail_competence b" +
-			" on ( a.code_competence=a.code_competence) where e.code_poste in(select distinct code_poste from planning_evaluation)";
+			" on ( a.code_competence=a.code_competence) where e.code_poste in(select distinct code_poste from compagne_poste_travail p, compagne_evaluation c" +
+					                " where c.id_compagne=p.id_compagne and now()<=date_fin)";
             
 			
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -461,7 +473,9 @@ public class CompetencePosteTravailModel {
 		{
 			stmt = (Statement) conn.createStatement();
 			//String select_structure="select distinct  p.intitule_poste ,  c.libelle_competence from  repertoire_competence c, poste_travail_description p, poste_travail_competence k where k.code_competence=c.code_competence and k.code_poste=p.code_poste  and p.code_poste in(select distinct code_poste from planning_evaluation) ";
-			String select_structure="select  code_poste, code_competence from poste_travail_competence where code_poste in(select distinct code_poste from planning_evaluation)";
+			//String select_structure="select  code_poste, code_competence from poste_travail_competence where code_poste in(select distinct code_poste from planning_evaluation)";
+			String select_structure="select  code_poste, code_competence from poste_travail_competence where code_poste in(select distinct code_poste from compagne_poste_travail p, compagne_evaluation c" +
+					                " where c.id_compagne=p.id_compagne and now()<=date_fin )";
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
 			
