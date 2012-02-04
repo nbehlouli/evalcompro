@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
@@ -25,6 +28,7 @@ import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 import common.CreateDatabaseCon;
 import common.PwdCrypt;
+import compagne.bean.CompagnePosteMapBean;
 
 public class CompagneCreationModel {
 	
@@ -327,24 +331,26 @@ private ListModel strset =null;
 		
 		return map;
 	}	
-	/*
 	
-	public HashMap getDatabaseList() throws SQLException
+	
+	public HashMap getListCompagne() throws SQLException
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToDB();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
 		HashMap map = new HashMap();
+		List list_profile=new ArrayList();
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String db_list="select  database_id, nom_base from liste_db"; 
-			ResultSet rs = (ResultSet) stmt.executeQuery(db_list);
+			String profile_list="select id_compagne,concat(libelle_compagne,'->', 'Du ',cast(date_debut as char)  ,' Au ',cast(date_fin as char) ) as libelle_compagne from compagne_evaluation where now()<=date_fin order by date_fin"; 
+			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
 			
 			
 			while(rs.next()){
-				map.put( rs.getString("nom_base"),rs.getInt("database_id"));
+				map.put(rs.getString("libelle_compagne"), rs.getInt("id_compagne"));
+				//list_profile.add(rs.getString("libelle_profile"));
 	        }
 			stmt.close();conn.close();
 		} 
@@ -356,39 +362,90 @@ private ListModel strset =null;
 		return map;
 	}	
 	
-	
-	public String getCurrentDatetime(){
-		Date today = Calendar.getInstance().getTime();
-	    // (2) create our "formatter" (our custom format)
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	    // (3) create a new String in the format we want
-	    String todaydate = formatter.format(today);
-	    
-	    return todaydate;
+public List loadPosteMapToComapgne(int compagne_id) throws SQLException{
+		
+		
+		ArrayList<CompagnePosteMapBean>   listposte = new ArrayList<CompagnePosteMapBean>();
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		
+		try {
+			stmt = (Statement) conn.createStatement();
+			String sel_comp="select distinct code_poste,intitule_poste,sum(st) as map_stat " +
+							" from ( select p.code_poste,intitule_poste,1 as st from compagne_poste_travail c ,poste_travail_description p" +
+							" where c.code_poste=p.code_poste and c. id_compagne=#id_compagne union  select code_poste,intitule_poste,0 as st from poste_travail_description ) as t1" +
+							" group by code_poste,intitule_poste";
+			
+			sel_comp = sel_comp.replaceAll("#id_compagne", "'"+ compagne_id+"'");
+
+			ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
+			
+			while(rs.next()){
+				
+				CompagnePosteMapBean compagne=new CompagnePosteMapBean();
+				compagne.setMap_stat(rs.getInt("map_stat"));	
+				compagne.setCode_poste(rs.getString("code_poste"));
+				compagne.setLibelle_poste(rs.getString("intitule_poste"));
+						  
+				listposte.add(compagne);
+				   
+					
+				}
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			stmt.close();
+			conn.close();
+			
+		}
+		return listposte;
+	
+		
 		
 	}
 	
-	public  Integer getKeyMap(String key) throws SQLException{
-		Integer idprofile=(Integer)gerProfileList() .get(key);
-		return idprofile;
-	}
+
+public List appliquerMapPosteCompagne(HashMap checked_poste, int compagne_id ) throws SQLException{
 	
-	public static boolean isValidDateStr(String date) {
-	    try {
-	      String format="yyyy/MM/dd";
-	    	SimpleDateFormat sdf = new SimpleDateFormat(format);
-	      sdf.setLenient(false);
-	      sdf.parse(date);
-	    }
-	    catch (ParseException e) {
-	      return false;
-	    }
-	    catch (IllegalArgumentException e) {
-	      return false;
-	    }
-	    return true;
-	    }*/
+	
+	ArrayList<CompagnePosteMapBean>   listposte = new ArrayList<CompagnePosteMapBean>();
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
+	Statement stmt = null;
+	
+	Set set = (checked_poste).entrySet(); 
+	Iterator i = set.iterator();
+	String delete_before_insert="delete from compagne_poste_travail where id_compagne="+"'"+compagne_id+"'";
+	String insert="";
+	// Display elements
+	while(i.hasNext()) {
+	Map.Entry me = (Map.Entry)i.next();
+	insert=insert+"insert into compagne_poste_travail values ("+"'"+me.getValue()+"',"+ "'"+(String) me.getKey()+"' )"+
+	        ";";
+	}
+	String final_query=delete_before_insert+";"+insert;
+	
+	try {
+		stmt = (Statement) conn.createStatement();
+			stmt.execute(final_query);
+		
+		
+		stmt.close();
+		conn.close();
+		
+	} catch (SQLException e) {
+		stmt.close();
+		conn.close();
+		
+	}
+	return listposte;
+
+	
+	
+}
 
 
 }
