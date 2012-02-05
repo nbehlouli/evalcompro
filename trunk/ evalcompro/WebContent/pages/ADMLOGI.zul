@@ -11,7 +11,7 @@
 			<listheader label="Prénom" width="130px" align="center" />
 			<listheader label="Login" width="100px" align="center" />
 			<listheader label="Mot de passe" width="130px" align="center" />
-			<listheader label="Profile" width="100px" align="center" />
+			<listheader label="Profil" width="100px" align="center" />
 			<listheader label="Base de données" width="130px" align="center" />
 			<listheader label="Date debut validité" width="130px" align="center" />
 			<listheader label="Date fin validité" width="130px" align="center" />
@@ -44,7 +44,7 @@
             <column label="Prénom"  align="center" width="100px"/>
              <column label="Login"  align="center" width="100px"/>
             <column label="Mot de passe" align="center" width="100px"/>
-            <column label="Profile" align="center" width="160px"/>
+            <column label="Profil" align="center" width="160px"/>
             <column label="Base de données" align="center" width="100px"/>
             <column label="Date debut validité" align="center" width="100px"/>
             <column label="Date fin validité" align="center" width="100px"/>
