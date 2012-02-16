@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -145,13 +146,13 @@ public List loadFichesPostes() throws SQLException{
 		
 	}
 
-public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean addedData)
+public void ConstructionRequeteAddPosteTravail(FichePosteBean addedData) 
 {
 
 //	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 //	PwdCrypt pwdcrypt=new PwdCrypt();
 	
-	String insert_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
+	/*String insert_structure="INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
      " VALUES(#code_poste,#intitule_poste,#sommaire_poste,#tache_responsabilite,#environement_perspectif,#code_formation,#formation_professionnelle,#experience,#profile_poste,#hierarchie,#code_structure,#gsp_id)";
 
 	System.out.println("code_poste="+addedData.getCode_poste()+ "addedData.getSommaire_poste()"+addedData.getSommaire_poste());
@@ -174,8 +175,45 @@ public String ConstructionRequeteAddPosteTravail(String requete,FichePosteBean a
 
 	
 	requete=requete+ insert_structure+ " ; ";
+	
+	
 
-		return requete;
+		return requete;*/
+	
+	CreateDatabaseCon dbcon=new CreateDatabaseCon();
+	Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+	
+	String[] code_hierarchie=addedData.getPoste_hierarchie().split(",");
+	String[] gsp=addedData.getCode_gsp().split(",");
+	
+	PreparedStatement pstmt;
+	try {
+		pstmt = conn.prepareStatement("INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
+		 " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+		pstmt.setString(1, addedData.getCode_poste());
+		pstmt.setString(2, addedData.getIntitule_poste());
+		pstmt.setString(3, addedData.getSommaire_poste());
+		pstmt.setString(4, addedData.getTache_responsabilite());
+		pstmt.setString(5, addedData.getEnvironement_perspectif());
+		pstmt.setString(6, addedData.getLibelle_formation());
+		pstmt.setString(7, addedData.getFormation_professionnelle());
+		pstmt.setString(8, addedData.getExperience());
+		pstmt.setString(9, addedData.getProfile_poste());
+		pstmt.setString(10, code_hierarchie[0]);
+		pstmt.setString(11, addedData.getCode_structure());
+		pstmt.setString(12, gsp[0]);
+
+		
+		pstmt.executeUpdate();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		System.out.println(code_hierarchie[0]+e);
+	}
+	
+	
+
+	
 
 }
 /**
@@ -647,8 +685,9 @@ public List <FichePosteBean> uploadXLSFile(InputStream inputStream)
             		
             	if(numColonne==7)
             	{
-            		v=cellule.getNumericCellValue();
-            		valeur=v.toString();
+            		//v=cellule.getNumericCellValue();
+            		//valeur=v.toString();
+            		valeur= cellule.getStringCellValue();
             	}
             	else
             		valeur= cellule.getStringCellValue();
@@ -970,11 +1009,11 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 	while(index.hasNext())
 	{
 		FichePosteBean donneeBean=(FichePosteBean)index.next();
-		requete=ConstructionRequeteAddPosteTravail(requete,donneeBean);
+		ConstructionRequeteAddPosteTravail(donneeBean);
 		//addPosteTravail(donneeBean);			
 	}
 	//execution de la requete
-	try
+	/*try
 	{
 		//System.out.println(requete);
 		if(requete!="")
@@ -983,7 +1022,7 @@ public HashMap <String,List<FichePosteBean>> ChargementDonneedansBdd(List <Fiche
 	catch(Exception e)
 	{
 		e.printStackTrace();
-	}
+	}*/
 	HashMap <String,List<FichePosteBean>> donneeMap=new HashMap<String,List<FichePosteBean>>();
 	donneeMap.put("inserer", listeAInsererFinal);
 	donneeMap.put("supprimer", listeDonneesRejetes);
