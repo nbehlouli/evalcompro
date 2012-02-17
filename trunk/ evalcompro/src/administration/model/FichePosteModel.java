@@ -146,7 +146,7 @@ public List loadFichesPostes() throws SQLException{
 		
 	}
 
-public void ConstructionRequeteAddPosteTravail(FichePosteBean addedData) 
+public void ConstructionRequeteAddPosteTravail(FichePosteBean addedData) throws SQLException 
 {
 
 //	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -186,7 +186,7 @@ public void ConstructionRequeteAddPosteTravail(FichePosteBean addedData)
 	String[] code_hierarchie=addedData.getPoste_hierarchie().split(",");
 	String[] gsp=addedData.getCode_gsp().split(",");
 	
-	PreparedStatement pstmt;
+	PreparedStatement pstmt = null;
 	try {
 		pstmt = conn.prepareStatement("INSERT INTO poste_travail_description(code_poste, intitule_poste, sommaire_poste, tache_responsabilite, environement_perspectif, code_formation, formation_professionnelle, experience, profile_poste, code_poste_hierarchie, code_structure, gsp_id)" +
 		 " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -205,11 +205,16 @@ public void ConstructionRequeteAddPosteTravail(FichePosteBean addedData)
 
 		
 		pstmt.executeUpdate();
+		pstmt.close();conn.close();
+		
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
-		//e.printStackTrace();
-		System.out.println(code_hierarchie[0]+e);
-	}
+		pstmt.close();conn.close();
+		e.printStackTrace();
+		//System.out.println(code_hierarchie[0]+e);
+		
+	} 
+	
 	
 	
 
