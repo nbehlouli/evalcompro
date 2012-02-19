@@ -22,9 +22,9 @@ public class EmployeCompteBean {
 	 private String est_responsable_rh;
 	 private String code_structure;
 	 private String profile;
-		private String nom_complet;
-		private String code_est_evaluateur;
-		private String code_est_responsable_rh;
+	private String nom_complet;
+	private String code_est_evaluateur;
+	private String code_est_responsable_rh;
 		
 		private String  causeRejet;
 	 
