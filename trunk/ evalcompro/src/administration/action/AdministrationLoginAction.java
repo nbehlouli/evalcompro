@@ -95,7 +95,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		// création de la structure de l'entreprise bean
 		//AdministrationLoginModel admin_compte =new AdministrationLoginModel();
 		model=init.checkLoginBean();
-		
+		login.setDisabled(true);
 		
 
 		binder = new AnnotateDataBinder(comp);
@@ -135,6 +135,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		add.setVisible(false);
 		update.setVisible(false);
 		delete.setVisible(false);
+		login.setDisabled(false);
 		
 	}
 	
@@ -202,25 +203,11 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 			alert("Aucune donnée n'a été selectionnée");
 			return;
 		}
+		
+		
 		//verifier si le login existe déja
 		AdministrationLoginModel admini_login_model =new AdministrationLoginModel();
-		Boolean loginExists=false;
-		try {
-			
-			loginExists=admini_login_model.isLoginExists(getSelectedLogin());
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(loginExists)
-		{
-			//afficher un message
-			//Messagebox.show("Ce login existe deja, merci de choisir un autre login", "Erreur", Messagebox.OK, Messagebox.ERROR);
-			alert("Ce login existe deja, merci de choisir un autre login");
-		}
-		else
-		{	
+				
 		//String codeStructureselectione=selected.getCodestructure();
 		//System.out.println(getSelectedcodeStructure());
 		selected.setId_compte(getSelectedIdCompte());
@@ -252,7 +239,7 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 			}
 		}	
 			
-		}
+		
 			
 	}
 
@@ -277,10 +264,6 @@ public class AdministrationLoginAction extends GenericForwardComposer {
 		else{
 			return;
 		}
-		
-		
-		
-
 		
 	}
 
