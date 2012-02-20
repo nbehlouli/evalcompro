@@ -65,6 +65,7 @@ public class MenuComposer extends GenericForwardComposer{
 		menuListbox.setModel(menuModel);
 		menuListbox.setItemRenderer(renderer);
 		menuListbox.addEventListener(Events.ON_SELECT,listener);
+		menuListbox.addEventListener(Events.ON_CLICK,listener);
 	}
 	
 	
@@ -76,8 +77,8 @@ public class MenuComposer extends GenericForwardComposer{
 		menuListbox.setModel(menuModel);
 		menuListbox.setItemRenderer(renderer);
 		menuListbox.addEventListener(Events.ON_SELECT,listener);
-
-
+		menuListbox.addEventListener(Events.ON_CLICK,listener);
+		
 	}
 
 	class MenuNode 
@@ -129,9 +130,10 @@ public class MenuComposer extends GenericForwardComposer{
 	class MenuNodeSelectListener implements EventListener{
 		public void onEvent(Event event) throws Exception {
 			Listitem item = menuListbox.getSelectedItem();
-			contentDiv.getChildren().clear();
-			if(item!=null){
-				MenuNode node = (MenuNode)item.getValue();
+			contentDiv.getChildren().clear();		
+			if(item!=null)
+			{			
+				MenuNode node = (MenuNode)item.getValue();			
 				Executions.createComponents(node.getLink(),contentDiv,null);
 			}
 		}		
