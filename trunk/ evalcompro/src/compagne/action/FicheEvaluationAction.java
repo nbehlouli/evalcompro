@@ -324,7 +324,11 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			maFiche.detach();
 		}
 		//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
-		if(compteUtilisateur.getId_profile()==3)
+		boolean est_evaluateur=false;
+		//if(compteUtilisateur.getId_profile()==3)
+		//un administrateur peut être un évaluateur aors on test l'attribut est_evauateur de la table employe
+		est_evaluateur=ficheEvaluationModel.getEstEvauateur(id_employe);
+		if(est_evaluateur)
 		{
 			
 			//remplissage du contenu de la combo associée aux postes de travail
@@ -372,6 +376,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		}
 		
 		//si c'est un administrateur, il peut voir toutes les fiches d'evaluations ou evaluateur
+		//
 		if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2) ||(compteUtilisateur.getId_profile()==1))
 		{
 			
