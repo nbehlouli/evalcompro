@@ -251,7 +251,7 @@ public class CompagneCreationAction extends GenericForwardComposer {
 		//suppression de la donnée supprimée de la base de donnée
 		selected.setId_compagne(getSelectedIdCompagne()); 
 		
-		if (Messagebox.show("Voulez vous supprimer cet compagne?", "Prompt", Messagebox.YES|Messagebox.NO,
+		if (Messagebox.show("Voulez vous supprimer cet enregistrement?", "Prompt", Messagebox.YES|Messagebox.NO,
 			    Messagebox.QUESTION) == Messagebox.YES) {
 			    //System.out.println("pressyes");
 			compagne_model.deleteCompagne(selected);
