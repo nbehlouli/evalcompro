@@ -17,6 +17,60 @@ import compagne.bean.MapEmployesAEvaluerBean;
 public class FicheEvaluationModel {
 	
 	/**
+	 * cette méthode permet de savoir si l'employé est un evaluateur
+	 * 
+	 */
+	public boolean getEstEvauateur(int id_employe)
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="SELECT est_evaluateur  FROM employe where id_employe=#id_employe ";
+			
+			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					String est_evaluateur=rs.getString("est_evaluateur");
+					if(est_evaluateur.equals("N"))
+						return false;
+					else
+						return true;
+	
+				}
+				else {
+					return false;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return false;
+	}
+	/**
 	 * cett eméthode permet de récuperer l'id_employ associé à l'id compte
 	 * @return
 	 */
