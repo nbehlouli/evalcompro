@@ -96,7 +96,7 @@
 				 </vlayout>
 				  <vlayout spacing=" 50px"> 
 				   <hlayout spacing ="15px">
-						<label value="Planning compagne validé par le DRH:   "  sclass="textboxdetail"/> 				       	
+						<label value="Planning compagne validée par le DRH:   "  sclass="textboxdetail"/> 				       	
 					    <checkbox  id="chbox_plan_val"  forward="onCheck=onModifyChbox_val_drh, onCreate=onCreation_chbox_drh"/>
 				   </hlayout>
 				   </vlayout>
