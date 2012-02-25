@@ -338,7 +338,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			Iterator <String > iterator=listePoste.iterator();
 			poste_travail.appendItem("Tous poste de travail");
 			while(iterator.hasNext())
-			{
+			{				
 				String nomPoste=iterator.next();
 				poste_travail.appendItem(nomPoste);
 			}
@@ -1351,7 +1351,6 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		//remplissage du contenu de la combo associée aux postes de travail
 		 selectednomposteTravailV=poste_travailV.getSelectedItem().getLabel();
-		 System.out.println("lors de la selection, postetravail selectionne=="+selectednomposteTravailV);
 		 if(!selectednomposteTravailV.equals("Tous poste de travail"))
 		 {
 			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
@@ -1542,7 +1541,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
 				 
 				 String code_poste=mapintitule_codeposte.get(selectednomposteTravailV);
-				 System.out.println("code poste=="+code_poste);
+				 
 				 listFamillePosteV=ficheEvaluationModel.getFamilleAssociePoste(code_poste);
 				 //ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
 				 Iterator<String> iterator=listFamillePosteV.iterator();
@@ -1568,9 +1567,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 
 
 			 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
-			 System.out.println("selected famille "+selectedFamilleV);
+			 
 			 ArrayList<FicheEvaluationBean> listFiche=mapfamilleFicheEvaluationV.get(selectedFamilleV);
-			 System.out.println("listefiche taikle=" +listFiche.size());
+			 
 				 //System.out.println("cles="+cles);
 				 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
 				 
@@ -1672,11 +1671,18 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 //				nomEmploye.setDisabled(true);
 				
 				//remplissage de la combobox famille
-				
-
 				//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
-				if(compteUtilisateur.getId_profile()==3)
-				{
+					boolean est_evaluateur=false;
+					//if(compteUtilisateur.getId_profile()==3)
+					//un administrateur peut être un évaluateur aors on test l'attribut est_evauateur de la table employe
+					est_evaluateur=ficheEvaluationModel.getEstEvauateur(id_employe);
+					if(est_evaluateur)
+					{				
+//
+//				//si c'est un évaluateur alors on affiche la liste des fiches associés aux employés à évaluer
+//				if(compteUtilisateur.getId_profile()==3)
+//				{
+					
 					
 					//remplissage du contenu de la combo associée aux postes de travail
 					 mapEmployeAEvaluerBean=ficheEvaluationModel.getListEmployesAEvaluer(id_employe);
@@ -1764,7 +1770,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				}
 				
 				//si c'est un administrateur, il peut voir toutes les fiches d'evaluations ou evaluateur
-				if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
+				//if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2))
+					if((compteUtilisateur.getId_profile()==3)||(compteUtilisateur.getId_profile()==2) ||(compteUtilisateur.getId_profile()==1))
 				{
 					
 					
