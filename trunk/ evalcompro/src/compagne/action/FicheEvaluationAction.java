@@ -313,7 +313,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			
 			//affichage d'un message disant que la fiche ne peut être visible
 			html=new Html();
-			String content="Vous n'avez pas accès à votre fiche d'évaluation car elle n'a pas encore été complété par l'évaluateur";
+			String content="Vous n'avez pas accès à votre fiche d'évaluation car elle n'a pas encore été complétée par l'évaluateur";
 			html.setStyle("color:red;margin-left:15px");
 			html.setContent(content);
 			html.setParent(maFiche);
@@ -1351,6 +1351,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		//remplissage du contenu de la combo associée aux postes de travail
 		 selectednomposteTravailV=poste_travailV.getSelectedItem().getLabel();
+		 System.out.println("lors de la selection, postetravail selectionne=="+selectednomposteTravailV);
 		 if(!selectednomposteTravailV.equals("Tous poste de travail"))
 		 {
 			 HashMap<String, HashMap<String, EmployesAEvaluerBean>> Mapclesposte=mapEmployeEvalueBean.getMapclesposte();
@@ -1541,7 +1542,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
 				 
 				 String code_poste=mapintitule_codeposte.get(selectednomposteTravailV);
-				 
+				 System.out.println("code poste=="+code_poste);
 				 listFamillePosteV=ficheEvaluationModel.getFamilleAssociePoste(code_poste);
 				 //ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
 				 Iterator<String> iterator=listFamillePosteV.iterator();
@@ -1567,9 +1568,9 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 
 
 			 mapfamilleFicheEvaluationV=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
-			 
+			 System.out.println("selected famille "+selectedFamilleV);
 			 ArrayList<FicheEvaluationBean> listFiche=mapfamilleFicheEvaluationV.get(selectedFamilleV);
-			 
+			 System.out.println("listefiche taikle=" +listFiche.size());
 				 //System.out.println("cles="+cles);
 				 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
 				 
