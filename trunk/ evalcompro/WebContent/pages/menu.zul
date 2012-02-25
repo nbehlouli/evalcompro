@@ -33,7 +33,7 @@ border-bottom: none;
 						</column>
 						
 						<column width="70px">
-						 <button id="exit" image="/image/WAYOUT.gif" height="27px" width="30px" tooltiptext="Quiter l'application"/>
+						 <button id="exit" image="/image/WAYOUT.gif" height="27px" width="30px" tooltiptext="Quitter l'application"/>
 						</column>
 					</columns>
 				</grid>
