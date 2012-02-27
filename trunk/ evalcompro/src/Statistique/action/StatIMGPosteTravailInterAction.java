@@ -91,13 +91,14 @@ public class StatIMGPosteTravailInterAction extends  GenericForwardComposer{
 	public void onSelect$poste_travail() throws SQLException	 {
 		
 		     String poste= (String) map_poste.get((String)poste_travail.getSelectedItem().getLabel());
+		     String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
 		     
 		     CategoryModel catmodel = new SimpleCategoryModel();
 		     List charts=new ArrayList<CategoryModel>();
 		     StatMoyFamillePosteBean cpb;
 			 Iterator it;
 			 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-			 List sect_items=cotationMoel.getListPosteMoyFam(poste);
+			 List sect_items=cotationMoel.getListPosteMoyFamIntr(poste,compagne_id);
 	         it = sect_items.iterator();
 	         while (it.hasNext()){
 		 		cpb  = (StatMoyFamillePosteBean) it.next();
@@ -110,7 +111,7 @@ public class StatIMGPosteTravailInterAction extends  GenericForwardComposer{
 				
 			}
 			
-			catmodel.setValue("IMG","Indice de maitrise global",cotationMoel.getIMGParPoste(poste));
+			catmodel.setValue("IMG","Indice de maitrise global",cotationMoel.getIMGParPosteInter(poste,compagne_id));
 	 		mychart.setModel(catmodel);
 			
 			ChartEngine d=mychart.getEngine();
@@ -120,14 +121,13 @@ public class StatIMGPosteTravailInterAction extends  GenericForwardComposer{
 	 
 	 public void onSelect$compagne() throws SQLException
 	 {
-	
 		 poste_travail.getItems().clear();
 		 poste_travail.setVisible(true);
 		 String compagne_id= (String) map_compagne.get((String)compagne.getSelectedItem().getLabel());
 		 StatCotationEmployeModel cotationMoel=new StatCotationEmployeModel();
-		    map_poste=cotationMoel.getListPostTravailValid(compagne_id);
-			Set set = (map_poste).entrySet(); 
-			Iterator i = set.iterator();
+		 map_poste=cotationMoel.getListPostTravailValidInt(compagne_id);
+		 Set set = (map_poste).entrySet(); 
+		 Iterator i = set.iterator();
 			
 			while(i.hasNext()) {
 				Map.Entry me = (Map.Entry)i.next();
