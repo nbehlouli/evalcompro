@@ -275,8 +275,8 @@ public class StatCotationEmployeModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select DATE_FORMAT(c.date_fin ,' %b %Y ')as date_eval, round(imi,2) imi from imi_stats s  ,compagne_evaluation c" +
-					         " where s.id_compagne=c.id_compagne  and id_employe=#id_employe group by c.date_fin";
+			String sql_query="select DATE_FORMAT(c.date_debut ,' %b %Y ')as date_eval, round(imi,2) imi from imi_stats s  ,compagne_evaluation c" +
+					         " where s.id_compagne=c.id_compagne  and id_employe=#id_employe group by c.date_debut";
 
 			
 			sql_query = sql_query.replaceAll("#id_employe", "'"+id_employe+"'");
