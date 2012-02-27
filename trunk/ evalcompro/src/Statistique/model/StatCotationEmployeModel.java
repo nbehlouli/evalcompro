@@ -354,7 +354,7 @@ public class StatCotationEmployeModel {
 			stmt = (Statement) conn.createStatement();
 			String sql_query="select  distinct t.code_poste,t.intitule_poste from compagne_evaluation e, planning_evaluation p, poste_travail_description t" +
 					         " where e.id_compagne in (select id_compagne from compagne_validation where compagne_valide=1) " +
-					         " and p.id_compagne=e.id_compagne  and t.code_poste=p.code_poste and e.id_compagne=#id_compagne;";
+					         " and p.id_compagne=e.id_compagne  and t.code_poste=p.code_poste and e.id_compagne=#id_compagne";
 			
 			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			
@@ -374,6 +374,41 @@ public class StatCotationEmployeModel {
 		
 		return map;
 	}
+	
+	
+	public HashMap getListPostTravailValidInt(String id_compagne) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		HashMap map = new HashMap();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select  distinct t.code_poste,t.intitule_poste from compagne_evaluation e, planning_evaluation p, poste_travail_description t" +
+					         " where e.id_compagne in (#id_compagne) " +
+					         " and p.id_compagne=e.id_compagne  and t.code_poste=p.code_poste and e.id_compagne=#id_compagne";
+			
+			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+			
+			while(rs.next()){
+				map.put(rs.getString("intitule_poste"), rs.getString("code_poste"));
+				//list_profile.add(rs.getString("libelle_profile"));
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return map;
+	}
+	
 	
 	public HashMap getListPostTravailValid() throws SQLException
 	{
@@ -443,6 +478,44 @@ public class StatCotationEmployeModel {
 		return listmoyfam;
 	}
 	
+	
+	public List getListPosteMoyFamIntr(String code_poste,String id_compagne) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		List listmoyfam = new ArrayList<StatMoyFamillePosteBean>();
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select r.famille,round(sum(moy_par_famille)/count(s.id_employe),2) as moy_par_famille" +
+					         " from imi_stats s ,employe e, fiche_validation f  ,repertoire_competence r where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
+					         " and fiche_valide=1 and s.id_compagne=#id_compagne and e.code_poste=#code_poste and r.code_famille=s.code_famille group by  r.famille";
+			
+			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
+			sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+            while(rs.next()){
+				
+            	StatMoyFamillePosteBean bean=new StatMoyFamillePosteBean();
+				bean.setFamille((rs.getString("famille")));	
+				bean.setMoy_famille((rs.getFloat("moy_par_famille")));
+				listmoyfam.add(bean);
+				
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return listmoyfam;
+	}
+	
 	public float getIMGParPoste(String code_poste) throws SQLException
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
@@ -475,6 +548,44 @@ public class StatCotationEmployeModel {
 		
 		return result;
 	}
+	
+	public float getIMGParPosteInter(String code_poste,String compagne_id) throws SQLException
+	{
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		float result=0;
+		
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String sql_query="select  avg(moy_par_famille1)as img from (select code_famille,round(sum(moy_par_famille)/count(s.id_employe),2) as moy_par_famille1" +
+					         " from imi_stats s ,employe e, fiche_validation f where s.id_employe=e.id_employe and s.id_employe=f.id_employe" +
+					         "  and fiche_valide=1 and s.id_compagne=#compagne_id and e.code_poste=#code_poste group by code_famille) as t1" ;
+			
+			sql_query = sql_query.replaceAll("#code_poste", "'"+code_poste+"'");
+			sql_query = sql_query.replaceAll("#compagne_id", "'"+compagne_id+"'");
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
+			
+            while(rs.next()){
+				
+            	
+				result=rs.getFloat("img");
+							
+	        }
+			stmt.close();conn.close();
+		} 
+		catch (SQLException e){
+				e.printStackTrace();
+				stmt.close();conn.close();
+		}
+		
+		return result;
+	}
+	
+	
 	
 	public HashMap getListFamille() throws SQLException
 	{
