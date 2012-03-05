@@ -76,7 +76,7 @@ public class ResultatEvaluationModel {
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String select_structure="select distinct p.intitule_poste,  r.famille, r.libelle_competence from repertoire_competence r, poste_travail_description p, poste_travail_competence l where p.code_poste=l.code_poste and r.code_competence=l.code_competence and p.code_poste in(select v.code_poste from planning_evaluation v where id_compagne=#id_compagne)";
+			String select_structure="select distinct p.intitule_poste,  r.famille, r.libelle_competence from repertoire_competence r, poste_travail_description p, poste_travail_competence l where p.code_poste=l.code_poste and r.code_competence=l.code_competence and p.code_poste in(select distinct v.code_poste from img_stats v where id_compagne=#id_compagne)";
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
@@ -165,7 +165,7 @@ public class ResultatEvaluationModel {
 			" and c.id_compagne=#id_compagne "+
 			" and c.code_famille=r.code_famille "+
 			" and c.code_competence=r.code_competence "+
-			" and e.code_poste=f.code_poste";
+			" and e.code_poste=f.code_poste"			;
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			
