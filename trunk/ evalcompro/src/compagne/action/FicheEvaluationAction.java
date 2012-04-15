@@ -76,6 +76,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	Combobox poste_travail;
 	Combobox Famille;
 	Button valider;
+	Button confirmer;
 	Listbox employelb;
 	Button help1;
 	Button help2;
@@ -137,14 +138,36 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 	
 	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationM;
 	HashMap <String, ArrayList<FicheEvaluationBean>> mapfamilleFicheEvaluationV;
+	HashMap<String, ArrayList<FicheEvaluationBean>> mapFicheEvaluee;
 	
 	ArrayList <String> listFamillePoste;
 	ArrayList <String> listFamillePosteV;
 	
 	int id_employe;
 	
+	 String id_planning_eval;
+	 String id_evalue;	
+	
+	 
+	 
 	//EmployesAEvaluerBean employerAEvaluerBean1;
 	
+	public String getId_planning_eval() {
+		return id_planning_eval;
+	}
+
+	public void setId_planning_eval(String id_planning_eval) {
+		this.id_planning_eval = id_planning_eval;
+	}
+
+	public String getId_evalue() {
+		return id_evalue;
+	}
+
+	public void setId_evalue(String id_evalue) {
+		this.id_evalue = id_evalue;
+	}
+
 	@SuppressWarnings("deprecation")
 	public void doAfterCompose(Component comp) throws Exception {
 		
@@ -153,6 +176,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		comp.setVariable(comp.getId() + "Ctrl", this, true);
 		
 		valider.setDisabled(true);
+		confirmer.setDisabled(true);
 		
 		//recupération du profil de l'utilisateur
 		
@@ -476,6 +500,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				});
 		 count.setVisible(false);
 		 start.setDisabled(true);
+		 
+		 
 	}
 	
 	/**
@@ -502,6 +528,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 mapFamilleCombo=new HashMap<String, HashMap<String , Combobox>> (); 
 		 valider.setDisabled(false);
+		 confirmer.setDisabled(false);
 		 if (currentListItem!=null)
 		 {
 			 Iterator<Listitem> iterator=currentListItem.iterator();
@@ -548,6 +575,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
 			 listFamillePoste=ficheEvaluationModel.getFamilleAssociePoste(code_poste);
 			 //ArrayList <String> listFamille=employerAEvaluerBean.getFamille();
+			
 			 Iterator<String> iterator=listFamillePoste.iterator();
 		 	while(iterator.hasNext())
 		 	{
@@ -566,12 +594,24 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 
 		 	String cles=code_poste+"#"+selectedFamille;
 		 
-		 
+		 	FicheEvaluationModel fiche_model=new FicheEvaluationModel();
+			 String statut_fiche=fiche_model.getStatutFicheEval(String.valueOf(employerAEvaluerBean.getId_planning_evaluation()),
+					                                           String.valueOf(employerAEvaluerBean.getId_employe()));
+			 ArrayList<FicheEvaluationBean> listFiche;
+			 
 
 
+			 mapFicheEvaluee=ficheEvaluationModel.getMaFicheEvaluaton(employerAEvaluerBean.getId_employe());
+			  if (statut_fiche.equalsIgnoreCase("0")){
+				  listFiche=mapFicheEvaluee.get(selectedFamille);
+			  }else{
+				  listFiche=mapPosteTravailFiche.get(cles);
+			  }
+			  
+			 
 
 			 //afficher le contenu de mapPosteTravailFiche
-			 ArrayList<FicheEvaluationBean> listFiche=mapPosteTravailFiche.get(cles);
+			 
 			 
 			 
 			 Iterator<FicheEvaluationBean> iterator2=listFiche.iterator();
@@ -621,6 +661,12 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 cotation.setParent(cellulecotation);
 					 cellulecotation.setParent(listItem);
 					 
+					 if (statut_fiche.equalsIgnoreCase("0")){
+						 cotation.setValue(ficheEvaluation.getNiveau_maitrise()+"");
+						 cotation.setName(ficheEvaluation.getNiveau_maitrise()+"");
+					 }
+					 
+					 
 				 }
 				 cotation.addForward("onSelect", comp1, "onSelectEvaluation");
 				 listeCombo.put(valeur,cotation );
@@ -632,7 +678,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 mapFamilleCombo.put(selectedFamille, listeCombo);
 			 
 			 // affichage du timer
-
+			
 		 }		 
 	 }
 	 
@@ -939,36 +985,236 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 		 return message;
 	 }
 	 
-	 public void onClick$valider()
+	 public void onClick$valider() throws InterruptedException
 	 {
 		 
-		
-		 	
-		 //verifier que toutes les cotations ont été remplies 
-		 //sinon afficher un message comme quoi la validation n'a pas été prise en compte car
-		 // toutes les comptétences n'ont pas été évaluées
-		 //verifier que toutes les familles ont été selectionnées
-		// ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
-		 validationtente=true;
-		 if(autorise)
-		 {
-			 autorise=false;
-			 valider.setVisible(false);
-			 valider.setDisabled(true);
-		 
-			 Set <String> famillesRemplies=mapFamilleCombo.keySet();
-			 if(listFamillePoste.size()==famillesRemplies.size())
+		 if ( Messagebox.show( "Vous-vous enregister la  fiche d'évaluation ?", "Prompt", Messagebox.YES | Messagebox.NO,
+                 Messagebox.QUESTION ) == Messagebox.YES )	 {
+			 
+			 validationtente=true;
+			 if(autorise)
 			 {
-				 // famille par famille que tous les combos sont remplies
+				 autorise=false;
+//				 valider.setVisible(false); grisé
+				 confirmer.setVisible(true);
+				 
+//				 valider.setDisabled(true); grisé
+				 //confirmer.setDisabled(true);
+			 
+				 Set <String> famillesRemplies=mapFamilleCombo.keySet();
+				 if(listFamillePoste.size()==famillesRemplies.size())
+				 {
+					 // famille par famille que tous les combos sont remplies
+					 Iterator <String>itfamille=famillesRemplies.iterator();
+					 boolean continuer=true;
+					 while(itfamille.hasNext())
+					 {
+						 String clles=itfamille.next();
+						 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+						 Set <String >listclesCombo=listeComb.keySet();
+						 Iterator<String> iterator =listclesCombo.iterator();
+					 
+						 while (iterator.hasNext()/*&& continuer*/)
+						 {
+							 String cles=iterator.next();
+							 Combobox combo=listeComb.get(cles);
+							 //combo.setWidth("50%");
+							 if(combo.getName().equals("-1"))
+							 {
+
+								 continuer=false;							 
+								 combo.setStyle("background:red;");
+								 //combo.setWidth("50%");
+
+							 }
+							 //combo.setWidth("50%");
+						 }
+					 }
+				 
+				 if(continuer==false)
+				 {
+					 valider.setVisible(true);
+					 confirmer.setVisible(true);
+					 
+					 valider.setDisabled(false);
+					 confirmer.setDisabled(false);
+					 autorise=true;
+					 try 
+					 {
+						 
+						Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+					 } 
+					 catch (InterruptedException e) 
+					 {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				 }
+				 else
+				 {
+					 
+					//rinitialisation du timer
+					 
+					 	count.setVisible(false);
+					 	start.setDisabled(true);
+					 	timer.stop();
+					 	
+					 //désactiver le bouton valider
+//					 valider.setDisabled(true);  grisé
+					 //confirmer.setDisabled(true);
+					 //récupérer les modifications et enregistrer dans la base de donnée
+					 //valider la fiche dans la table appropriée
+					 
+					 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
+					 
+					 HashMap<String, String> maprepCompComp= ficheEvaluationModel.getmaprepCompetenceCodeCompetence();
+					/**********************************/
+					 // famille par famille que tous les combos sont remplies
+					 famillesRemplies=mapFamilleCombo.keySet();
+					 itfamille=famillesRemplies.iterator();
+					 String id_planning_evaluation="";
+					 String id_employe="";	
+					 
+					 
+					 HashMap<String, HashMap<String, ArrayList<Double>>> mapFamilleCompetence=new HashMap<String, HashMap<String, ArrayList<Double>>>();
+					 HashMap <String, Double> FamilleIMI=new HashMap<String, Double>();
+					 double statIMI=0;
+					 int nbimi=0; 
+					 String requeteUpdateFicheEvalution="";
+					 while(itfamille.hasNext())
+					 {
+						 String clles=itfamille.next();
+						 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
+						 Set <String >listclesCombo=listeComb.keySet();
+	 
+						 listclesCombo=listeComb.keySet();
+						 Iterator<String> iterator =listclesCombo.iterator();
+						 //continuer=true;
+
+						 
+						 double statINIFamille=0;
+						 int nbvaleur=0;
+						 
+						 while (iterator.hasNext())
+						 {
+							 String cles=(String)iterator.next();
+							 Combobox combo=listeComb.get(cles);
+							 String valeurs=combo.getContext();
+							 String[] val=valeurs.split("#");
+							 String id_repertoire_competence=val[0];
+							 id_employe=val[1];
+							 id_planning_evaluation=val[2];
+							 String id_cotation=combo.getName();	
+							 
+							 setId_evalue(id_employe);
+							 setId_planning_eval(id_planning_evaluation);
+							 
+							 int valeurCotation=getValeurCotation(id_cotation);
+							 statINIFamille=statINIFamille+valeurCotation;
+							 
+							 nbvaleur++;
+							 nbimi++;
+							 statIMI=statIMI+valeurCotation;
+							 
+							 //construction de la requete de la mise à jour de l afiche d'evaluation
+							 requeteUpdateFicheEvalution=ficheEvaluationModel.updateFicheEvalutionConstructionRequete(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation,requeteUpdateFicheEvalution);
+							 
+							 
+							 //remplissage des informations moyenne competence
+							 //System.out.println("famille clles ..............." +clles);
+							 String code_competence=maprepCompComp.get(id_repertoire_competence);
+							 if(mapFamilleCompetence.containsKey(clles))
+							 {
+								 
+								 
+								 if(mapFamilleCompetence.get(clles).containsKey(code_competence))
+								 {
+									 ArrayList<Double> liste=mapFamilleCompetence.get(clles).get(code_competence);
+									 liste.add(new Double(valeurCotation));
+									 mapFamilleCompetence.get(clles).put(code_competence, liste);
+								 }
+								 else
+								 {
+									 ArrayList<Double> liste=new ArrayList<Double>(); 
+									 liste.add(new Double(valeurCotation));
+									 mapFamilleCompetence.get(clles).put(code_competence, liste);
+								 }
+							 }
+							 else
+							 {
+								 
+								 ArrayList<Double> liste=new ArrayList<Double>(); 
+								 liste.add(new Double(valeurCotation));
+								 HashMap<String, ArrayList<Double>> map=new HashMap<String, ArrayList<Double>>();
+								 map.put(code_competence, liste);
+								 mapFamilleCompetence.put(clles, map);
+							 }
+						 }
+						 
+						 String clesIMI =id_planning_evaluation+"#"+id_employe+"#"+clles;
+						 statINIFamille=statINIFamille/nbvaleur;
+						 FamilleIMI.put(clesIMI, statINIFamille);
+					 
+						 //validation de la fiche
+						 
+					 }
+					 
+					 //mise à jour de la fiche d'evaluation (exécution de la requete)
+					 boolean result_fich_eval=ficheEvaluationModel.updateMultiQuery(requeteUpdateFicheEvalution);
+					 
+					 
+					 statIMI=statIMI/nbimi;
+					 
+					
+					
+					 
+					//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
+					 //cette fonction calcul l'IMi en utilisant les notations des apptitudes observales
+					// enregistrerIMIStat(FamilleIMI,statIMI);
+					 
+					 ////cette fonction calcul l'IMi en utilisant les calculs de smoyennes pâr competence
+					 boolean result_imi_stat=enregistrerIMIMoyenneFamilleutilisantCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
+					 
+					 //enregistrement dans la base les stats IMI par competence
+					 
+					 boolean result_imi_compstat=enregistrerIMIStatParCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
+					 autorise=true;
+					 
+					 if (result_fich_eval && result_imi_stat && result_imi_compstat ){
+					 
+					 //validation de la fiche d'evaluation
+					 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe,"0");
+					 
+					 }
+					 
+					 else {
+						 Messagebox.show("La fiche n'a pas été correctement enregistrée", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+					 }
+					 
+					 //mis eà jour calcul imi en prenant en compte les calculs des moyennes par competence
+					 
+					 //vider le contenu du tableau 
+					 //effacer le nom de l'evalué de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
+					 
+					 //rafraichirAffichage(); //cet appel a été mis en commentaire car le bouton valider ne cloture pas l'evaluation de la fiche 
+				 }
+				 
+			 }
+			 else
+			 {
+				 valider.setDisabled(false);
+				 confirmer.setDisabled(false);
+				 autorise=true;
+				 
 				 Iterator <String>itfamille=famillesRemplies.iterator();
-				 boolean continuer=true;
+				 
 				 while(itfamille.hasNext())
 				 {
 					 String clles=itfamille.next();
 					 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
 					 Set <String >listclesCombo=listeComb.keySet();
 					 Iterator<String> iterator =listclesCombo.iterator();
-				 
+					 
 					 while (iterator.hasNext()/*&& continuer*/)
 					 {
 						 String cles=iterator.next();
@@ -977,23 +1223,19 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 if(combo.getName().equals("-1"))
 						 {
 
-							 continuer=false;							 
+							 
 							 combo.setStyle("background:red;");
 							 //combo.setWidth("50%");
-
+							// employelb.renderAll();
+							 //System.out.println("couleur");
 						 }
-						 //combo.setWidth("50%");
+						 //combo.setWidth("50px");
 					 }
 				 }
-			 
-			 if(continuer==false)
-			 {
-				 valider.setVisible(true);
-				 valider.setDisabled(false);
-				 autorise=true;
+				 //afficher messagebox
 				 try 
 				 {
-					 
+
 					Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
 				 } 
 				 catch (InterruptedException e) 
@@ -1002,188 +1244,26 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					e.printStackTrace();
 				}
 			 }
-			 else
-			 {
-				 
-				//rinitialisation du timer
-				 
-				 	count.setVisible(false);
-				 	start.setDisabled(true);
-				 	timer.stop();
-				 	
-				 //désactiver le bouton valider
-				 valider.setDisabled(true);
-				 //récupérer les modifications et enregistrer dans la base de donnée
-				 //valider la fiche dans la table appropriée
-				 
-				 FicheEvaluationModel ficheEvaluationModel=new FicheEvaluationModel();
-				 
-				 HashMap<String, String> maprepCompComp= ficheEvaluationModel.getmaprepCompetenceCodeCompetence();
-				/**********************************/
-				 // famille par famille que tous les combos sont remplies
-				 famillesRemplies=mapFamilleCombo.keySet();
-				 itfamille=famillesRemplies.iterator();
-				 String id_planning_evaluation="";
-				 String id_employe="";	
-				 
-				 
-				 HashMap<String, HashMap<String, ArrayList<Double>>> mapFamilleCompetence=new HashMap<String, HashMap<String, ArrayList<Double>>>();
-				 HashMap <String, Double> FamilleIMI=new HashMap<String, Double>();
-				 double statIMI=0;
-				 int nbimi=0; 
-				 String requeteUpdateFicheEvalution="";
-				 while(itfamille.hasNext())
-				 {
-					 String clles=itfamille.next();
-					 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
-					 Set <String >listclesCombo=listeComb.keySet();
- 
-					 listclesCombo=listeComb.keySet();
-					 Iterator<String> iterator =listclesCombo.iterator();
-					 //continuer=true;
-
-					 
-					 double statINIFamille=0;
-					 int nbvaleur=0;
-					 
-					 while (iterator.hasNext())
-					 {
-						 String cles=(String)iterator.next();
-						 Combobox combo=listeComb.get(cles);
-						 String valeurs=combo.getContext();
-						 String[] val=valeurs.split("#");
-						 String id_repertoire_competence=val[0];
-						 id_employe=val[1];
-						 id_planning_evaluation=val[2];
-						 String id_cotation=combo.getName();						 
-						 
-						 int valeurCotation=getValeurCotation(id_cotation);
-						 statINIFamille=statINIFamille+valeurCotation;
-						 
-						 nbvaleur++;
-						 nbimi++;
-						 statIMI=statIMI+valeurCotation;
-						 
-						 //construction de la requete de la mise à jour de l afiche d'evaluation
-						 requeteUpdateFicheEvalution=ficheEvaluationModel.updateFicheEvalutionConstructionRequete(id_repertoire_competence,id_employe,id_planning_evaluation,id_cotation,requeteUpdateFicheEvalution);
-						 
-						 
-						 //remplissage des informations moyenne competence
-						 //System.out.println("famille clles ..............." +clles);
-						 String code_competence=maprepCompComp.get(id_repertoire_competence);
-						 if(mapFamilleCompetence.containsKey(clles))
-						 {
-							 
-							 
-							 if(mapFamilleCompetence.get(clles).containsKey(code_competence))
-							 {
-								 ArrayList<Double> liste=mapFamilleCompetence.get(clles).get(code_competence);
-								 liste.add(new Double(valeurCotation));
-								 mapFamilleCompetence.get(clles).put(code_competence, liste);
-							 }
-							 else
-							 {
-								 ArrayList<Double> liste=new ArrayList<Double>(); 
-								 liste.add(new Double(valeurCotation));
-								 mapFamilleCompetence.get(clles).put(code_competence, liste);
-							 }
-						 }
-						 else
-						 {
-							 
-							 ArrayList<Double> liste=new ArrayList<Double>(); 
-							 liste.add(new Double(valeurCotation));
-							 HashMap<String, ArrayList<Double>> map=new HashMap<String, ArrayList<Double>>();
-							 map.put(code_competence, liste);
-							 mapFamilleCompetence.put(clles, map);
-						 }
-					 }
-					 
-					 String clesIMI =id_planning_evaluation+"#"+id_employe+"#"+clles;
-					 statINIFamille=statINIFamille/nbvaleur;
-					 FamilleIMI.put(clesIMI, statINIFamille);
-				 
-					 //validation de la fiche
-					 
-				 }
-				 
-				 //mise à jour de la fiche d'evaluation (exécution de la requete)
-				 ficheEvaluationModel.updateMultiQuery(requeteUpdateFicheEvalution);
-				 
-				 
-				 statIMI=statIMI/nbimi;
-				 
-				 //validation de la fiche d'evaluation
-				 ficheEvaluationModel.validerFicheEvaluation(id_planning_evaluation, id_employe);
-				
-				 
-				//a la fin de l'evaluation de toute la famille enregistrement de l'IMI par famille et de l'IMI total dans la table
-				 //cette fonction calcul l'IMi en utilisant les notations des apptitudes observales
-				// enregistrerIMIStat(FamilleIMI,statIMI);
-				 
-				 ////cette fonction calcul l'IMi en utilisant les calculs de smoyennes pâr competence
-				 enregistrerIMIMoyenneFamilleutilisantCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
-				 
-				 //enregistrement dans la base les stats IMI par competence
-				 
-				 enregistrerIMIStatParCompetence(mapFamilleCompetence,id_planning_evaluation, id_employe);
-				 
-				 //mis eà jour calcul imi en prenant en compte les calculs des moyennes par competence
-				 
-				 //vider le contenu du tableau 
-				 //effacer le nom de l'evalué de la combo de cet onglet et le mettre dans l'onglet des personnes déja évaluées
-				 
-				 rafraichirAffichage();
-			 }
 			 
-		 }
+			 valider.setVisible(true);
+			 confirmer.setVisible(true);
+			 }
+			 //employelb.renderAll()
+
+			return;
+         }
+
 		 else
 		 {
-			 valider.setDisabled(false);
-			 autorise=true;
-			 
-			 Iterator <String>itfamille=famillesRemplies.iterator();
-			 
-			 while(itfamille.hasNext())
-			 {
-				 String clles=itfamille.next();
-				 HashMap<String , Combobox>listeComb=mapFamilleCombo.get(clles);
-				 Set <String >listclesCombo=listeComb.keySet();
-				 Iterator<String> iterator =listclesCombo.iterator();
-				 
-				 while (iterator.hasNext()/*&& continuer*/)
-				 {
-					 String cles=iterator.next();
-					 Combobox combo=listeComb.get(cles);
-					 //combo.setWidth("50%");
-					 if(combo.getName().equals("-1"))
-					 {
-
-						 
-						 combo.setStyle("background:red;");
-						 //combo.setWidth("50%");
-						// employelb.renderAll();
-						 //System.out.println("couleur");
-					 }
-					 //combo.setWidth("50px");
-				 }
-			 }
-			 //afficher messagebox
-			 try 
-			 {
-
-				Messagebox.show("Vos modifications ne peuvent être validées tant que vous n'avez pas évalué toutes les compétences de l'employé", "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
-			 } 
-			 catch (InterruptedException e) 
-			 {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			 return;
 		 }
-		 
-		 valider.setVisible(true);
-		 }
-		 //employelb.renderAll()
+		 	
+		 //verifier que toutes les cotations ont été remplies 
+		 //sinon afficher un message comme quoi la validation n'a pas été prise en compte car
+		 // toutes les comptétences n'ont pas été évaluées
+		 //verifier que toutes les familles ont été selectionnées
+		// ArrayList <String> listFamille=employerAEvaluerBean1.getFamille();
+		
 	 }
 	 
 	 public void onSelectEvaluation(ForwardEvent event)
@@ -1637,7 +1717,8 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 //				comp.setVariable(comp.getId() + "Ctrl", this, true);
 //				
 			 
-			 	valider.setDisabled(true);
+			 	valider.setDisabled(true); 
+			 	confirmer.setDisabled(true);
 				//recupération du profil de l'utilisateur
 				CompteBean compteUtilisateur=ApplicationFacade.getInstance().getCompteUtilisateur();
 				
@@ -1852,6 +1933,10 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				}
 				tb.setSelectedIndex(0);
 				 valider.setDisabled(false);
+				 confirmer.setDisabled(false);
+				 
+				
+
 		 }
 		 public int getValeurCotation(String idCotation)
 		 {
@@ -1907,7 +1992,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 ficheEvaluationModel.updateMultiQuery(requete);
 		 }
-		 public void enregistrerIMIStatParCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
+		 public boolean enregistrerIMIStatParCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
 		 {
 			 
 			 Set <String >listFamille= mapFamilleCompetence.keySet();
@@ -1943,6 +2028,7 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 						 moyenne=moyenne+listeCompetence.get(i);
 					 }
 					 moyenne=moyenne/nbCompetence;
+					 requete=requete+"  delete from IMI_COMPETENCE_STAT where id_compagne=#id_compagne and id_employe=#id_employe and code_famille=#code_famille and code_competence=#code_competence ; ";
 					 requete=requete+"  INSERT INTO IMI_COMPETENCE_STAT  (id_compagne,id_employe,code_famille,code_competence,moy_competence) VALUES (#id_compagne,#id_employe,#code_famille,#code_competence,#moy_competence) ; ";
 					 
 					 requete = requete.replaceAll("#id_compagne", id_compagne);
@@ -1950,18 +2036,19 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 					 requete = requete.replaceAll("#code_famille", "'"+code_famille+ "'");
 					 requete = requete.replaceAll("#code_competence", "'"+code_competence+ "'");
 					 requete = requete.replaceAll("#moy_competence", moyenne+"");
+					// System.out.println("requets IMI_COMPETENCE_STAT>>> "+requete);
 				 }
 				 
 				 
 			 }
 			 
 			 
-			 ficheEvaluationModel.insertImiCompetenceStat(requete);
+			 return(ficheEvaluationModel.insertImiCompetenceStat(requete));
 		 }
 		
 		 
 		 
-		 public void enregistrerIMIMoyenneFamilleutilisantCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
+		 public boolean enregistrerIMIMoyenneFamilleutilisantCompetence(HashMap<String, HashMap<String , ArrayList<Double>>> mapFamilleCompetence,String id_planning_evaluation, String id_employe)
 		 {
 			 
 			 Set <String >listFamille= mapFamilleCompetence.keySet();
@@ -2015,11 +2102,13 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 				 moyenne=moyenne/nbVal;
 				 
 				 moyIMI=moyIMI+moyenne;
+				 requete=requete+ " delete from imi_stats where id_compagne=#id_compagne and id_employe=#id_employe and code_famille=#code_famille ; ";
 				 requete=requete+ " INSERT INTO imi_stats (id_compagne,id_employe,moy_par_famille,code_famille, imi) VALUES (#id_compagne,#id_employe,#moy_par_famille,#code_famille, #imi) ; ";
 				 requete = requete.replaceAll("#id_compagne", id_compagne);
 				 requete = requete.replaceAll("#id_employe", id_employe);
 				 requete = requete.replaceAll("#moy_par_famille", moyenne+"");
 				 requete = requete.replaceAll("#code_famille", "'"+code_famille+"'");
+				 //System.out.println("requetes IMI>>>"+requete);
 				 
 				 
 			 }
@@ -2029,7 +2118,45 @@ public class FicheEvaluationAction extends GenericForwardComposer{
 			 
 			 requete = requete.replaceAll("#imi", calculIMI+"");
 			 
-			 ficheEvaluationModel.insertImiCompetenceStat(requete);
+			 return(ficheEvaluationModel.insertImiCompetenceStat(requete));
 			 
 		 }
+		 
+		 
+	public void onClick$confirmer() throws InterruptedException	 {
+		   
+		     FicheEvaluationModel fiche_model=new FicheEvaluationModel();
+			 EmployesAEvaluerBean employerAEvaluerBean=mapEmployeAEvaluerBean.getMapclesnomEmploye().get(selectedEmploye);
+
+			 String statut_fiche=fiche_model.getStatutFicheEval(String.valueOf(employerAEvaluerBean.getId_planning_evaluation()), String.valueOf(employerAEvaluerBean.getId_employe())); 
+			 
+			 if (statut_fiche.equalsIgnoreCase("0")){
+				 
+				 if ( Messagebox.show( "La fiche d'évaluation ne sera plus accessible en modification, voulez-vous valider la fiche  ?", "Prompt", Messagebox.YES | Messagebox.NO,
+	                     Messagebox.QUESTION ) == Messagebox.YES )	 {
+					 
+					 fiche_model.validerFicheEvaluation(String.valueOf(employerAEvaluerBean.getId_planning_evaluation()), String.valueOf(employerAEvaluerBean.getId_employe()),"1");
+					 rafraichirAffichage();
+	  
+					return;
+	             }
+
+				 else
+				 {
+					 return;
+				 }
+				 
+			 }
+			 
+			 else{
+				 Messagebox.show(" La fiche d'évaluation n'a pas été enregistrée ou certaines  compétences n'ont pas été évaluées . Merci de completer la fiche !");
+			 }
+
+			 
+			
+			 
+ }
+	
+	
+	
 }
