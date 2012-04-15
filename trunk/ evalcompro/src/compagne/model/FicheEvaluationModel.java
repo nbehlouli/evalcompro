@@ -523,11 +523,12 @@ public class FicheEvaluationModel {
 		
 		return listCotation;
 	}
-	public void updateMultiQuery(String requete)
+	public boolean  updateMultiQuery(String requete)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
 		Statement stmt;
+		boolean resultat=true;
 		
 		try 
 		{
@@ -536,10 +537,12 @@ public class FicheEvaluationModel {
 			 stmt.execute(requete);
 			 
 			 conn.close();
+			 resultat=true;
 		} 
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
+			resultat=false;
 
 			// TODO Auto-generated catch block
 			try {
@@ -548,12 +551,13 @@ public class FicheEvaluationModel {
 				// TODO Auto-generated catch block
 				
 				e1.printStackTrace();
-				//return false;
+				resultat=false;
 			}
 			
 			
 			
 		}
+		return resultat;
 
 	
 	}
@@ -561,34 +565,49 @@ public class FicheEvaluationModel {
 	public String updateFicheEvalutionConstructionRequete(String id_repertoire_competence,String id_employe,String id_planning_evaluation,String id_cotation, String requete)
 	{
 
-			
+		   String  delet_structure="delete from fiche_evaluation where id_planning_evaluation=#id_planning_evaluation and id_repertoire_competence=#id_repertoire_competence and id_employe=#id_employe";		
 			String insert_structure="INSERT INTO fiche_evaluation (id_planning_evaluation,id_repertoire_competence,id_cotation,id_employe) VALUES (#id_planning_evaluation,#id_repertoire_competence,#id_cotation,#id_employe)";
-			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
-			insert_structure = insert_structure.replaceAll("#id_repertoire_competence", id_repertoire_competence);
-			insert_structure = insert_structure.replaceAll("#id_cotation", id_cotation);
-			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
 			
-			requete=requete+ insert_structure+ " ; ";
-			System.out.println(requete);
+			
+			requete=requete+ delet_structure+" ; "+ insert_structure+ " ; ";
+			
+			requete = requete.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+			requete = requete.replaceAll("#id_repertoire_competence", id_repertoire_competence);
+			requete = requete.replaceAll("#id_cotation", id_cotation);
+			requete = requete.replaceAll("#id_employe", id_employe);
+			//System.out.println(requete);
 			return requete;
 	
 	}
-	public void validerFicheEvaluation(String id_planning_evaluation, String id_employe)
+	public void validerFicheEvaluation(String id_planning_evaluation, String id_employe, String statut_fiche)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
-		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
 		Statement stmt;
+		String insert_structure="";
+		String delete_structure="";
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String insert_structure="INSERT INTO fiche_validation (id_planning_evaluation,id_employe, fiche_valide) VALUES (#id_planning_evaluation,#id_employe,1)";
-			insert_structure = insert_structure.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+			if (statut_fiche.equalsIgnoreCase("0")){
+				
+				 delete_structure=" delete from fiche_validation  where id_planning_evaluation=#id_planning_evaluation and id_employe=#id_employe";
+				 insert_structure="INSERT INTO fiche_validation (id_planning_evaluation,id_employe, fiche_valide) VALUES (#id_planning_evaluation,#id_employe,0)";
 
-			insert_structure = insert_structure.replaceAll("#id_employe", id_employe);
+			}
+			else {
+				 delete_structure=" delete from fiche_validation  where id_planning_evaluation=#id_planning_evaluation and id_employe=#id_employe";
+				 insert_structure="INSERT INTO fiche_validation (id_planning_evaluation,id_employe, fiche_valide) VALUES (#id_planning_evaluation,#id_employe,1)";
+
+			}
+			String query=delete_structure+"; " + insert_structure+" ;";
+			query = query.replaceAll("#id_planning_evaluation", id_planning_evaluation);
+			query = query.replaceAll("#id_employe", id_employe);
+			query = query.replaceAll("#statut_fiche", statut_fiche);
 			
 			
-			 stmt.execute(insert_structure);
+			 stmt.execute(query);
 			 
 			 conn.close();
 		} 
@@ -665,6 +684,58 @@ public class FicheEvaluationModel {
 		return nom_utilisateur;
 	}
 	
+	public String getStatutFicheEval(String id_planning_evaluation, String id_employe)
+	{
+		String statut_fiche="";
+		CreateDatabaseCon dbcon=new CreateDatabaseCon();
+		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
+		Statement stmt = null;
+		
+		try 
+		{
+			stmt = (Statement) conn.createStatement();
+			String select_structure="select fiche_valide from fiche_validation where id_planning_evaluation=#id_planning_evaluation and id_employe=#id_employe";
+			
+			select_structure = select_structure.replaceAll("#id_employe", ""+id_employe);
+			select_structure = select_structure.replaceAll("#id_planning_evaluation", ""+id_planning_evaluation);
+			
+			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
+			
+			
+			while(rs.next())
+			{
+				if (rs.getRow()>=1) 
+				{
+					//listposteTravail.add(rs.getString("intitule_poste"));
+					 statut_fiche=String.valueOf(rs.getInt("fiche_valide"));
+					
+				}
+				else {
+					return statut_fiche;
+				}
+				
+			}
+			stmt.close();
+			conn.close();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			//((java.sql.Connection) dbcon).close();
+			e.printStackTrace();
+			try {
+				 stmt.close();
+                  conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		return statut_fiche;
+	}
+	
+	
 	public HashMap <String, ArrayList<FicheEvaluationBean>> getMaFicheEvaluaton(int id_employe)
 	{
 		
@@ -679,7 +750,7 @@ public class FicheEvaluationModel {
 			//String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation from repertoire_competence r, fiche_evaluation f where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence";
 			//String select_structure="select DISTINCT r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence group by  r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
 			
-			String select_structure="select DISTINCT c.compagne_type, r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, max(p.date_evaluation) from compagne_type c , repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence and f.id_planning_evaluation=p.id_planning_evaluation and p.id_compagne=c.id_compagne_type group by  c.compagne_type,r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation ";
+			String select_structure="select DISTINCT c.compagne_type, r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation, r.id_repertoire_competence,max(p.date_evaluation) from compagne_type c , repertoire_competence r, fiche_evaluation f , planning_evaluation p where f.id_employe=#id_employe and r.id_repertoire_competence=f.id_repertoire_competence and f.id_planning_evaluation=p.id_planning_evaluation and p.id_compagne=c.id_compagne_type group by  c.compagne_type,r.famille , r.libelle_competence, r.aptitude_observable, f.id_cotation,r.id_repertoire_competence ";
 			select_structure = select_structure.replaceAll("#id_employe", "'"+id_employe+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(select_structure);
 			
@@ -695,6 +766,7 @@ public class FicheEvaluationModel {
 					String id_cotation=rs.getString("id_cotation");
 					String date_evaluation=rs.getString("max(p.date_evaluation)");
 					String compagne_type=rs.getString("compagne_type");
+					String id_repertoire_competence=rs.getString("id_repertoire_competence");
 					
 					FicheEvaluationBean fiche=new FicheEvaluationBean();
 					fiche.setAptitude_observable(aptitude_observable);
@@ -702,6 +774,7 @@ public class FicheEvaluationModel {
 					fiche.setNiveau_maitrise(new Integer(id_cotation));
 					fiche.setDate_evaluation(date_evaluation);
 					fiche.setCompagne_type(compagne_type);
+					fiche.setId_repertoire_competence(new Integer(id_repertoire_competence));
 					
 					if(mapFamilleFicheEvaluation.containsKey(famille))
 					{
@@ -1210,22 +1283,25 @@ public class FicheEvaluationModel {
 		return mapRepCompetenceCompetence;
 	}
 	
-	public void insertImiCompetenceStat(String requete)
+	public boolean insertImiCompetenceStat(String requete)
 	{
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDBMulti();
 		Statement stmt;
+		boolean resultat;
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();						
 			 stmt.execute(requete);
 			 
-			 conn.close();
+			 stmt.close();conn.close();
+			 resultat=true;
 		} 
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
+			resultat=false;
 
 			// TODO Auto-generated catch block
 			try {
@@ -1234,11 +1310,12 @@ public class FicheEvaluationModel {
 				// TODO Auto-generated catch block
 				
 				e1.printStackTrace();
-				//return false;
+				resultat=false;
 			}
 			
 			
 			
 		}
+		return resultat;
 	}
 }
