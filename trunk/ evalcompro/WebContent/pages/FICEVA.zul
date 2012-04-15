@@ -66,8 +66,13 @@
        				</vlayout>
 					<hbox pack="center" width="100%" spacing="20">
 						<div>
-							<button id="valider" label="Valider " tooltiptext="valider les modifications apportées à cette fiche" />
+							<button id="valider" label="Enregistrer " tooltiptext="Enregistrer les modifications apportées à cette fiche" />
 						</div>
+						
+						<div>
+							<button id="confirmer" label="Valider la fiche " tooltiptext="Validation finale de la fiche  d'évaluation" />
+						</div>
+						
 					</hbox>
     			</groupbox>      			        	
            	</tabpanel>
