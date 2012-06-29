@@ -390,14 +390,24 @@ private int database=ApplicationFacade.getInstance().getClient_database_id();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
 		HashMap map = new HashMap();
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evaluateur " +
-					            " from employe e,common_evalcom.compte c where est_evaluateur='Y'" +
-					            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			String profile_list="";
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+				 profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evaluateur " +
+	            " from employe e,common_evalcom.compte c where est_evaluateur='Y'" +
+	            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			}else{
+				 profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evaluateur " +
+		            " from employe e,compte c where est_evaluateur='Y'" +
+		            " and e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			}
+			
 			
 			profile_list = profile_list.replaceAll("#databaseid", "'"+database+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
@@ -423,12 +433,21 @@ private int database=ApplicationFacade.getInstance().getClient_database_id();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
 		HashMap map = new HashMap();
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 			
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evalue " +
-            " from employe e,common_evalcom.compte c where e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			String profile_list="";
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+				 profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evalue " +
+	            " from employe e,common_evalcom.compte c where e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			}else{
+				 profile_list="select id_employe,concat(e.nom,' ',e.prenom) as evalue " +
+		            " from employe e,compte c where e.id_compte=c.id_compte and c.database_id=#databaseid"; 
+			}
+			
 
             profile_list = profile_list.replaceAll("#databaseid", "'"+database+"'");
 			ResultSet rs = (ResultSet) stmt.executeQuery(profile_list);
