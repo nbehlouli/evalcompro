@@ -40,6 +40,7 @@ import com.mysql.jdbc.Statement;
 import common.ApplicationFacade;
 import common.Contantes;
 import common.CreateDatabaseCon;
+import common.InitContext;
 import common.PwdCrypt;
 import compagne.bean.GestionEmployesBean;
 
@@ -52,20 +53,34 @@ public class EmployeCompteModel {
 	
 	public List loadListEmployes() throws SQLException{
 		
-		 mapCompte=checkLoginBean();
-		 
+		mapCompte=checkLoginBean();
 		listEmployeCompte = new ArrayList<EmployeCompteBean>();
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String sel_comp="select c.nom,c.prenom, id_employe,e.id_compte,date_naissance,date_recrutement ,concat(e.code_formation,',',d.niv_for_libelle)as libelle_formation,concat (e.code_poste,',',p.intitule_poste) as intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
+			String sel_comp;
+			
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+			 sel_comp="select c.nom,c.prenom, id_employe,e.id_compte,date_naissance,date_recrutement ,concat(e.code_formation,',',d.niv_for_libelle)as libelle_formation,concat (e.code_poste,',',p.intitule_poste) as intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
 							" CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
 							" from employe e  ,poste_travail_description p,formation f,common_evalcom.compte c  , def_niv_formation d" +
 							"  where e.code_poste=p.code_poste and e.code_formation=f.code_formation" +
 							"  and   e.id_compte=c.id_compte and   d.niv_for_id=f.niv_for_id order by 1";
+			}
+			
+			else {
+				 sel_comp="select c.nom,c.prenom, id_employe,e.id_compte,date_naissance,date_recrutement ,concat(e.code_formation,',',d.niv_for_libelle)as libelle_formation,concat (e.code_poste,',',p.intitule_poste) as intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
+					" CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
+					" from employe e  ,poste_travail_description p,formation f, compte c  , def_niv_formation d" +
+					"  where e.code_poste=p.code_poste and e.code_formation=f.code_formation" +
+					"  and   e.id_compte=c.id_compte and   d.niv_for_id=f.niv_for_id order by 1";
+				
+			}
 					        
 					        ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
 			
