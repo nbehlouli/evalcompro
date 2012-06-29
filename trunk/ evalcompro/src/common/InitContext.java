@@ -20,6 +20,7 @@ public class InitContext
     public Properties props;
     public String smtpsubject_alert;
     public String cc;
+    public String dbtype;
     public static final String DIRECTORY_CONNECTION_PARAMETERS = "resources.properties";
     
     public String timerValue ;
@@ -48,6 +49,7 @@ public class InitContext
             setJdbcusername(props.getProperty("jdbc.username"));
             setJdbcurl(props.getProperty("jdbc.url"));
             setSmtpsubject_alert(props.getProperty("alert.subject"));
+            setDbtype(props.getProperty("jdbc.dbType"));
             
             //information sur la durée d'une evaluation en minutes
             setTimerValue(props.getProperty("timer.value"));
@@ -215,5 +217,15 @@ public class InitContext
 	    {
 	        this.cc = cc;
 	    }
+
+		public String getDbtype() {
+			return dbtype;
+		}
+
+		public void setDbtype(String dbtype) {
+			this.dbtype = dbtype;
+		}
+	    
+	    
     
 }
