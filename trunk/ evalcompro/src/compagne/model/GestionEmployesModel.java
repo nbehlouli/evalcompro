@@ -32,6 +32,7 @@ import com.mysql.jdbc.Statement;
 
 import common.ApplicationFacade;
 import common.CreateDatabaseCon;
+import common.InitContext;
 import common.PwdCrypt;
 import compagne.bean.GestionEmployesBean;
 import compagne.bean.PlanningCompagneListBean;
@@ -54,15 +55,27 @@ private ListModel strset =null;
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToEntrepriseDB();
 		Statement stmt = null;
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		
 		try {
 			stmt = (Statement) conn.createStatement();
-			String sel_comp="select concat(c.nom,'-',c.prenom) as nom, id_employe,date_naissance,date_recrutement ,concat(d.niv_for_libelle,'-',libelle_diplome) as libelle_formation,p.intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
+			String sel_comp="";
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+			
+			 sel_comp="select concat(c.nom,'-',c.prenom) as nom, id_employe,date_naissance,date_recrutement ,concat(d.niv_for_libelle,'-',libelle_diplome) as libelle_formation,p.intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
 							" CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
 							" from employe e  ,poste_travail_description p,formation f,common_evalcom.compte c  , def_niv_formation d" +
 							"  where e.code_poste=p.code_poste and e.code_formation=f.code_formation" +
 							"  and   e.id_compte=c.id_compte and   d.niv_for_id=f.niv_for_id order by 1";
-					        
+			}
+			else{
+				 sel_comp="select concat(c.nom,'-',c.prenom) as nom, id_employe,date_naissance,date_recrutement ,concat(d.niv_for_libelle,'-',libelle_diplome) as libelle_formation,p.intitule_poste, email,  CASE WHEN est_evaluateur='N' THEN 'NON' ELSE 'OUI' END as est_evaluateur," +
+					" CASE WHEN est_responsable_rh='N' THEN 'NON' ELSE 'OUI' END as est_responsable_rh ,e.code_structure" +
+					" from employe e  ,poste_travail_description p,formation f,compte c  , def_niv_formation d" +
+					"  where e.code_poste=p.code_poste and e.code_formation=f.code_formation" +
+					"  and   e.id_compte=c.id_compte and   d.niv_for_id=f.niv_for_id order by 1";
+			}
 					        ResultSet rs = (ResultSet) stmt.executeQuery(sel_comp);
 			
 			while(rs.next()){
@@ -526,14 +539,24 @@ private ListModel strset =null;
 		CreateDatabaseCon dbcon=new CreateDatabaseCon();
 		Connection conn=(Connection) dbcon.connectToDB();
 		Statement stmt = null;
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		HashMap map = new HashMap();
 		int database_id=ApplicationFacade.getInstance().getClient_database_id();
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
-			String sql_query="select id_compte,concat(nom,'-',prenom) as nom from common_evalcom.compte where database_id=#database_id";
-			sql_query = sql_query.replaceAll("#database_id", "'"+database_id+"'");
+			String sql_query="";
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+				 sql_query="select id_compte,concat(nom,'-',prenom) as nom from common_evalcom.compte where database_id=#database_id";
+				sql_query = sql_query.replaceAll("#database_id", "'"+database_id+"'");
+			}
+			else{
+				 sql_query="select id_compte,concat(nom,'-',prenom) as nom from compte where database_id=#database_id";
+					sql_query = sql_query.replaceAll("#database_id", "'"+database_id+"'");
+			}
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery(sql_query);
 			
 			
