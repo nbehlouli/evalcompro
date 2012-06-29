@@ -17,6 +17,7 @@ import com.mysql.jdbc.Statement;
 
 import common.ApplicationFacade;
 import common.CreateDatabaseCon;
+import common.InitContext;
 
 import Statistique.bean.EmployeCadreBean;
 import Statistique.bean.EmployeMoyFamBean;
@@ -105,12 +106,14 @@ public class StatCotationEmployeModel {
 		String sql_query="";
 		int id_profile=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		int id_evaluateur=ApplicationFacade.getInstance().getCompteUtilisateur().getId_compte();
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
 			if (id_profile==1 || id_profile==2 ){
-			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,#compte c" +
 					  " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
 					  " in (select distinct id_planning_evaluation  from planning_evaluation )" +
 					  " and e.id_compte=c.id_compte and database_id=#database_id";
@@ -118,7 +121,7 @@ public class StatCotationEmployeModel {
 			}
 			
 			else{
-				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,#compte c" +
 						  " where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
 						  " in (select id_planning_evaluation  from planning_evaluation compagne_evaluation" +
 						  "  where  id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))" +
@@ -126,7 +129,13 @@ public class StatCotationEmployeModel {
 				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
 				//sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+				sql_query=sql_query.replaceAll("#compte", "common_evalcom.compte");
+			}
 			
+			else{
+				sql_query=sql_query.replaceAll("#compte", "compte");
+			}
 			sql_query=sql_query.replaceAll("#database_id", "'"+database+"'");
 			
 		   //System.out.println(sql_query);
@@ -158,12 +167,14 @@ public class StatCotationEmployeModel {
 		String sql_query="";
 		int id_profile=ApplicationFacade.getInstance().getCompteUtilisateur().getId_profile();
 		int id_evaluateur=ApplicationFacade.getInstance().getCompteUtilisateur().getId_compte();
+		final InitContext intctx = new InitContext();
+	    intctx.loadProperties();
 		
 		try 
 		{
 			stmt = (Statement) conn.createStatement();
 			if (id_profile==1 || id_profile==2 ){
-			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e, common_evalcom.compte c" +
+			sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e, #compte c" +
 					"  where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation" +
 					"  in (select id_planning_evaluation  from planning_evaluation where id_compagne=#id_compagne)" +
 					"  and c.id_compte=e.id_compte and database_id=#database_id";
@@ -171,14 +182,20 @@ public class StatCotationEmployeModel {
 			}
 			
 			else{
-				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,common_evalcom.compte c" +
+				sql_query="select e.id_employe,concat(e.nom ,' ' ,e.prenom) as nom from fiche_validation f ,employe e,#compte c" +
 						  "  where f.id_employe=e.id_employe and f.fiche_valide=1 and f.id_planning_evaluation in (select id_planning_evaluation  from planning_evaluation" +
 						  "  where id_compagne=#id_compagne  and id_evaluateur in (select id_employe from employe where id_compte=#id_evaluateur))" +
 						  "  and c.id_compte=e.id_compte and database_id=#database_id";
 				sql_query = sql_query.replaceAll("#id_evaluateur", "'"+id_evaluateur+"'");
 				sql_query = sql_query.replaceAll("#id_compagne", "'"+id_compagne+"'");
 			}
+			if (intctx.getDbtype().equalsIgnoreCase("1")){
+				sql_query=sql_query.replaceAll("#compte", "common_evalcom.compte");
+			}
 			
+			else{
+				sql_query=sql_query.replaceAll("#compte", "compte");
+			}
 		   //System.out.println(sql_query);
 			sql_query=sql_query.replaceAll("#database_id", "'"+database+"'");
 			
