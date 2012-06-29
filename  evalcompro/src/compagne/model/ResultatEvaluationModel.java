@@ -160,12 +160,12 @@ public class ResultatEvaluationModel {
 //			" and e.code_poste=f.code_poste";
 			
 			String select_structure="select distinct f.intitule_poste, c.code_famille,r.famille,  e.nom, e.prenom, r.libelle_competence, c.moy_competence,2  "+
-			" from poste_travail_description f, imi_competence_stat c, employe e, repertoire_competence r "+
+			" from poste_travail_description f, imi_competence_stat c, employe e, repertoire_competence r , img_stats g "+
 			" where c.id_employe=e.id_employe "+
 			" and c.id_compagne=#id_compagne "+
 			" and c.code_famille=r.code_famille "+
 			" and c.code_competence=r.code_competence "+
-			" and e.code_poste=f.code_poste"			;
+			" and e.code_poste=f.code_poste  and e.code_poste=g.code_poste"			;
 			
 			select_structure = select_structure.replaceAll("#id_compagne", id_compagne);
 			
