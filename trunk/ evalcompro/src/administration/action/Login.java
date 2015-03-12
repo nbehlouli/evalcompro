@@ -15,14 +15,8 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.lang.Strings;
 import org.zkoss.zul.Div; 
-
 import org.zkoss.zk.ui.Executions;
-
-
 import common.ApplicationFacade;
-
-
-
 import administration.model.LoginModel;
 
 
@@ -74,8 +68,9 @@ public class Login extends GenericForwardComposer{
 		
 		try 
 		{
-			
+			//msg.setValue("before checklogin");
 			int result=init.checkLoginPwd(user,pwd);
+			//msg.setValue("after checklogin");
 			if (result==0) 
 			{
 				//msg.setValue("authentifié");
@@ -83,13 +78,14 @@ public class Login extends GenericForwardComposer{
 					
 					data.put("name", user);
 					data.put("age", pwd);
-					
+					msg.setValue("before user compte");
 					//chargement des informations associés au profil de 'utilisateur
 					init.checkProfile(init.getUser_compte());
 					/* recuperation de la database id par utilisateur
 					 * Pour le super utilisateur le database id est recuperer
 					 * aprer la selection de la base via l'ecran SELCLI
 					 */
+					msg.setValue("after user compte");
 					ApplicationFacade.getInstance().setClient_database_id(init.getDatabase_id());
 			
 
@@ -127,7 +123,8 @@ public class Login extends GenericForwardComposer{
 		catch (SQLException e) 
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			msg.setValue(e.toString());
 		}
 		
 		/*session.setAttribute("user",user);
