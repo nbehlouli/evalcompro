@@ -2,9 +2,14 @@
 
 <zk>
 
-  
-	<window border="normal" width="400px" apply="administration.action.Login" mode="modal" sclass="error" >
 
+ <window  border="none"  apply="administration.action.Login" sclass="error"  position="center" mode="overlapped"  >
+	
+<style>
+body{
+background-image:url('image/fond-site_new.jpg'); background-repeat:no-repeat;  
+}
+</style>
 <style>
 
 .myCaption .z-caption-l
@@ -16,52 +21,56 @@
 
 </style>
 
- 
+<style dynamic="true"> 
 
+<!-- Make Plain Grid --> 
+.GridLayoutNoBorder tr.z-row td.z-row-inner, tr.z-row .z-cell,div.z-grid 
+{ 
+border: none; 
+overflow: hidden; 
+zoom: 1; 
+background: white; 
+border-top: none; 
+border-left: none; 
+border-right: none; 
+border-bottom: none; 
+} 
 
+</style> 
 
-		<div height="100px" >
-             <image src="/image/Logo.png" width="100%" height="100px" align="top"/>
-        </div>
-
-		<div id="loginDiv"  visible="${empty user}">
-			<grid>
+ 	
+		 <div align="left"> <image src="/image/Logo.png"  /></div>
+			
+			   
+		 <div id="loginDiv"  visible="${empty user}" sclass="my-grid"  align="left">
+			     <grid  width="320px" height="130px"  sclass="GridLayoutNoBorder" >
 					<rows>
+					  
 						<row>
 							Utilisateur :
 							<textbox id="usertb" width="100px" value="" />
 						</row>
 						<row>
 							 Mot de passe   :
-							<textbox id="pwdtb" width="100px"
-								type="password"  value=""/>
+							<textbox id="pwdtb" width="100px" 	type="password"  value=""/>
 						</row>
+						
+					  <row>
+						<a href="/login/REINIPW.zul" sclass="edition-field" label=" Mot de passe oublie?" style="font-size:7pt;color:#009ED6;font-weight: bold;"/>
+						<button id="login" label="Connecter" />
+				     </row>	
+				     
+				     <row>
+				     <label id="msg" style="color:red"/>
+				     </row>
+						
 					</rows>
 				
 			</grid>	
-			<grid >
-				<rows>	
-					<row>		
-						<hbox pack="center" width="100%">
-							<button id="login" label="Connecter" />
-						</hbox>
-					</row>
-					<row>
-						<a href="/login/REINIPW.zul" sclass="edition-field" label=" Mot de passe oublié?" style="font-size:7pt;color:#009ED6;font-weight: bold;;"/>
-				    </row>
-		      </rows>
-			</grid>
-			
-			<div>
-				<label id="msg" style="color:red"/>
-			</div>
+				
 		</div>
 		
-		   
-		   <groupbox id="gb" mold="3d" width="100%" open="false"  >
-		   <caption image="/image/fleche_bas.png"  tooltiptext="Testez votre débit internet"  sclass="myCaption"/>
-		   <include src="footer.zul"/>
-		   </groupbox>
+		  
 			
   	</window>	   
   	
