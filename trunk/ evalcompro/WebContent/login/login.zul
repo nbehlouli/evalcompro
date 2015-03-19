@@ -1,15 +1,17 @@
 
 
 <zk>
-
-
- <window  border="none"  apply="administration.action.Login" sclass="error"  position="center" mode="overlapped"  >
-	
-<style>
+<style dynamic="true">
 body{
 background-image:url('image/fond-site_new.jpg'); background-repeat:no-repeat;  
 }
 </style>
+
+<window  border="none"  apply="administration.action.Login" sclass="error"  position="center" mode="overlapped"  >
+	
+
+
+
 <style>
 
 .myCaption .z-caption-l
