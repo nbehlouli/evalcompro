@@ -828,7 +828,7 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 			 mapPosteEmployeFamilleCompetence=resultatEvaluationModel.getAllIMICompetence(selected_id_compagne);
 			
 			 mapEmployeFamilleIMI=resultatEvaluationModel.getInfosIMIStat(selected_id_compagne);
-			mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
+			 mapFamilleIMG=resultatEvaluationModel.getIMGFamille(selected_id_compagne);
 			 mapPosteIMG=resultatEvaluationModel.getIMGparPoste(selected_id_compagne);
 			
 			 mapPostFamilleCompetenceStats=resultatEvaluationModel.getmoyPosteCompetenceStats(selected_id_compagne);
@@ -928,133 +928,132 @@ public class ResultatEvaluationAction extends GenericForwardComposer {
 		 HashMap<String, HashMap< String, HashMap<String, Double>> > mapEmployeFamilleCompetence= mapPosteEmployeFamilleCompetence.get(nomOnglet);
 		 HashMap<String,Double> mapFIMG=mapFamilleIMG.get(nomOnglet);
 		Set <String> setFamilleCompetence=mapFamilleCompetence.keySet();
-		Iterator <String>iteratorFamille=setFamilleCompetence.iterator();
-		while(iteratorFamille.hasNext())
-		{
-			//creation des colonnes famille
-			String famille=iteratorFamille.next();
-			Column colonneFamille=new Column();
-			colonneTitre.appendChild(colonneFamille);
-			//<column label="Code structure" align="center" width="100px" />
-			colonneFamille.setLabel(famille);
-			colonneFamille.setAlign("center");
-			colonneFamille.setWidth("100px");
-			
-		}
-		
-		//creation de la colonne IMI
-		Column colonneIMI=new Column();	
-		colonneTitre.appendChild(colonneIMI);
-		colonneIMI.setLabel("IMI");
-		colonneIMI.setAlign("center");
-		colonneIMI.setWidth("100px");
-		
-		
-		//creation des lignes pour chaque employe
-		Rows rows=new Rows();
-		grid.appendChild(rows);
-		Set <String>setEmploye =mapEmployeFamilleCompetence.keySet();
-		Iterator <String> iteratorEmploye=setEmploye.iterator();
-		
-		///////prise en cmpte du tri/////////////
-		ArrayList<String> listemployeTrie=mapPostEmployeTriIMI.get(nomOnglet);
-		Iterator<String> iteratoremployeTrie=listemployeTrie.iterator();
-		///////////////////
-		while(/*iteratorEmploye.hasNext()*/iteratoremployeTrie.hasNext())
-		{
-			//String nomEmploye=iteratorEmploye.next();
-			String nomEmploye=iteratoremployeTrie.next();
-			HashMap<String, String> mapFamilleIMI=mapEmployeFamilleIMI.get(nomEmploye);
-			//creation de la ligne employe
-			Row ligne=new Row();
-			rows.appendChild(ligne);
-			//remplissage des colonnes familles et IMI de la ligne employe
-			Label nom=new Label();
-			nom.setValue(nomEmploye);
-			//System.out.println("employe= "+ nomEmploye);
-			
-			ligne.appendChild(nom);
-			iteratorFamille=setFamilleCompetence.iterator();
-			String IMI="";
-			while(iteratorFamille.hasNext())
-			{
-				
-				String nomFamille=iteratorFamille.next();
-				//System.out.println("nomFamille=" +nomFamille);
-				String valeurIMI=mapFamilleIMI.get(nomFamille);
-				
-				String[] valeur=valeurIMI.split("#");
-				String val=valeur[0];
-				IMI=valeur[1];
-				Label infosFamille=new Label();
-				infosFamille.setValue(val);
+				Iterator <String>iteratorFamille=setFamilleCompetence.iterator();
+				while(iteratorFamille.hasNext())
+				{
+					//creation des colonnes famille
+					String famille=iteratorFamille.next();
+					Column colonneFamille=new Column();
+					colonneTitre.appendChild(colonneFamille);
+					//<column label="Code structure" align="center" width="100px" />
+					colonneFamille.setLabel(famille);
+					colonneFamille.setAlign("center");
+					colonneFamille.setWidth("100px");
 					
-				ligne.appendChild(infosFamille);
-				//System.out.println("valeur="+ val);
-			}
-			//affichage de la valeur IMI dans le tableau
-			Label infosIMI=new Label();
-			infosIMI.setValue(IMI);
+				}
 				
-			ligne.appendChild(infosIMI);
-		}
-		
-		//creation de la ligne IMG par famille
-		
-		
-		Row ligne=new Row();
-		rows.appendChild(ligne);
-		//remplissage des colonnes familles et IMI de la ligne employe
-		Label nom=new Label();
-		nom.setValue("Maitrise moyenne par domaine de competence");
-		
-		
-		ligne.appendChild(nom);
-		iteratorFamille=setFamilleCompetence.iterator();
-		int nbfamille=0;
-		while(iteratorFamille.hasNext())
-		{
-			
-			String nomFamille=iteratorFamille.next();
-			
-			Double valeur=mapFIMG.get(nomFamille);
-			
-			
-			String val=valeur.toString();
-			
-			Label infosFamilleIMG=new Label();
-			infosFamilleIMG.setValue(val);
+				//creation de la colonne IMI
+				Column colonneIMI=new Column();	
+				colonneTitre.appendChild(colonneIMI);
+				colonneIMI.setLabel("IMI");
+				colonneIMI.setAlign("center");
+				colonneIMI.setWidth("100px");
 				
-			ligne.appendChild(infosFamilleIMG);
-			nbfamille++;
-		}
-		//creation de la dernière ligne IMG (footer)
-		
-		
-		//creation de la ligne IMG par famille
-		
-		
-//		Row ligneIMG=new Row();
-//		rows.appendChild(ligneIMG);
-//		
-//		Label nomIMG=new Label();
-//		nomIMG.setValue("IMG");		
-//		ligneIMG.appendChild(nomIMG);
-//		
-		Double img=mapPosteIMG.get(nomOnglet);
-		
-		nbfamille++;
-		Row ligneIMGVal=new Row();
-		ligneIMGVal.setSpans(nbfamille+"");
-		rows.appendChild(ligneIMGVal);
-		//remplissage des colonnes familles et IMI de la ligne employe
-		Label valIMG=new Label();
-		
-		valIMG.setValue("IMG = "+img.toString());		
-		ligneIMGVal.appendChild(valIMG);
+				
+				//creation des lignes pour chaque employe
+				Rows rows=new Rows();
+				grid.appendChild(rows);
+				Set <String>setEmploye =mapEmployeFamilleCompetence.keySet();
+				Iterator <String> iteratorEmploye=setEmploye.iterator();
+				
+				///////prise en cmpte du tri/////////////
+				ArrayList<String> listemployeTrie=mapPostEmployeTriIMI.get(nomOnglet);
+				Iterator<String> iteratoremployeTrie=listemployeTrie.iterator();
+				///////////////////
+				while(/*iteratorEmploye.hasNext()*/iteratoremployeTrie.hasNext())
+				{
+					//String nomEmploye=iteratorEmploye.next();
+					String nomEmploye=iteratoremployeTrie.next();
+					HashMap<String, String> mapFamilleIMI=mapEmployeFamilleIMI.get(nomEmploye);
+					//creation de la ligne employe
+					Row ligne=new Row();
+					rows.appendChild(ligne);
+					//remplissage des colonnes familles et IMI de la ligne employe
+					Label nom=new Label();
+					nom.setValue(nomEmploye);
+					//System.out.println("employe= "+ nomEmploye);
+					
+					ligne.appendChild(nom);
+					iteratorFamille=setFamilleCompetence.iterator();
+					String IMI="";
+					while(iteratorFamille.hasNext())
+					{
+						
+						String nomFamille=iteratorFamille.next();
+						//System.out.println("nomFamille=" +nomFamille);
+						String valeurIMI=mapFamilleIMI.get(nomFamille);
+						
+						String[] valeur=valeurIMI.split("#");
+						String val=valeur[0];
+						IMI=valeur[1];
+						Label infosFamille=new Label();
+						infosFamille.setValue(val);
+							
+						ligne.appendChild(infosFamille);
+						//System.out.println("valeur="+ val);
+					}
+					//affichage de la valeur IMI dans le tableau
+					Label infosIMI=new Label();
+					infosIMI.setValue(IMI);
+						
+					ligne.appendChild(infosIMI);
+				}
+				
+				//creation de la ligne IMG par famille
+				
+				
+				Row ligne=new Row();
+				rows.appendChild(ligne);
+				//remplissage des colonnes familles et IMI de la ligne employe
+				Label nom=new Label();
+				nom.setValue("Maitrise moyenne par domaine de competence");
+				
+				
+				ligne.appendChild(nom);
+				iteratorFamille=setFamilleCompetence.iterator();
+				int nbfamille=0;
+				while(iteratorFamille.hasNext())
+				{
+					
+					String nomFamille=iteratorFamille.next();
+					
+					Double valeur=mapFIMG.get(nomFamille);
+					
+					
+					String val=valeur.toString();
+					
+					Label infosFamilleIMG=new Label();
+					infosFamilleIMG.setValue(val);
+						
+					ligne.appendChild(infosFamilleIMG);
+					nbfamille++;
+				}
+				//creation de la dernière ligne IMG (footer)
+				
+				
+				//creation de la ligne IMG par famille
+				
+				
+		//		Row ligneIMG=new Row();
+		//		rows.appendChild(ligneIMG);
+		//		
+		//		Label nomIMG=new Label();
+		//		nomIMG.setValue("IMG");		
+		//		ligneIMG.appendChild(nomIMG);
+		//		
+				Double img=mapPosteIMG.get(nomOnglet);
+				
+				nbfamille++;
+				Row ligneIMGVal=new Row();
+				ligneIMGVal.setSpans(nbfamille+"");
+				rows.appendChild(ligneIMGVal);
+				//remplissage des colonnes familles et IMI de la ligne employe
+				Label valIMG=new Label();
+				
+				valIMG.setValue("IMG = "+img.toString());		
+				ligneIMGVal.appendChild(valIMG);
 		
 
-		
 		return grid;
 	}
 }
