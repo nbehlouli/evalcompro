@@ -1,4 +1,6 @@
 <zk>
+
+
 <style dynamic="true">
 
 .GridLayoutNoBorder {
@@ -21,7 +23,7 @@ border-bottom: none;
 				<columns>
 				
 				   <column width="200px">
-						   <image src="/image/Logo.png" width="200px" height="50px" align="top"/>
+						   <image src="/image/Logo_ah.png" width="200px" height="50px" align="top"/>
 					</column>
 					 <column width="700px">
 							<html><![CDATA[
@@ -65,7 +67,7 @@ border-bottom: none;
 			<south size="20px">
 				<hbox pack="center" width="100%">
 					<html><![CDATA[
-						<span style="color:#0C7A9A;font-size:7pt;">©2011 EVALCOMPLUS. All Rights Reserved. Powered by SSII BEHLOULI consulting </span>
+						<span style="color:#0C7A9A;font-size:7pt;">©2011 EVALCOMPLUS. All Rights Reserved. Powered by SR Management </span>
 					]]></html>
 				</hbox>
 			</south>
