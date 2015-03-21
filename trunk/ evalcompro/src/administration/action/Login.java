@@ -37,7 +37,7 @@ public class Login extends GenericForwardComposer{
 	LoginModel init =new LoginModel();
 	SelCliAction initselcli=new SelCliAction();
 	Div div;
-	Div logo;
+	
 
 	
 
@@ -93,8 +93,6 @@ public class Login extends GenericForwardComposer{
 
 					Executions.createComponents("../pages/menu.zul", div, data);
 					//permet de fermer la fenetre login
-					
-					logo.detach();
 					main=(Window)this.self;
 					main.detach();
 
