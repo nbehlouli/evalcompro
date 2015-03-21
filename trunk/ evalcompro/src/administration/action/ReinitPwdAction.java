@@ -31,7 +31,7 @@ public class ReinitPwdAction extends GenericForwardComposer{
 		
 		///Messagebox.show("Hello, " + event.getName());
 		if(Strings.isBlank(userstr) || Strings.isEmpty(emailstr)){
-			msg.setValue("Le login et le mot de passe doievent être saisiés");
+			msg.setValue("Merci de saisir les champs vides");
 			return;
 		}
 		
