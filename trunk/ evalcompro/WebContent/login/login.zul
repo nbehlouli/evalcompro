@@ -63,7 +63,7 @@ border-bottom: none;
 				     </row>	
 				     
 				     <row>
-				     <label id="msg" style="color:red"/>
+				     <label id="msg" style="color:red" />
 				     </row>
 						
 					</rows>
