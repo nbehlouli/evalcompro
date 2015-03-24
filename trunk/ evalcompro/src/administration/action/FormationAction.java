@@ -267,7 +267,7 @@ public class FormationAction
     {
         if ( selected == null )
         {
-            alert( "No row selected" );
+            alert( "Aucune ligne selectionnée" );
             return;
         }
         selected.setCodeFormation( getSelectedcodeFormation() );
