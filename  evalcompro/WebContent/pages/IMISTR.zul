@@ -103,14 +103,14 @@
 		                   <listbox id="imi_borne_inf"    mold="select" selectedItem="@{winCtrl.selected1.imi_borne_inf,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		                   <label id=" lbl_imi_borne_sup"  value="IMI Borne inferieure:"  sclass="textboxdetail"/>
 		                   <listbox id="imi_borne_sup"    mold="select" selectedItem="@{winCtrl.selected1.imi_borne_sup,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
-		                   <label id="lbl_startegie"  value="Besoin de développement cotation :"  sclass="textboxdetail"/>
-		                   <textbox id="startegie"  tabbable="true" width="200px" rows="2" value="@{winCtrl.selected1.besoin_developpement,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+		                   <label id="lbl_besoin_developpement"  value="Besoin de développement cotation :"  sclass="textboxdetail"/>
+		                   <textbox id="besoin_developpement"  tabbable="true" width="400px" rows="2" value="@{winCtrl.selected1.besoin_developpement,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		             </hlayout>
 		  </hbox>
   		  <hbox >
 		               <hlayout spacing ="5px">       
-		                    <label id="lbl_besoin_developpement"  value="Besoin de développement cotation :"  sclass="textboxdetail"/>
-		                   <textbox id="besoin_developpement"  tabbable="true" width="200px" rows="2" value="@{winCtrl.selected1.startegie,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
+		                    <label id="lbl_startegie"  value="Strategie :"  sclass="textboxdetail"/>
+		                   <textbox id="startegie"  tabbable="true" width="400px" rows="2" value="@{winCtrl.selected1.startegie,save-when=none}" style="font-family: Verdana, Arial,Helvetica,sans-serif; font-size: 10px;font-weight: ;" />
 		               </hlayout>
 		              
 		   </hbox>
